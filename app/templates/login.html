@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <h3>Login</h3>
+        <p class="lead">
+            Enter your username and password to login.
+        </p>
+        <p class="lead">
+            Not yet a member? <a href="#">Click here</a> to sign up!
+        </p>
+
+        <form action="" method="POST" novalidate>
+            {{ form.hidden_tag() }}
+            <p>
+                {{ form.username.label }}<br>
+                {{form.username(size=32) }}<br>
+                {% for error in form.username.errors %}
+                <span style="color:red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>
+                {{ form.password.label }}<br>
+                {{ form.password(size=32) }}<br>
+                {% for error in form.password.errors %}
+                <span style="color:red;">[{{ error }}]</span>
+                {% endfor %}                
+            </p>
+            <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
+            <p>{{ form.submit() }}</p>
+        </form>
+
+        <!-- Box info -->
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <div class="card card-body bg-secondary text-white">
+                    <h5>Note:</h5>
+                    <p>Registered users' scores are tracked on personal profile pages as well as site-wide high score lists.</p>
+                    <p>Compete against yourself and others, and become a faster typist!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
