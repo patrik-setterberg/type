@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="col-md-6 mx-auto">    
+        <h2>Edit user information</h2>
+        <br>
+        <p>If you wish, you can change your username, password and registered e-mail address here.</p>
+        <br>
+        <h3>Username</h3>
+        <h5>Current username: <strong>{{ current_user.username }}</strong></h5>
+        <p>Your username is displayed on your profile page as well as on any high-score lists you manage to reach a position on.</p>
+        <form action="" method="post">
+            {{ user_form.hidden_tag() }}
+            <p>
+                {{ user_form.username.label }}<br>
+                {{ user_form.username(size=32) }}<br>
+                {% for error in user_form.username.errors %}
+                <span style="color:red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>{{ user_form.submit() }}</p>
+        </form>
+        <br>
+        <h3>E-mail address</h3>
+        <h5>Current e-mail address: <strong>{{ current_user.email }}</strong></h5>
+        <p>Your e-mail is only ever used to reset your login information should you forget your username or password.</p>
+        <form action="" method="post">
+            {{ mail_form.hidden_tag() }}
+            <p>
+                {{ mail_form.email.label }}<br>
+                {{ mail_form.email(size=32) }}<br>
+                {% for error in mail_form.email.errors %}
+                <span style="color:red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>{{ mail_form.submit() }}</p>
+        </form>
+        <br>
+        <h3>Password</h3>
+        <p>Passwords are hashed and probably pretty secure.</p>
+        <form action="" method="post">
+            {{ pass_form.hidden_tag() }}
+            <p>
+                {{ pass_form.password.label }}<br>
+                {{ pass_form.password(size=32) }}<br>
+                {% for error in pass_form.password.errors %}
+                <span style="color:red;">[{{ error }}]</span>
+                {% endfor %}
+
+                {{ pass_form.password2.label }}<br>
+                {{ pass_form.password2(size=32) }}<br>
+                {% for error in pass_form.password2.errors %}
+                <span style="color:red;">[{{ error }}]</span>
+                {% endfor %}                
+            </p>
+            <p>{{ pass_form.submit() }}</p>
+        </form>
+    </div>
+{% endblock %}

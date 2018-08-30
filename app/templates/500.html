@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2><i class="fa fa-bug"></i> Internal error</h2>
+    <p>Error: <strong>500</strong>. An unexpected error has occurred.</p>
+    <p><em>As opposed to an expected error, of course.</em><p>
+    <p>The administrator will be replaced by someone more competent. Immediately.</p>
+    <p>Click <a href="{{ url_for('index') }}">here</a> to go back to someplace nicer.</p>
+{% endblock %}

@@ -4,7 +4,7 @@
     <!-- Word & Input -->
     <div class="row">
             <div class="col-md-6 mx-auto">
-                <h3>{{ user.username }}</h3>
+                <h3><i class="fa fa-user-circle"></i> {{ user.username }}</h3>
                 {% if current_user.username == 'admin' and user.last_seen %}
                 <p>Last seen on: {{ user.last_seen.strftime("%Y-%m-%d at %H:%M") }}</p>
                 {% endif %}
