@@ -96,29 +96,25 @@ def edit_user():
     mail_form = EditEmailForm(current_user.email)
     pass_form = EditPasswordForm()
 
-    if request.method == 'POST':
-    
-        item = ''
+    # Change username
+    if user_form.submit_username.data and user_form.validate():
+        current_user.username = user_form.username.data
+        db.session.commit()
+        flash('Username updated successfully!')
+        return redirect(url_for('edit_user'))
+        
+    # Change email
+    elif mail_form.submit_email.data and mail_form.validate():
+        current_user.email = mail_form.email.data
+        db.session.commit()
+        flash('Email updated successfully!')
+        return redirect(url_for('edit_user'))
 
-        # Change username
-        if user_form.submit_username.data and user_form.validate():
-            current_user.username = user_form.username.data
-            db.session.commit()
-            item = 'Username'
-    
-        # Change email
-        elif mail_form.submit_email.data and mail_form.validate():
-            current_user.email = mail_form.email.data
-            db.session.commit()
-            item = 'Email'
-    
-        # Change password
-        elif pass_form.submit_password.data and pass_form.validate():
-            current_user.password_hash = generate_password_hash(pass_form.password.data)
-            db.session.commit()
-            item = 'Password'
-
-        flash('{} updated successfully!'.format(item))
+    # Change password
+    elif pass_form.submit_password.data and pass_form.validate():
+        current_user.password_hash = generate_password_hash(pass_form.password.data)
+        db.session.commit()
+        flash('Password updated successfully!')
         return redirect(url_for('edit_user'))
             
     return render_template('edit_user.html', title='Edit user details',

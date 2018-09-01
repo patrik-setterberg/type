@@ -66,7 +66,6 @@ class EditEmailForm(FlaskForm):
                 raise ValidationError('Please choose a different e-mail address.')
                 
 
-
 class EditPasswordForm(FlaskForm):
     password = PasswordField('Change Password', validators=[DataRequired(),
                              Length(min=6, max=50)])
@@ -81,7 +80,7 @@ class ResetPasswordRequestForm(FlaskForm):
 
 
 class ResetPasswordForm(FlaskForm):
-    password = PasswordField('Password', validators=[DataRequired(),
+    password = PasswordField('New Password', validators=[DataRequired(),
                              Length(min=6, max=50)])
     password2 = PasswordField('Repeat Password', validators=[
                               DataRequired(), EqualTo('password')])
