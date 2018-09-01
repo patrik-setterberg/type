@@ -18,7 +18,7 @@
                 <span style="color:red;">[{{ error }}]</span>
                 {% endfor %}
             </p>
-            <p>{{ user_form.submit() }}</p>
+            <p>{{ user_form.submit_username() }}</p>
         </form>
         <br>
         <h3>E-mail address</h3>
@@ -33,7 +33,7 @@
                 <span style="color:red;">[{{ error }}]</span>
                 {% endfor %}
             </p>
-            <p>{{ mail_form.submit() }}</p>
+            <p>{{ mail_form.submit_email() }}</p>
         </form>
         <br>
         <h3>Password</h3>
@@ -53,7 +53,7 @@
                 <span style="color:red;">[{{ error }}]</span>
                 {% endfor %}                
             </p>
-            <p>{{ pass_form.submit() }}</p>
+            <p>{{ pass_form.submit_password() }}</p>
         </form>
     </div>
 {% endblock %}

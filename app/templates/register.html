@@ -4,13 +4,10 @@
 <div class="row">
     <div class="col-md-6 mx-auto">
         <h3>Register</h3>
-        <p class="lead">
-            REGISTRATION TEXT
-        </p>
-        <p class="lead">
-            MORE TEXT
-        </p>
-
+        <p>Registered users' scores are tracked on personal profile pages as well as site-wide high score lists.</p>
+        <p>Compete against yourself and others, and become a faster typist!</p>
+        <br>
+        
         <form action="" method="POST">
             {{ form.hidden_tag() }}
             <p>
@@ -20,6 +17,8 @@
                 <span style="color:red;">[{{ error }}]</span>
                 {% endfor %}
             </p>
+            <p>Your username is displayed on your profile page as well as on any high-score lists you manage to reach a position on.</p>
+            <br>
             <p>
                 {{ form.email.label }}<br>
                 {{ form.email(size=32) }}<br>
@@ -27,6 +26,8 @@
                 <span style="color:red;">[{{ error }}]</span>
                 {% endfor %}
             </p>
+            <p>Your e-mail address is only ever used to reset your login information should you forget your username or password.</p>
+            <br>
             <p>
                 {{ form.password.label }}<br>
                 {{ form.password(size=32) }}<br>
@@ -44,16 +45,6 @@
             <p>{{ form.submit() }}</p>
         </form>
 
-        <!-- Box info -->
-        <div class="row mt-5">
-            <div class="col-md-12">
-                <div class="card card-body bg-secondary text-white">
-                    <h5>Note:</h5>
-                    <p>Registered users' scores are tracked on personal profile pages as well as site-wide high score lists.</p>
-                    <p>Compete against yourself and others, and become a faster typist!</p>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 {% endblock %}
