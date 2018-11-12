@@ -32,10 +32,29 @@ const words = [
     'joke',
     'bloke',
     'snus',
-    'dope',
-    'javascript',
+    'hope',
+    'script',
     'develop',
-    'undermine'
+    'undermine',
+    'flora',
+    'delight',
+    'might',
+    'spark',
+    'banner',
+    'hamster',
+    'load',
+    'globe',
+    'wine',
+    'brain',
+    'book',
+    'foot',
+    'couch',
+    'monster',
+    'swede',
+    'bread',
+    'myth',
+    'resist',
+    'ketchup'
 ];
 
 // Initialize Game

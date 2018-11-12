@@ -85,3 +85,17 @@ class ResetPasswordForm(FlaskForm):
     password2 = PasswordField('Repeat Password', validators=[
                               DataRequired(), EqualTo('password')])
     submit = SubmitField('Request Password Reset')
+
+
+class SentenceForm(FlaskForm):
+    sentence = StringField('Sentence tags', validators=[DataRequired(), 
+                           Length(min=6, max=120)])
+    submit_sentence = SubmitField('Add sentence model')
+
+
+class WordForm(FlaskForm):
+    word = StringField('Word', validators=[DataRequired(),
+                       Length(min=1, max=32)])
+    tag = StringField('Tag', validators=[DataRequired(),
+                      Length(min=1, max=16)])
+    submit_word = SubmitField('Add word')

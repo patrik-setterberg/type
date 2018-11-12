@@ -79,8 +79,5 @@
         {% block content %}{% endblock %}
     </div>
     
-    {% if request.endpoint == 'survive' %}
-    <script src="{{ url_for('static', filename='js/survive.js') }}"></script>
-    {% endif %}
 </body>
 </html>

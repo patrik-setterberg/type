@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="col-md-6 mx-auto">    
+        <h2>Manage sentences</h2>
+        <br>
+        <h3>Sentence models</h3>
+        <p>LISTA SENTENCE MODELS OCH SEN ÖH..... En knapp för att ta bort dem.</p>
+        <p>Både i tag-form och plaintext</p>
+        <br>
+        <h4>Add new sentence model</h4>
+        <form action="" method="post">
+            {{ sentence_form.hidden_tag() }}
+            <p>
+                {{ sentence_form.sentence.label }}<br>
+                {{ sentence_form.sentence(size=32) }}<br>
+                {% for error in sentence_form.sentence.errors %}
+                <span style="color:red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>{{ sentence_form.submit_sentence() }}</p>
+        </form>
+        <hr>
+        <br>
+        <h3>Words</h3>
+        
+        <p>LISTA ORD MED TAGS I NÅN TABELL MED LÄNKAR FÖR ATT TA BORT ORD.</p>
+        <p>Jag vill också kunna sortera ord efter tag och i alfabetisk ordning....</p>
+        <form action="" method="post">
+            {{ word_form.hidden_tag() }}
+            <p>
+                {{ word_form.word.label }}<br>
+                {{ word_form.word(size=32) }}<br>
+                {% for error in word_form.word.errors %}
+                <span style="color:red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>
+                {{ word_form.tag.label }}<br>
+                {{ word_form.tag(size=32) }}<br>
+                {% for error in word_form.tag.errors %}
+                <span style="color:red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>{{ word_form.submit_word() }}</p>
+        </form>
+    </div>
+{% endblock %}

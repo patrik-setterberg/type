@@ -1,10 +1,11 @@
 from flask import render_template, flash, redirect, request, url_for
 from flask_login import current_user, login_user, logout_user, login_required
 from app import app, db
-from app.models import User
+from app.models import User, SentenceModel, WordList
 from app.forms import LoginForm, RegistrationForm, ResetPasswordRequestForm
-from app.forms import EditEmailForm, EditPasswordForm, EditUsernameForm
+from app.forms import EditEmailForm, EditPasswordForm, EditUsernameForm, SentenceForm, WordForm
 from app.forms import ResetPasswordForm
+from app.sentence_generator import generate_sentence
 from datetime import datetime
 from werkzeug.urls import url_parse
 from werkzeug.security import generate_password_hash
@@ -122,6 +123,7 @@ def edit_user():
                            pass_form=pass_form)
 
 
+# Reset password request
 @app.route('/reset_password_request', methods=['GET', 'POST'])
 def reset_password_request():
     if current_user.is_authenticated:
@@ -140,6 +142,7 @@ def reset_password_request():
                            title='Reset Password', form=form)
 
 
+# Reset password
 @app.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
     if current_user.is_authenticated:
@@ -159,8 +162,55 @@ def reset_password(token):
 
     return render_template('reset_password.html', form=form)
 
+
+# test sentence generator, TEMPORARY
+@app.route('/sentence', methods=['GET', 'POST'])
+def sentence():
+
+    sentence = generate_sentence()
+
+    return render_template('sentence.html', sentence=sentence)
+
+
+# Manage sentence generator (sentence models and words)
+@app.route('/admin/manage_sentences', methods=['GET', 'POST'])
+@login_required
+def manage_sentences():
+
+    if current_user.username != 'admin':
+        flash('Restricted area!')
+        return redirect(url_for('index'))
+
+    # forms
+    word_form = WordForm()
+    sentence_form = SentenceForm()
+
+    # add sentence model
+    if sentence_form.submit_sentence.data and sentence_form.validate():
+        sentence = SentenceModel(sentence=sentence_form.sentence.data)
+        db.session.add(sentence)
+        db.session.commit()
+
+        flash('Sentence model added')
+        return redirect(url_for('manage_sentences'))
+
+    # add new word
+    elif word_form.submit_word.data and word_form.validate():
+        word = WordList(word=word_form.word.data, tag=word_form.tag.data)
+        db.session.add(word)
+        db.session.commit()
+
+        flash('Word added.')
+        return redirect(url_for('manage_sentences'))    
+
+    return render_template('manage_sentences.html', word_form=word_form, sentence_form=sentence_form, title='Manage sentence generator')
+
+
 @app.before_request
 def before_request():
     if current_user.is_authenticated:
         current_user.last_seen = datetime.utcnow()
         db.session.commit()
+
+
+
