@@ -4,7 +4,7 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import DataRequired, Email, EqualTo 
 from wtforms.validators import Length, ValidationError
 from app.models import User
-from app.sentence_generator import check_tag
+from app.sentence_generator import check_tag, WORD_BLACKLIST
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -105,6 +105,9 @@ class WordForm(FlaskForm):
         for letter in word.data:
             if not letter.isalpha():
                 raise ValidationError('Only letters allowed')
+        
+        if word.data in WORD_BLACKLIST:
+            raise ValidationError('Word banned. Sorry...')
 
     def validate_tag(self, tag):
         if not check_tag(tag.data):
