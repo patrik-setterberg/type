@@ -2,12 +2,6 @@
 
 {% block content %}
     <div class="col-md-6 mx-auto">    
-        <h2>Manage sentences</h2>
-        <br>
-        <h3>Sentence models</h3>
-        <p>LISTA SENTENCE MODELS OCH SEN ÖH..... En knapp för att ta bort dem.</p>
-        <p>Både i tag-form och plaintext</p>
-        <br>
         <h4>Add new sentence model</h4>
         <form action="" method="post">
             {{ sentence_form.hidden_tag() }}
@@ -20,12 +14,27 @@
             </p>
             <p>{{ sentence_form.submit_sentence() }}</p>
         </form>
-        <hr>
         <br>
-        <h3>Words</h3>
-        
-        <p>LISTA ORD MED TAGS I NÅN TABELL MED LÄNKAR FÖR ATT TA BORT ORD.</p>
-        <p>Jag vill också kunna sortera ord efter tag och i alfabetisk ordning....</p>
+        <h4>Manage sentences</h4>
+        <table>
+            <tr>
+                <td>Tags</td>
+            </tr>
+            {% for sentence in sentences %}
+            <tr>
+                <td>
+                    <p><b>{{ sentence.sentence }}</b></p>
+                </td>
+                <td>
+                    <p style="text-align:right;">
+                        <a href="{{ url_for('delete_item', item='sentence', id=sentence.id) }}">Delete sentence</a>
+                    </p>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <hr>
+        <h4>Add new words</h4>
         <form action="" method="post">
             {{ word_form.hidden_tag() }}
             <p>
@@ -44,5 +53,28 @@
             </p>
             <p>{{ word_form.submit_word() }}</p>
         </form>
+        <br>
+        <h4>Manage words</h4>
+        <table>
+            <tr>
+                <td>Word</td>
+                <td>Tag</td>
+            </tr>
+            {% for word in words %}
+            <tr>
+                <td>
+                    <p><b>{{ word.word }}</b></p>
+                </td>
+                <td>
+                    <p>{{ word.tag }}</p>
+                </td>
+                <td>
+                    <p style="text-align:right;">
+                        <a href="{{ url_for('delete_item', item='word', id=word.id) }}">Delete Word</a>
+                    </p>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>        
     </div>
 {% endblock %}

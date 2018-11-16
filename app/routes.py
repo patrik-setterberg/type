@@ -201,9 +201,36 @@ def manage_sentences():
         db.session.commit()
 
         flash('Word added.')
-        return redirect(url_for('manage_sentences'))    
+        return redirect(url_for('manage_sentences'))
 
-    return render_template('manage_sentences.html', word_form=word_form, sentence_form=sentence_form, title='Manage sentence generator')
+    # Get words and models from database for displaying on page
+    words = WordList.query.all()
+    sentences = SentenceModel.query.all()
+
+    return render_template('manage_sentences.html', word_form=word_form,
+                           sentence_form=sentence_form, words=words,
+                           sentences=sentences,
+                           title='Manage sentence generator')
+
+
+# Delete item from database
+@app.route('/admin/delete_item/<item>/<id>', methods=['GET'])
+@login_required
+def delete_item(item, id):
+
+    if item == 'sentence':
+        db_table = SentenceModel
+    elif item == 'word':
+        db_table = WordList
+
+    del_item = db_table.query.filter_by(id=int(id)).first_or_404()
+
+    db.session.delete(del_item)
+    db.session.commit()
+
+    flash(item.capitalize() + ' deleted.')
+
+    return redirect(url_for('manage_sentences'))
 
 
 @app.before_request

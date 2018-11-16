@@ -4,6 +4,7 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import DataRequired, Email, EqualTo 
 from wtforms.validators import Length, ValidationError
 from app.models import User
+from app.sentence_generator import check_tag
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -99,3 +100,13 @@ class WordForm(FlaskForm):
     tag = StringField('Tag', validators=[DataRequired(),
                       Length(min=1, max=16)])
     submit_word = SubmitField('Add word')
+
+    def validate_word(self, word):
+        for letter in word.data:
+            if not letter.isalpha():
+                raise ValidationError('Only letters allowed')
+
+    def validate_tag(self, tag):
+        if not check_tag(tag.data):
+            raise ValidationError('Tag nog allowed. Check spelling or \
+                                  add tag to ALLOWED_TAGS')
