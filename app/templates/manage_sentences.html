@@ -56,14 +56,21 @@
         <br>
         <h4>Manage words</h4>
         <table>
-            <tr>
-                <td>Word</td>
-                <td>Tag</td>
-            </tr>
             {% for word in words %}
+            
+                {% if word.tag != words[words.index(word) - 1].tag %}
+                    {% if word.tag in tags %}
+                    <tr>
+                        <td>
+                            <p style="font-weight:bold">{{ tags[word.tag] }} ({{ word.tag }})</p>
+                        </td>
+                    </tr>
+                    {% endif %}
+                {% endif %}
+            
             <tr>
                 <td>
-                    <p><b>{{ word.word }}</b></p>
+                    <p>{{ word.word }}</p>
                 </td>
                 <td>
                     <p>{{ word.tag }}</p>

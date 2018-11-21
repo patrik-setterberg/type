@@ -3,8 +3,9 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import DataRequired, Email, EqualTo 
 from wtforms.validators import Length, ValidationError
-from app.models import User
-from app.sentence_generator import check_tag, WORD_BLACKLIST
+from app.models import User, WordList, SentenceModel
+from app.sentence_generator import check_word_tag, check_sentence_tags
+from app.sentence_gen_statics import WORD_BLACKLIST
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -93,6 +94,14 @@ class SentenceForm(FlaskForm):
                            Length(min=6, max=120)])
     submit_sentence = SubmitField('Add sentence model')
 
+    def validate_sentence(self, sentence):
+        tag = check_sentence_tags(sentence.data)
+        if tag != 'allowed':
+            raise ValidationError('Sentence model contains illegal tag: ' + tag)
+        existing_sentence = SentenceModel.query.filter_by(sentence=sentence.data).first()
+        if existing_sentence is not None:
+            raise ValidationError('Sentence model already exists in database.')
+
 
 class WordForm(FlaskForm):
     word = StringField('Word', validators=[DataRequired(),
@@ -109,7 +118,11 @@ class WordForm(FlaskForm):
         if word.data in WORD_BLACKLIST:
             raise ValidationError('Word banned. Sorry...')
 
+        existing_word = WordList.query.filter_by(word=word.data).first()
+        if existing_word is not None:
+            raise ValidationError('Word already exists in database.')
+
     def validate_tag(self, tag):
-        if not check_tag(tag.data):
+        if not check_word_tag(tag.data):
             raise ValidationError('Tag nog allowed. Check spelling or \
                                   add tag to ALLOWED_TAGS')

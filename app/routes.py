@@ -5,7 +5,7 @@ from app.models import User, SentenceModel, WordList
 from app.forms import LoginForm, RegistrationForm, ResetPasswordRequestForm
 from app.forms import EditEmailForm, EditPasswordForm, EditUsernameForm, SentenceForm, WordForm
 from app.forms import ResetPasswordForm
-from app.sentence_generator import generate_sentence
+from app.sentence_generator import generate_sentence, WORDLIST_TAGS_ALLOWED
 from datetime import datetime
 from werkzeug.urls import url_parse
 from werkzeug.security import generate_password_hash
@@ -204,12 +204,12 @@ def manage_sentences():
         return redirect(url_for('manage_sentences'))
 
     # Get words and models from database for displaying on page
-    words = WordList.query.all()
+    words = WordList.query.order_by(WordList.tag.asc()).all()
     sentences = SentenceModel.query.all()
 
     return render_template('manage_sentences.html', word_form=word_form,
                            sentence_form=sentence_form, words=words,
-                           sentences=sentences,
+                           sentences=sentences, tags=WORDLIST_TAGS_ALLOWED,
                            title='Manage sentence generator')
 
 
