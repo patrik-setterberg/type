@@ -1,11 +1,12 @@
 from flask import render_template, flash, redirect, url_for
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms import StringField, PasswordField, BooleanField, RadioField, SubmitField
 from wtforms.validators import DataRequired, Email, EqualTo 
 from wtforms.validators import Length, ValidationError
 from app.models import User, WordList, SentenceModel
 from app.sentence_generator import check_word_tag, check_sentence_tags
-from app.sentence_gen_statics import WORD_BLACKLIST
+from app.sentence_gen_statics import WORD_BLACKLIST, ALLOWED_CHARS
+import re
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -95,9 +96,15 @@ class SentenceForm(FlaskForm):
     submit_sentence = SubmitField('Add sentence model')
 
     def validate_sentence(self, sentence):
+        # check model formatting
+        pattern = '([' + ALLOWED_CHARS + ']+\/)+[' + ALLOWED_CHARS + ']+'
+        if not re.match(pattern, sentence.data):
+            raise ValidationError('Sentence model formatted incorrectly.')
+        # check tags
         tag = check_sentence_tags(sentence.data)
         if tag != 'allowed':
             raise ValidationError('Sentence model contains illegal tag: ' + tag)
+        # check duplicates
         existing_sentence = SentenceModel.query.filter_by(sentence=sentence.data).first()
         if existing_sentence is not None:
             raise ValidationError('Sentence model already exists in database.')
@@ -108,14 +115,26 @@ class WordForm(FlaskForm):
                        Length(min=1, max=32)])
     tag = StringField('Tag', validators=[DataRequired(),
                       Length(min=1, max=16)])
+    article = RadioField('Article (a or an)', choices=[('a','a'),('an','an')])
+    gender = RadioField('Gender', choices=[('MM','Male'),('FF','Female'),
+                        ('NN','Neutral')])
+    irregular = RadioField('Word regularity', 
+                           choices=[(0,'Regular'),(1,'Irregular')])
+    mult_syll = RadioField('Syllables count',
+                           choices=[(0,'One syllable'),(1,'Multiple syllables')])
+    categories = StringField('Categories')
+    noun_assoc = StringField('Noun associations')
+    adj_assoc = StringField('Adjective associations')
+    verb_assoc = StringField('Verb associations')
+    subtype = StringField('Subtype')
     submit_word = SubmitField('Add word')
 
     def validate_word(self, word):
         for letter in word.data:
-            if not letter.isalpha():
-                raise ValidationError('Only letters allowed')
+            if not re.match('[a-zA-Z0-9]+', letter):
+                raise ValidationError('Only letters and numbers allowed')
         
-        if word.data in WORD_BLACKLIST:
+        if word.data in WORD_BLACKLIST:  ##### MAKE SURE WORD_BLACKLIST IS THERE
             raise ValidationError('Word banned. Sorry...')
 
         existing_word = WordList.query.filter_by(word=word.data).first()

@@ -54,3 +54,22 @@ class WordList(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     word = db.Column(db.String(32), index=True)
     tag = db.Column(db.String(16), index=True)
+    # Indefinite article, a / an for nouns
+    article = db.Column(db.String(5), nullable=True)
+    # Proper nouns need gender to assign correct pronouns
+    gender = db.Column(db.String(16), nullable=True, index=True)
+    # Irregular forms of words, e.g. nouns, adverbs, verbs, 1 or 0
+    irregular = db.Column(db.Integer, nullable=True, index=True)
+    # Syllable count is needed for verbs and adjectives for proper conjugation
+    # mult(iple) syll(ables), 1 for true, 0 for false (i.e. 1 syllable)
+    mult_syll = db.Column(db.Integer, nullable=True, index=True)
+    # Categories aid in word selection, used for nouns, adjectives ????
+    categories = db.Column(db.String(120), nullable=True, index=True)
+    # Associations help select common objects or actions for words
+    noun_assoc = db.Column(db.String(120), nullable=True, index=True)
+    adj_assoc = db.Column(db.String(120), nullable=True, index=True)
+    verb_assoc = db.Column(db.String(120), nullable=True, index=True)
+    # Subtypes (e.g. 'time' for adverbs of time, 'emotion' for verb of
+    # emotion). NOTE, VERBS: enter stative property, e.g. perception, opinion,
+    # the senses, emotion, possession, and state, OR 'action' if action verb.
+    subtype = db.Column(db.String(16), nullable=True, index=True)

@@ -9,68 +9,64 @@
     <title>
         {% if title %}T Y P E - {{ title }}{% else %}Welcome to T Y P E{% endif %}
     </title>
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
-    crossorigin="anonymous">    
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- statics -->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/style.css') }}">
 
-    
+    <!-- Google fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Heebo" rel="stylesheet">
 </head>
-<body class="bg-dark text-white">
-
-    <header class="bg-secondary text-center p-2">
-        <h2 class="mb-0 text-warning"><i class="fa fa-keyboard-o" style="color:white;"></i> <strong>T Y P E</strong></h2>
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <ul class="list-unstyled">
-            {% for message in messages %}
-            <li class="text-warning">{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}        
-    </header>
-
-    {# NAVIGATION #}
+<body>
     <div class="container">
-        <div class="col-md-12">
-            <nav class="navbar navbar-expand-lg navbar-dark">
-                <ul class="nav navbar-nav">
-                    <li class="nav-item deff">
-                        <a class="nav-link" href="{{ url_for('index') }}">Home</a>
+        <header>        
+            {# NAVIGATION #}
+            <nav class="navbar">
+                <ul class="left">
+                    <li>
+                        <a class="fromLeft" href="#">Games</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Games</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">High Scores</a>
+                    <li>
+                        <a class="fromLeft" href="#">High Scores</a>
                     </li>
                 </ul>
-                <ul class="nav navbar-nav ml-auto">
+                <ul class="site-header">
+                    <li>
+                        <a class="fromLeft" href="{{ url_for('index') }}">Typemania</a>
+                    </li>
+                </ul>
+                <ul class="right">
                 {% if current_user.is_authenticated %}
                     {% if current_user.username == 'admin' %}
-                    <li class="nav-item">
-                            <a class="nav-link" href="#">Admin</a> 
-                        </li>
+                    <li>
+                        <a class="fromLeft" href="#">Admin</a> 
+                    </li>
                     {% endif %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a> 
+                    <li>
+                        <a class="fromLeft" href="{{ url_for('logout') }}">Logout</a> 
                     </li>    
                 {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('login') }}">Login</a> 
+                    <li>
+                        <a class="fromLeft" href="{{ url_for('login') }}">Login</a> 
                     </li>
-                    <li><span class="navbar-text">/</span></li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('register') }}">Register</a>
+                    <li style="padding:0;">/</li>
+                    <li>
+                        <a class="fromLeft" href="{{ url_for('register') }}">Register</a>
                     </li>
                 {% endif %}
                 </ul>
             </nav>
-        </div>
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <ul class="flash">
+                    {% for message in messages %}
+                    <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            {% endwith %}
+        </header>
     </div>
     
 

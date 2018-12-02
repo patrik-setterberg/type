@@ -1,87 +1,45 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="col-md-6 mx-auto">    
-        <h4>Add new sentence model</h4>
-        <form action="" method="post">
-            {{ sentence_form.hidden_tag() }}
-            <p>
-                {{ sentence_form.sentence.label }}<br>
-                {{ sentence_form.sentence(size=32) }}<br>
-                {% for error in sentence_form.sentence.errors %}
-                <span style="color:red;">[{{ error }}]</span>
+
+    <div class="column-wrapper">
+        <div class="column">    
+            <h4>Add new sentence model</h4>
+            <form action="" method="post">
+                {{ sentence_form.hidden_tag() }}
+                <p>
+                    {{ sentence_form.sentence.label }}<br>
+                    {{ sentence_form.sentence(size=32) }}<br>
+                    {% for error in sentence_form.sentence.errors %}
+                    <span style="color:red;">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>{{ sentence_form.submit_sentence() }}</p>
+            </form>
+            <br>
+            <h4>Manage sentences</h4>
+            <table>
+                <tr>
+                    <td>Tags</td>
+                </tr>
+                {% for sentence in sentences %}
+                <tr>
+                    <td>
+                        <p><b>{{ sentence.sentence }}</b></p>
+                    </td>
+                    <td>
+                        <p style="text-align:right;">
+                            <a href="{{ url_for('delete_item', item='sentence', id=sentence.id) }}">Delete sentence</a>
+                        </p>
+                    </td>
+                </tr>
                 {% endfor %}
-            </p>
-            <p>{{ sentence_form.submit_sentence() }}</p>
-        </form>
-        <br>
-        <h4>Manage sentences</h4>
-        <table>
-            <tr>
-                <td>Tags</td>
-            </tr>
-            {% for sentence in sentences %}
-            <tr>
-                <td>
-                    <p><b>{{ sentence.sentence }}</b></p>
-                </td>
-                <td>
-                    <p style="text-align:right;">
-                        <a href="{{ url_for('delete_item', item='sentence', id=sentence.id) }}">Delete sentence</a>
-                    </p>
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
-        <hr>
-        <h4>Add new words</h4>
-        <form action="" method="post">
-            {{ word_form.hidden_tag() }}
-            <p>
-                {{ word_form.word.label }}<br>
-                {{ word_form.word(size=32) }}<br>
-                {% for error in word_form.word.errors %}
-                <span style="color:red;">[{{ error }}]</span>
-                {% endfor %}
-            </p>
-            <p>
-                {{ word_form.tag.label }}<br>
-                {{ word_form.tag(size=32) }}<br>
-                {% for error in word_form.tag.errors %}
-                <span style="color:red;">[{{ error }}]</span>
-                {% endfor %}
-            </p>
-            <p>{{ word_form.submit_word() }}</p>
-        </form>
-        <br>
-        <h4>Manage words</h4>
-        <table>
-            {% for word in words %}
-            
-                {% if word.tag != words[words.index(word) - 1].tag %}
-                    {% if word.tag in tags %}
-                    <tr>
-                        <td>
-                            <p style="font-weight:bold">{{ tags[word.tag] }} ({{ word.tag }})</p>
-                        </td>
-                    </tr>
-                    {% endif %}
-                {% endif %}
-            
-            <tr>
-                <td>
-                    <p>{{ word.word }}</p>
-                </td>
-                <td>
-                    <p>{{ word.tag }}</p>
-                </td>
-                <td>
-                    <p style="text-align:right;">
-                        <a href="{{ url_for('delete_item', item='word', id=word.id) }}">Delete Word</a>
-                    </p>
-                </td>
-            </tr>
-            {% endfor %}
-        </table>        
-    </div>
+            </table>
+        </div>
+        <div class="column">
+            <p>notes</p>
+            <p>allowed tags</p>
+        </div>
+    </div>    
 {% endblock %}
+    

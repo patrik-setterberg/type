@@ -2,6 +2,8 @@
 
 VOWELS = ['a', 'e', 'i', 'o', 'u', 'y']
 
+# allowed sentence model tag characters
+ALLOWED_CHARS = 'A-Za-z0-9\$.'
 
 # Add words to WordList, tags allowed
 WORDLIST_TAGS_ALLOWED = {
@@ -122,10 +124,11 @@ SPECIAL_WORDS = {
     'THEY': 'they',
     'THEM': 'them',
     'THR': 'their',
+    'THRS': 'theirs',
     'WE': 'we',
     'OUR': 'our',
     'IT': 'it',
-    'ITS': 'its'
+    'ITS': 'its'  # possessive
 }
 
 

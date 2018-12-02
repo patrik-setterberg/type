@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="column-wrapper">
+        <div class="column">    
+            <h4>Add new word</h4>
+            <p>
+                Add <a href="#">noun</a>, <a href="#">adjective</a>, 
+                <a href="#">verb</a>, <a href="#">adverb</a>, 
+                <a href="#">proper noun</a>, <a href="#">ordinal</a>.
+            </p>
+            <form action="" method="post">
+                {{ form.hidden_tag() }}
+                <p>
+                    {{ form.word.label }}<br>
+                    {{ form.word(size=32) }}<br>
+                    {% for error in form.word.errors %}
+                    <span style="color:red;">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>
+                    {{ form.tag.label }}<br>
+                    {{ form.tag(size=16) }}<br>
+                    {% for error in form.tag.errors %}
+                    <span style="color:red;">[{{ error }}]</span>
+                    {% endfor %}
+                </p>
+                <p>
+                    {{ form.article.label }}
+                    {{ form.article }}
+                </p>
+                <p>
+                    {{ form.gender.label }}
+                    {{ form.gender }}
+                </p>
+                <p>
+                    {{ form.irregular.label }}
+                    {{ form.irregular }}
+                </p>
+                <p>
+                    {{ form.mult_syll.label }}
+                    {{ form.mult_syll }}
+                </p>
+                <p>
+                    {{ form.categories.label }}
+                    {{ form.categories }}
+                </p>
+                <p>
+                    {{ form.noun_assoc.label }}
+                    {{ form.noun_assoc }}
+                </p>
+                <p>
+                    {{ form.adj_assoc.label }}
+                    {{ form.adj_assoc }}
+                </p>
+                <p>
+                    {{ form.verb_assoc.label }}
+                    {{ form.verb_assoc }}
+                </p>
+                <p>
+                    {{ form.subtype.label }}
+                    {{ form.subtype }}
+                </p>
+                <p>{{ form.submit_word() }}</p>
+            </form>
+            <br>
+            <h4>Manage words</h4>
+            <table>
+                <tr>
+                    <td>Tags</td>
+                </tr>
+                {% for word in words %}
+                <tr>
+                    <td>
+                        <p><b>{{ word.word }}</b></p>
+                    </td>
+                    <td>
+                        <p style="text-align:right;">
+                            <a href="{{ url_for('delete_item', item='word', id=word.id) }}">Delete word</a>
+                        </p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+                    
+        </div>
+        <div class="column">
+            <p>notes</p>
+            <p>allowed tags</p>
+        </div>
+    </div>    
+{% endblock %}
+    

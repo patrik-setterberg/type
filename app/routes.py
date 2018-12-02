@@ -5,7 +5,8 @@ from app.models import User, SentenceModel, WordList
 from app.forms import LoginForm, RegistrationForm, ResetPasswordRequestForm
 from app.forms import EditEmailForm, EditPasswordForm, EditUsernameForm, SentenceForm, WordForm
 from app.forms import ResetPasswordForm
-from app.sentence_generator import generate_sentence, WORDLIST_TAGS_ALLOWED
+from app.sentence_generator import generate_sentence, add_word
+from app.sentence_gen_statics import WORDLIST_TAGS_ALLOWED
 from datetime import datetime
 from werkzeug.urls import url_parse
 from werkzeug.security import generate_password_hash
@@ -172,7 +173,70 @@ def sentence():
     return render_template('sentence.html', sentence=sentence)
 
 
-# Manage sentence generator (sentence models and words)
+# Manage word list
+@app.route('/admin/manage_words', methods=['GET', 'POST'])
+@login_required
+def manage_words():
+
+    if current_user.username != 'admin':
+        flash('Restricted area!')
+        return redirect(url_for('index'))
+
+    form = WordForm()
+
+    # add new word (word, tag)
+    if form.submit_word.data and form.validate():
+        word = add_word(form.word.data, form.tag.data)
+
+        # (possibly) assign article (a/an)
+        if form.article.data:
+            word.article = form.article.data
+
+        # assign gender
+        if form.gender.data:
+            word.gender = form.gender.data
+
+        # assign irregular status
+        if form.irregular.data:
+            word.irregular = form.irregular.data
+
+        # assign syllables
+        if form.syllables.data:
+            word.syllables = form.syllables.data
+
+        # assign categories
+        if form.categories.data:
+           word.categories = form.categories.data
+
+        # assign associations
+        if form.noun_assoc.data:
+            word.noun_assoc = form.noun_assoc.data
+        if form.adj_assoc.data:
+            word.adj_assoc = form.adj_assoc.data
+        if form.verb_assoc.data:
+            word.verb_assoc = form.verb_assoc.data
+
+        # assign subtype 
+        if form.subtype.data:
+            word.subtype = form.subtype.data
+
+        db.session.add(word)
+        db.session.commit()
+
+        flash('Word added.')
+        return redirect(url_for('manage_words'))
+
+
+    words = WordList.query.order_by(WordList.tag.asc()).all()
+
+    return render_template('manage_words.html',
+                           form=form, 
+                           words=words,
+                           tags=WORDLIST_TAGS_ALLOWED,
+                           title='Sentence generator word list')
+
+
+# Manage sentence models
 @app.route('/admin/manage_sentences', methods=['GET', 'POST'])
 @login_required
 def manage_sentences():
@@ -181,8 +245,6 @@ def manage_sentences():
         flash('Restricted area!')
         return redirect(url_for('index'))
 
-    # forms
-    word_form = WordForm()
     sentence_form = SentenceForm()
 
     # add sentence model
@@ -194,23 +256,12 @@ def manage_sentences():
         flash('Sentence model added')
         return redirect(url_for('manage_sentences'))
 
-    # add new word
-    elif word_form.submit_word.data and word_form.validate():
-        word = WordList(word=word_form.word.data, tag=word_form.tag.data)
-        db.session.add(word)
-        db.session.commit()
-
-        flash('Word added.')
-        return redirect(url_for('manage_sentences'))
-
-    # Get words and models from database for displaying on page
-    words = WordList.query.order_by(WordList.tag.asc()).all()
     sentences = SentenceModel.query.all()
 
-    return render_template('manage_sentences.html', word_form=word_form,
-                           sentence_form=sentence_form, words=words,
-                           sentences=sentences, tags=WORDLIST_TAGS_ALLOWED,
-                           title='Manage sentence generator')
+    return render_template('manage_sentences.html',
+                           sentence_form=sentence_form,
+                           sentences=sentences,
+                           title='Sentence generator models')
 
 
 # Delete item from database

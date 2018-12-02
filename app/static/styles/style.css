@@ -1,7 +1,98 @@
 body {
-    font-family: Helvetica, sans-serif;
+    font-family: 'Heebo', 'Helvetica', sans-serif;
 }
 
-nav .navbar-nav li a:hover, nav .navbar-nav li a:active {
-    color: orange !important;
+header {
+    border-bottom: 1pt solid #888;
+    text-align: center;
+}
+
+header ul.flash {
+    list-style-type: none;
+    padding-bottom: 1em;
+    display: inline-table;
+}
+
+header ul.flash li {
+    font-style:italic;
+    display:inline;
+}
+
+.container {
+    width: 50%;
+    min-width: 700px;
+    margin: auto;
+}
+
+/* Navbar */
+.navbar {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    font-size: 1em;
+}
+
+.navbar a {
+    color: #333;
+    text-decoration: none;
+    font-weight:600;
+    display: inline-block;
+    margin: 0;
+}
+
+.navbar a:hover {
+    color: black;
+}
+
+.navbar a:after {
+    display:block;
+    content: '';
+    border-bottom: solid 0.5em darkorange;
+    transform: scaleX(0);  
+    transition: transform 150ms ease-in-out;
+  }
+
+  .navbar a:hover:after { transform: scaleX(1); }
+  .navbar a.fromRight:after { transform-origin: 100% 50%; }
+  .navbar a.fromLeft:after{ transform-origin: 0% 50%; }
+
+.navbar ul {
+    padding-left: 0;
+    width: 33.3%;
+    list-style-type: none;
+}
+
+.navbar ul li {
+    display: inline;
+    padding: 0 0.5em 0 0.5em;
+}
+
+.navbar ul.left {
+    width: 35%;
+}
+
+.navbar ul.site-header {
+    width: 30%;
+    text-align: center;
+    letter-spacing: 0.5em;
+}
+
+.navbar ul.site-header a {
+    font-weight: normal;
+    font-size: 2em;
+}
+
+.navbar ul.right {
+    width: 35%;
+    text-align: right;
+}
+
+div.column-wrapper {
+    display: flex;
+    flex-flow: row nowrap;
+}
+
+div.column {
+    width: 50%;
 }

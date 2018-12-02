@@ -83,26 +83,103 @@ from app.sentence_gen_statics import WORD_BLACKLIST, SPECIAL_WORDS
 '''
 
 
+class Sentence:
+    ''' Skriv om allt här probably '''
+
+    def __init__(self, model):
+        # gets model as string, convert to list
+        self.mod_list = model.split('/')
+        
+        # get info on subject and object
+        self.subject = self.get_info('s', self.mod_list)
+        self.object = self.get_info('o', self.mod_list)
+
+        if self.subject == None:
+            # RAISE HELL
+            pass
+
+
+
+    def get_info(self, search_tag, tag_list):
+        ''' Store information about item (sentence's grammatical subject or
+            object) in a dictionary and return it '''
+
+        item = {}
+        item['index'] = self.scan_for(search_tag, tag_list)
+
+        # Break out and return None if search_tag isn't in tag, i.e.
+        # if sentence has no subject or object,
+        if item['index'] == None:
+            return None
+
+        # working variable
+        item_tag = tag_list[int(item['index'])]
+
+        # set item gender
+        if item_tag.startswith('NP'):
+            item['gender'] = self.get_gender(item_tag)
+        else:
+            item['gender'] = None
+
+        # set item number form (singular/plural)
+        item['number_form'] = self.get_num_form(item_tag)
+
+        return item
+
+
+    def scan_for(self, letter, tag_list):
+        ''' Look for a letter in a list, used to find subject's and object's
+            tags' indices in sentence model '''
+        for tag in tag_list:
+            if letter in tag:
+                return tag_list.index(tag)
+        return None
+
+    def get_gender(self, tag):
+        ''' extract gender from tag '''
+        if 'MM' in tag:
+            return 'M'
+        elif 'FF' in tag:
+            return 'F'
+        elif 'NN' in tag: 
+            return 'N'
+        else:
+            return 'undecided'
+
+    def get_num_form(self, tag):
+
+        return 
+
+
+# Properties required for all words
+def add_word(word, tag):
+    new_word = WordList(
+        word = word,
+        tag = tag)
+    return new_word
+        
+
 # Main function
 def generate_sentence():
 
     # get random sentence model from database
     sentence_model = random_sentence_model()
-    
-    # split model string into list
-    model_list = sentence_model.sentence.split('/')
 
-    sentence = ''
+    new_sentence = Sentence(sentence_model.sentence)
 
-    # loop through model list
-    for tag in model_list:
-        # get word
-        word = get_word(tag)
-        # append word to sentence
-        sentence += word + ' '
+    return new_sentence
 
-    # Format and return
-    return sentence[0].capitalize() + sentence[1:-1] + '.'
+    # sentence = ''
+
+    # # loop through model list
+    # for tag in model_list:
+    #     # get word
+    #     word = get_word(tag)
+    #     # append word to sentence
+    #     sentence += word + ' '
+
+    # # Format and return
+    # return sentence[0].capitalize() + sentence[1:-1] + '.'
 
 
 # Get random sentence model from database
@@ -275,7 +352,8 @@ def process_adj(adj, adj_tag, tag):
                 adj = adj[:-1]
             # if word ends in vowel and consonant, double consonant
             elif adj[-1] not in VOWELS and adj[-2] in VOWELS:
-                adj += adj[-1]
+                if not adj[-1] == 'n':
+                    adj += adj[-1]
             # add suffix and return
             return adj + adj_suffix
             
