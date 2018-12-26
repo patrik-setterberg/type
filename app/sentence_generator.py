@@ -1,9 +1,9 @@
-import random # maybe not required?
+import random 
 from app import app, db
 from sqlalchemy.sql.expression import func, select
 from sqlalchemy import or_
 from app.models import SentenceModel, WordList
-from app.sentence_gen_statics import VOWELS, NOUN_EXCEPTIONS, SAME_IN_PLURAL, SAME_AS_ADJ
+from app.sentence_gen_statics import VOWELS, PRONOUNS, NOUN_EXCEPTIONS, SAME_IN_PLURAL, SAME_AS_ADJ
 from app.sentence_gen_statics import WORDLIST_TAGS_ALLOWED, MODEL_TAGS_ALLOWED
 from app.sentence_gen_statics import WORD_BLACKLIST, SPECIAL_WORDS
 
@@ -76,88 +76,450 @@ from app.sentence_gen_statics import WORD_BLACKLIST, SPECIAL_WORDS
           pronoun to select.
         * Fails to pluralize certain nouns (ending in -i in plural, e.g.
           cactus - cacti)
-
-
-
-    REGEXP-MATCHA??? SENTENCE MODELS I VALIDATE SENTENCE FORM
 '''
 
 
 class Sentence:
-    ''' Skriv om allt här probably '''
+    ''' Creates new sentence object. Actual sentence is a list (self.sentence)
+        of word objects accessible through self.sentence[index].word (I THINK) '''
 
     def __init__(self, model):
         # gets model as string, convert to list
         self.mod_list = model.split('/')
+    
+
+        # store subject, verb, object indices in dictionary
+        self.SVO_ind = self.get_SVO_ind(self.mod_list)
+
+        # /hmm, kanske najs?
+        # self.SUBJECT = SVO_ind['subj']
+        # self.VERB = SVO_ind['verb']
+        # self.OBJECT = SVO_ind['obj']
+
+        # make sure there's a subject
+        # if self.SVO_ind['subj'] == None:
+        #     # RAISE HELL
+        #     pass
+
+        # initialize sentence
+        self.sentence = list('x' * len(self.mod_list))
         
-        # get info on subject and object
-        self.subject = self.get_info('s', self.mod_list)
-        self.object = self.get_info('o', self.mod_list)
+        # get subject
+        self.sentence[self.SVO_ind['subj']] = self.get_word(self.mod_list[self.SVO_ind['subj']])
 
-        if self.subject == None:
-            # RAISE HELL
-            pass
+        # get verb
+        self.sentence[self.SVO_ind['verb']] = self.get_word(self.mod_list[self.SVO_ind['verb']])
+            
+        # get object
+        if 'obj' in self.SVO_ind.keys():
+            self.sentence[self.SVO_ind['obj']] = self.get_word(self.mod_list[self.SVO_ind['obj']])
+
+        # initialize list of indefinite article indices
+        self.ai_inds = []
+
+        # get rest of words
+        for i in range(len(self.sentence)):
+            if self.sentence[i] == 'x':
+
+                # get indefinite article index
+                if self.mod_list[i].split('.')[0] == 'AI':
+                    self.ai_inds.append(i)
+                # else get a word
+                else:
+                    self.sentence[i] = get_word(self.mod_list[i])
+
+        # get any indefinite articles
+        if self.ai_inds:
+            for ind in self.ai_inds:
+                self.sentence[ind] = self.get_indef_article(ind)
+
+        # try to get an object:
+            # check if verb is associated with any categories:
+                # get object from category 
+                # (e.g.) if verb is "eat" and object is a noun, select random
+                # noun from nouns with category tag "food"
+            # else just get an object
+        
+        # if we need adjectives, check what word it serves to describe, see if
+        # that word has any associations that might be relevant, then possibly
+        # get fitting adjective (from right category)
+
+        # maybe something similar for adverbs?
+
+        # get remaining words
 
 
 
-    def get_info(self, search_tag, tag_list):
-        ''' Store information about item (sentence's grammatical subject or
-            object) in a dictionary and return it '''
+    def get_SVO_ind(self, tag_list):
+        ''' create a dictionary storing indices of subject, verb, object '''
+        
+        indices = {}
 
-        item = {}
-        item['index'] = self.scan_for(search_tag, tag_list)
-
-        # Break out and return None if search_tag isn't in tag, i.e.
-        # if sentence has no subject or object,
-        if item['index'] == None:
-            return None
-
-        # working variable
-        item_tag = tag_list[int(item['index'])]
-
-        # set item gender
-        if item_tag.startswith('NP'):
-            item['gender'] = self.get_gender(item_tag)
-        else:
-            item['gender'] = None
-
-        # set item number form (singular/plural)
-        item['number_form'] = self.get_num_form(item_tag)
-
-        return item
-
-
-    def scan_for(self, letter, tag_list):
-        ''' Look for a letter in a list, used to find subject's and object's
-            tags' indices in sentence model '''
         for tag in tag_list:
-            if letter in tag:
-                return tag_list.index(tag)
-        return None
-
-    def get_gender(self, tag):
-        ''' extract gender from tag '''
-        if 'MM' in tag:
-            return 'M'
-        elif 'FF' in tag:
-            return 'F'
-        elif 'NN' in tag: 
-            return 'N'
-        else:
-            return 'undecided'
-
-    def get_num_form(self, tag):
-
-        return 
-
-
-# Properties required for all words
-def add_word(word, tag):
-    new_word = WordList(
-        word = word,
-        tag = tag)
-    return new_word
+            if 's' in tag:
+                indices['subj'] = tag_list.index(tag)
+            elif 'o' in tag:
+                indices['obj'] = tag_list.index(tag)
+            elif tag.startswith('VB'):
+                indices['verb'] = tag_list.index(tag)
         
+        return indices
+
+
+    def get_word(self, tag):
+
+        get_func_dict = {
+            'NN': self.get_noun,
+            'NP': self.get_proper_noun,     # FINNS E J  ÄNNU
+            'PN': self.get_pronoun,
+            'JJ': self.get_adj,             # SAMMA
+            'VB': self.get_verb,
+            'RB': self.get_adv,             # MMMMmmmm
+            # NUMBERS, ORDINALS
+            # PREPOSITIONS
+            # CONJUNCTIONS
+            # ALLA SÅNNA HÄR FÅR BLI SINA EGNA WordList-objects som inte committas bara
+            'AD': self.get_def_article,
+            # 'AI': self.get_indef_article,
+            'SPEC': self.get_spec
+        }
+
+        word = get_func_dict[tag.split('.')[0]](tag)
+
+        return word
+        
+
+    def get_verb(self, tag):
+        ''' Get a verb from database, conjugate it properly and return it.
+                
+            Verb sentence model rules:
+            0: Always 'VB' 
+            1: 'I', 'Z', 'D', 'G'
+            2: TYPE KANSKE? ACTION, 
+            '''            
+
+        tags = tag.split('.')
+
+        verb = (WordList.query
+            .filter_by(tag=tags[0])
+            .order_by(func.random()).first())
+
+        # if not infinitive form, conjugate
+        if tags[1] != 'I':
+            verb.word = self.conjugate(verb.word, tags[1])
+
+        # IRREGULAR VERBS???
+
+        return verb
+
+    
+    def conjugate(self, verb, tag):
+        ''' Conjugate and return correct form of verb. '''
+
+        # Present 3rd person singular
+        if tag == 'Z':
+            if self.end_cons_y(verb):
+                verb = verb[:-1] + 'i'
+                return verb + 'es'
+            else:
+                return verb + 's'
+        
+        # Else either past tense or present participle
+        else:
+            # if last char is consonant and preceded by vowel, double consonant
+            if verb[-1] not in VOWELS and verb[-2] in VOWELS:
+                # WARNING NOT REALLY GOOD, ALSO HAS TO DO WITH SYLLABLE STRESS
+                #  SO BEWARE WHEN ADDING WORDS
+                if not verb[-3] in VOWELS and verb.mult_syll == '0':
+                    if verb.endswith('c'):
+                        verb += 'k'
+                    elif verb[-1] not in ['h', 'w', 'x', 'y']:
+                        verb += verb[-1]
+            # remove last letter if it is 'e'
+            elif verb[-1] == 'e' and verb[-2] not in VOWELS:
+                verb = verb[:-1]
+            
+            # past tense
+            if tag == 'D':
+                if self.end_cons_y(verb):
+                    # if last char is 'y' and preceded by a consonant, replace with 'i'
+                    verb = verb[:-1] + 'i' 
+                return verb + 'ed'
+            
+            # else it will be 'G' (present participle)
+            else:
+                return verb + 'ing'
+
+
+    def get_noun(self, tag):
+        ''' Get a noun word object from database, check if it needs to be pluralized
+            or transformed for possession and then return it.
+            
+            Noun sentence model rules:
+            0: Always 'NN'
+            1: 's', 'o', '$', 'n'   # subject, object, possessive, neutral
+            2: 'S', 'P'             # singular, plural '''
+
+
+        tags = tag.split('.')
+
+        noun = (WordList.query.filter_by(tag=tags[0])
+                              .order_by(func.random()).first())
+
+        # pluralize
+        if tags[2] == 'P':
+            noun.word = self.pluralize(noun.word)
+
+        # handle possessive case
+        if tags[1] == '$':
+             noun.word += "'" if noun.word[-1] == 's' else "'s"
+
+        return noun
+
+
+    def pluralize(self, noun):
+        ''' Find and return proper plural form for noun '''
+
+        # some nouns don't change in plural form
+        if noun in SAME_IN_PLURAL:
+            return noun
+        
+        # if noun ends in 's', 'sh', 'ch', 'x', or 'z', 
+        # add 'es' instead of 's'
+        elif noun.endswith('s') or noun.endswith('sh') or \
+            noun.endswith('ch') or noun.endswith('x') or \
+            noun.endswith('z'):
+            return noun + 'es'
+        
+        # if noun ends in 'f' or 'fe', usually 'f' is changed
+        # to 've' before adding 's'
+        elif noun.endswith('f'):
+            if noun not in NOUN_EXCEPTIONS:
+                noun = noun[:-1]
+                return noun + 'ves'
+        elif noun.endswith('fe'):
+            if noun not in NOUN_EXCEPTIONS:
+                return noun[:-2] + 'ves'
+        
+        # if last letter is 'y' and preceding letter is a 
+        # consonant, replace 'y' with 'i', pluralize with 'es'
+        elif self.end_cons_y(noun):
+            noun = noun[:-1]
+            return noun + 'ies'
+
+        # if noun ends in 'o', usually pluralize with 'es'
+        elif noun.endswith('o') and noun not in NOUN_EXCEPTIONS:
+            return noun + 'es'
+
+        # if noun ends in 'on' or 'um', remove and pluralize with 'a',
+        # e.g. 'phenomenon' - 'phenomena'
+        elif noun.endswith('on') or noun.endswith('um'):
+            if noun not in NOUN_EXCEPTIONS:
+                noun = noun[:-2]
+                return noun + 'a'
+            else:
+                return noun + 's'
+
+        # if nothing funky is going on, pluralize by just adding 's'
+        else:
+            return noun + 's'
+
+
+    def end_cons_y(self, word):
+        ''' Check if last character is 'y' and is preceded by a consonant '''
+
+        if word[-1] == 'y' and word[-2] not in VOWELS:
+            return True
+        else:
+            return False
+
+
+    def get_proper_noun(self, tag):
+        """ Create proper noun object. 
+            Get a word, transform for possession if needed and return
+            
+            proper noun sentence model rules:
+            0: Always 'NP'
+            1: 's', 'o', '$', 'n'   # subject, object, possessive, neutral """
+
+        proper_noun = (WordList.query.filter_by(tag=tag.split('.')[0])
+                                     .order_by(func.random()).first())
+
+        # handle possessive case
+        if tag.split('.')[1] == '$':
+             proper_noun.word += "'" if proper_noun.word[-1] == 's' else "'s"
+
+        return proper_noun
+
+                
+    def get_pronoun(self, tags):
+        """ Pronouns aren't stored in database. Instead they're statically stored 
+            in application (sentence_gen_statics.py), in nested dictionary form.
+
+            First get base pronoun, then figure out the correct form.
+        
+            Pronoun sentence model rules:
+            0: Always 'PN'                          
+            1: 's', 'o', 'ref_s', 'ref_o', 'reflex' # subject, object or referencing them (actually called possessive adjective and possessive pronouns) and reflexive
+            2: 'S', 'P', 'IN'                       # singular or plural, inherit (IN)
+            3: '1', '2', '3', 'IN'                  # first, second or third person or inherit
+            4: 'MM', 'FF', 'NN', 'IN'               # gender or inherit """
+
+
+        # establish base pronoun
+        pronoun = self.get_base_pronoun(tags)
+
+        # get correct form
+        if tags[1] == 'o':
+            pronoun.word = PRONOUNS[pronoun.word]['obj']
+        elif tags[1] == 'ref_s':
+            pronoun.word = PRONOUNS[pronoun.word]['poss_adj']
+        elif tags[1] == 'ref_o':
+            pronoun.word = PRONOUNS[pronoun.word]['poss_pronoun']
+        elif tags[1] == 'reflex':
+            pronoun.word = PRONOUNS[pronoun.word]['reflex']
+
+        # ? == RANDOM???????????????????
+
+        return pronoun
+
+    def get_base_pronoun(self, tags):
+
+        pronoun = WordList(word='', gender='NN', tag='PN')
+
+        # if referencing a word, get that word object
+        if tags[1] == 'ref_s':
+            ref = self.sentence[SVO_ind['subj']]
+        elif tags[1] == 'ref_o':
+            ref = self.sentence[SVO_ind['obj']]
+
+        # check inheritance
+        if tags[2] == 'IN':
+            # Inherit
+            pronoun = self.inherit_pronoun(tags, ref, pronoun)
+
+        # singular, i.e. I, you, he, she, it
+        elif tags[2] == 'S':
+            # first person
+            if tags[3] == '1':
+                pronoun.word = 'I'
+            # second person
+            elif tags[3] == '2':
+                pronoun.word = 'you'
+            # third person
+            else:
+                # male
+                if tags[4] == 'MM':
+                    pronoun.word = 'he'
+                    pronoun.gender = 'MM'
+                # female
+                elif tags[4] == 'FF':
+                    pronoun.word = 'she'
+                    pronoun.gender = 'FF'
+                # neutral
+                else:
+                    pronoun.word == 'it'                
+
+        # plural, i.e. either we, you, they
+        elif tags[2] == 'P':
+            # first person
+            if tags[3] == '1':
+                pronoun.word = 'we'
+            # second person
+            elif tags[3] == '2':
+                pronoun.word = 'you'
+            # third person
+            else:
+                pronoun.word = 'they'
+
+        # default to random
+        else:
+            pronoun.word = random.choice(PRONOUNS.keys())
+
+            if pronoun.word == 'he':
+                pronoun.gender = 'MM'
+            elif pronoun.word == 'she':
+                pronoun.gender = 'FF'
+
+        return pronoun
+
+
+    def inherit_pronoun(self, tags, ref, pronoun):
+        ''' First checks if referenced word is a pronoun. If it is, return it.
+            If it isn't a pronoun, it will be either a proper noun or a noun,
+            so a gender check will suffice to select proper pronoun. If not
+            male or female, function defaults to neutral, i.e. 'it'. '''
+
+        if ref.word in PRONOUNS.keys():
+            pronoun.word = ref.word
+            pronoun.gender = ref.gender
+        elif ref.gender == 'MM':
+            pronoun.word = 'he'
+            pronoun.gender = 'MM'
+        elif ref.gender == 'FF':
+            pronoun.word = 'she'
+            pronoun.gender = 'FF'
+        else:
+            pronoun.word = 'it'
+            pronoun.gender = 'NN'
+
+        return pronoun
+
+
+    def get_adj(self, tag):
+        """ Adjective object
+        
+            Sentence model rules:
+            0: 'JJ'
+            1: 'P', 'C', 'S'                # positive, comparative, superlative
+            2: 'ref_s', 'ref_o', 'ref_n'    # describing subject, object, neutral """
+
+        tags = tag.split('.')
+
+        adj = (WordList.query.filter_by(tag=tags[0])
+                        .order_by(func.random()).first())
+
+        return adj
+
+    
+    def get_def_article(self, tag):
+        """ Create word object for definite article, i.e. 'the'. """
+
+        article = WordList(tag=tag, word='the')
+
+        return article
+
+
+    def get_indef_article(self, i):
+        """ Create indefinite article object and choose the right one """
+
+        article = WordList(tag='AI')
+
+        # if next word is noun, get its article
+        if self.sentence[i].tag == 'NN':
+            article.word = self.sentence[i].article
+        # else check if next word starts with a vowel (not great solution but oh well)
+        elif self.sentence[i+1].word[0] in VOWELS:
+            article.word = 'an'
+        # default to 'a'
+        else:
+            article.word = 'a'
+
+        return article
+
+    
+    def get_spec(self, tag):
+        """ Special words function simply sets second subtag to word and
+            returns object.
+            
+            Rules:
+            0: 'SPEC'
+            1: any word """
+
+        tags = tag.split('.')
+        special_word = WordList(tag=tags[0], word=tags[1])
+        return special_word
+
 
 # Main function
 def generate_sentence():
@@ -165,21 +527,11 @@ def generate_sentence():
     # get random sentence model from database
     sentence_model = random_sentence_model()
 
+    # create new sentence object 
     new_sentence = Sentence(sentence_model.sentence)
 
-    return new_sentence
-
-    # sentence = ''
-
-    # # loop through model list
-    # for tag in model_list:
-    #     # get word
-    #     word = get_word(tag)
-    #     # append word to sentence
-    #     sentence += word + ' '
-
-    # # Format and return
-    # return sentence[0].capitalize() + sentence[1:-1] + '.'
+    # return sentence (list of word objects)
+    return new_sentence.sentence
 
 
 # Get random sentence model from database
@@ -260,6 +612,7 @@ def random_word(tag):
     return word
 
 
+'''
 # Process nouns
 def process_noun(noun, tag):
     
@@ -325,7 +678,7 @@ def pluralize(noun):
 
     # if nothing funky is going on, pluralize by just adding 's'
     else:
-        return noun + 's'
+        return noun + 's' '''
 
 
 # Process adjectives
@@ -369,15 +722,9 @@ def process_adj(adj, adj_tag, tag):
                 return adj_prefix + adj
 
 
+'''
 # Process verbs
 def process_verb(verb, verb_tag, tag):
-    '''
-        Gets tempus from tag argument, transforms verb accordingly.
-        Gets verb_tag from database, used for conjugation
-        (one syllable verbs get doubled ending consonants under
-        certain conditions...)
-        
-    '''
 
     # if requested tag is verb base form (VB), simply return word
     if tag == 'VB':
@@ -413,7 +760,7 @@ def process_verb(verb, verb_tag, tag):
             
             # else it will be VBG (present participle)
             else:
-                return verb + 'ing'
+                return verb + 'ing' '''
 
 
 # Process adverbs
@@ -466,12 +813,13 @@ def process_adv(adv, tag):
         return adv
 
 
+'''
 # Check if last character is 'y' and is preceded by a consonant
 def end_cons_y(word):
     if word[-1] == 'y' and word[-2] not in VOWELS:
         return True
     else:
-        return False
+        return False '''
 
 
 # Check if tag is valid, used in WordForm to validate tag field

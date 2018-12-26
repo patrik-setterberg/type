@@ -5,64 +5,183 @@
         <div class="column">    
             <h4>Add new word</h4>
             <p>
-                Add <a href="#">noun</a>, <a href="#">adjective</a>, 
-                <a href="#">verb</a>, <a href="#">adverb</a>, 
-                <a href="#">proper noun</a>, <a href="#">ordinal</a>.
+                Add <a class="noun-link" href="{{ url_for('manage_words') }}">noun</a>, 
+                <a class="adj-link" href="#">adjective</a>, 
+                <a class="verb-link" href="#">verb</a>, 
+                <a class="adv-link" href="#">adverb</a>, 
+                <a class="prop-noun-link" href="#">proper noun</a>,
+                <a class="special-link" href="#">special word</a>.
             </p>
-            <form action="" method="post">
-                {{ form.hidden_tag() }}
-                <p>
-                    {{ form.word.label }}<br>
-                    {{ form.word(size=32) }}<br>
-                    {% for error in form.word.errors %}
-                    <span style="color:red;">[{{ error }}]</span>
-                    {% endfor %}
-                </p>
-                <p>
-                    {{ form.tag.label }}<br>
-                    {{ form.tag(size=16) }}<br>
-                    {% for error in form.tag.errors %}
-                    <span style="color:red;">[{{ error }}]</span>
-                    {% endfor %}
-                </p>
-                <p>
-                    {{ form.article.label }}
-                    {{ form.article }}
-                </p>
-                <p>
-                    {{ form.gender.label }}
-                    {{ form.gender }}
-                </p>
-                <p>
-                    {{ form.irregular.label }}
-                    {{ form.irregular }}
-                </p>
-                <p>
-                    {{ form.mult_syll.label }}
-                    {{ form.mult_syll }}
-                </p>
-                <p>
-                    {{ form.categories.label }}
-                    {{ form.categories }}
-                </p>
-                <p>
-                    {{ form.noun_assoc.label }}
-                    {{ form.noun_assoc }}
-                </p>
-                <p>
-                    {{ form.adj_assoc.label }}
-                    {{ form.adj_assoc }}
-                </p>
-                <p>
-                    {{ form.verb_assoc.label }}
-                    {{ form.verb_assoc }}
-                </p>
-                <p>
-                    {{ form.subtype.label }}
-                    {{ form.subtype }}
-                </p>
-                <p>{{ form.submit_word() }}</p>
-            </form>
+            
+            <div class="noun-form">
+                <h3>Add noun</h3>
+                <form action="" method="post">
+                    {{ noun_form.hidden_tag() }}
+                    <p>
+                        {{ noun_form.word.label }}&nbsp;
+                        {{ noun_form.word(size=16) }}
+                        {% for error in noun_form.word.errors %}
+                        <br>
+                        <span style="color:red;">[{{ error }}]</span>
+                        {% endfor %}
+                    </p>
+                    <p>
+                        {{ noun_form.article.label }}&nbsp;
+                        {{ noun_form.article }}
+                    </p>
+                    <p>
+                        {{ noun_form.irregular.label }}&nbsp;
+                        {{ noun_form.irregular }}
+                    </p>
+                    <p>
+                        {{ noun_form.gender.label }}&nbsp;
+                        {{ noun_form.gender }}
+                    </p>
+                    <p>
+                        {{ noun_form.categories.label }}&nbsp;
+                        {{ noun_form.categories }}
+                    </p>
+                    <p>
+                        {{ noun_form.adj_assoc.label }}&nbsp;
+                        {{ noun_form.adj_assoc }}
+                    </p>
+                    <p>
+                        {{ noun_form.verb_assoc.label }}&nbsp;
+                        {{ noun_form.verb_assoc }}
+                    </p>
+                    <p>{{ noun_form.submit_noun() }}</p>
+                </form>
+            </div>
+            <div class="adj-form">
+                <h3>Add adjective</h3>
+                <form action="" method="post">
+                    {{ adj_form.hidden_tag() }}
+                    <p>
+                        {{ adj_form.word.label }}&nbsp;
+                        {{ adj_form.word(size=16) }}
+                        {% for error in adj_form.word.errors %}
+                        <br>
+                        <span style="color:red;">[{{ error }}]</span>
+                        {% endfor %}
+                    </p>
+                    <p>
+                        {{ adj_form.irregular.label }}&nbsp;
+                        {{ adj_form.irregular }}
+                    </p>
+                    <p>
+                        {{ adj_form.mult_syll.label }}&nbsp;
+                        {{ adj_form.mult_syll }}
+                    </p>
+                    <p>
+                        {{ adj_form.categories.label }}&nbsp;
+                        {{ adj_form.categories }}
+                    </p>
+                    <p>
+                        {{ adj_form.noun_assoc.label }}&nbsp;
+                        {{ adj_form.noun_assoc }}
+                    </p>
+                    <p>{{ adj_form.submit_adj() }}</p>
+                </form>
+            </div>
+            <div class="verb-form">
+                <h3>Add verb</h3>
+                <form action="" method="post">
+                    {{ verb_form.hidden_tag() }}
+                    <p>
+                        {{ verb_form.word.label }}&nbsp;
+                        {{ verb_form.word(size=16) }}
+                        {% for error in verb_form.word.errors %}
+                        <br>
+                        <span style="color:red;">[{{ error }}]</span>
+                        {% endfor %}
+                    </p>
+                    <p>
+                        {{ verb_form.irregular.label }}&nbsp;
+                        {{ verb_form.irregular }}
+                    </p>
+                    <p>
+                        {{ verb_form.mult_syll.label }}&nbsp;
+                        {{ verb_form.mult_syll }}
+                    </p>
+                    <p>
+                        {{ verb_form.categories.label }}&nbsp;
+                        {{ verb_form.categories }}
+                    </p>
+                    <p>
+                        {{ verb_form.noun_assoc.label }}&nbsp;
+                        {{ verb_form.noun_assoc }}
+                    </p>
+                    <p>
+                        {{ verb_form.subtype.label }}&nbsp;
+                        {{ verb_form.subtype }}
+                    </p>
+                    <p>{{ verb_form.submit_verb() }}</p>
+                </form>
+            </div>
+            <div class="adv-form">
+                <h3>Add adverb</h3>
+                <form action="" method="post">
+                    {{ adv_form.hidden_tag() }}
+                    <p>
+                        {{ adv_form.word.label }}&nbsp;
+                        {{ adv_form.word(size=16) }}
+                        {% for error in adv_form.word.errors %}
+                        <br>
+                        <span style="color:red;">[{{ error }}]</span>
+                        {% endfor %}
+                    </p>
+                    <p>
+                        {{ adv_form.irregular.label }}&nbsp;
+                        {{ adv_form.irregular }}
+                    </p>
+                    <p>
+                        {{ adv_form.categories.label }}&nbsp;
+                        {{ adv_form.categories }}
+                    </p>
+                    <p>
+                        {{ adv_form.subtype.label }}&nbsp;
+                        {{ adv_form.subtype }}
+                    </p>
+                    <p>{{ adv_form.submit_adv() }}</p>
+                </form>
+            </div>
+            <div class="prop-noun-form">
+                <h3>Add proper noun</h3>
+                <form action="" method="post">
+                    {{ prop_noun_form.hidden_tag() }}
+                    <p>
+                        {{ prop_noun_form.word.label }}&nbsp;
+                        {{ prop_noun_form.word(size=16) }}
+                        {% for error in prop_noun_form.word.errors %}
+                        <br>
+                        <span style="color:red;">[{{ error }}]</span>
+                        {% endfor %}
+                    </p>
+                    <p>
+                        {{ prop_noun_form.gender.label }}&nbsp;
+                        {{ prop_noun_form.gender }}
+                    </p>
+                    <p>{{ prop_noun_form.submit_prop_noun() }}</p>
+                </form>
+            </div>
+            <div class="special-form">
+                <h3>Add special word</h3>
+                <form action="" method="post">
+                    {{ special_form.hidden_tag() }}
+                    <p>
+                        {{ special_form.word.label }}&nbsp;
+                        {{ special_form.word(size=16) }}
+                        {% for error in special_form.word.errors %}
+                        <br>
+                        <span style="color:red;">[{{ error }}]</span>
+                        {% endfor %}
+                    </p>
+                    <p>{{ special_form.submit_spec() }}</p>
+                </form>
+            </div>
+
+
+            
             <br>
             <h4>Manage words</h4>
             <table>
@@ -74,6 +193,9 @@
                     <td>
                         <p><b>{{ word.word }}</b></p>
                     </td>
+                    <td>
+                        <p>{{ word.tag }}</p>
+                    </td>                    
                     <td>
                         <p style="text-align:right;">
                             <a href="{{ url_for('delete_item', item='word', id=word.id) }}">Delete word</a>
@@ -88,6 +210,7 @@
             <p>notes</p>
             <p>allowed tags</p>
         </div>
-    </div>    
+    </div>
+    <script src="{{ url_for('static', filename='js/show_form.js') }}"></script>
 {% endblock %}
     

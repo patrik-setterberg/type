@@ -2,27 +2,64 @@
 
 VOWELS = ['a', 'e', 'i', 'o', 'u', 'y']
 
+# PRONOUNS CAN'T CURRENTLY HANDLE PLURAL 'YOU' :(
+PRONOUNS = {'I':{
+                    'obj':'me',
+                    'poss_adj': 'my',
+                    'poss_pronoun': 'mine',
+                    'reflex': 'myself'
+                },
+            'you':{
+                    'obj':'you',
+                    'poss_adj': 'your',
+                    'poss_pronoun': 'yours',
+                    'reflex': 'yourself'
+                }, 
+            'he':{
+                    'obj':'him',
+                    'poss_adj': 'his',
+                    'poss_pronoun': 'his',
+                    'reflex': 'himself'
+                },
+            'she':{
+                    'obj':'her',
+                    'poss_adj': 'her',
+                    'poss_pronoun': 'hers',
+                    'reflex': 'herself'
+                },
+            'it':{
+                    'obj':'it',
+                    'poss_adj': 'its',
+                    'poss_pronoun': 'its',  # INACCURATE. doesn't exist. Deal with it?
+                    'reflex': 'itself'
+                },
+            'we':{
+                    'obj':'us',
+                    'poss_adj': 'our',
+                    'poss_pronoun': 'ours',
+                    'reflex': 'ourselves'
+                },
+            'they':{
+                    'obj':'them',
+                    'poss_adj': 'their',
+                    'poss_pronoun': 'theirs',
+                    'reflex': 'themselves'
+                }
+            }
+
 # allowed sentence model tag characters
 ALLOWED_CHARS = 'A-Za-z0-9\$.'
 
 # Add words to WordList, tags allowed
 WORDLIST_TAGS_ALLOWED = {
-    # Nouns
-    'NN': 'Noun, singular',
-    'NNS': 'Noun, plural',
 
-    # Proper nouns
-    'NPM': 'Proper noun, male',
-    'NPF': 'Proper noun, female',
-    'NPN': 'Proper noun, neutral',  # e.g. cities, countries
+    'NN': 'Noun',
 
-    # Adjectives
-    'JJ1': 'Adjective, one syllable',
-    'JJ+': 'Adjective, more than one syllable',
+    'NP': 'Proper noun',
 
-    # Verbs
-    'VB1': 'Verb, one syllable',
-    'VB+': 'Verb, more than one syllable',
+    'JJ': 'Adjective',
+
+    'VB': 'Verb',
 
     # Adverbs
     'RBPL': 'Adverb of place', # e.g. indoors, outside, everywhere, abroad, here, upstairs
@@ -108,27 +145,7 @@ SPECIAL_WORDS = {
     'NOT': 'not',
     'TO': 'to',
     'OF': 'of',
-    'BUT': 'but',
-
-    # Pronouns
-    'I': 'I',
-    'ME': 'me',
-    'YOU': 'you',
-    'YOUR': 'your',
-    'HE': 'he',
-    'HIM': 'him',
-    'HIS': 'his',
-    'SHE': 'she',
-    'HER': 'her',
-    'HERS': 'hers',
-    'THEY': 'they',
-    'THEM': 'them',
-    'THR': 'their',
-    'THRS': 'theirs',
-    'WE': 'we',
-    'OUR': 'our',
-    'IT': 'it',
-    'ITS': 'its'  # possessive
+    'BUT': 'but'
 }
 
 

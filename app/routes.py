@@ -3,9 +3,10 @@ from flask_login import current_user, login_user, logout_user, login_required
 from app import app, db
 from app.models import User, SentenceModel, WordList
 from app.forms import LoginForm, RegistrationForm, ResetPasswordRequestForm
-from app.forms import EditEmailForm, EditPasswordForm, EditUsernameForm, SentenceForm, WordForm
-from app.forms import ResetPasswordForm
-from app.sentence_generator import generate_sentence, add_word
+from app.forms import EditEmailForm, EditPasswordForm, EditUsernameForm, SentenceForm
+from app.forms import ResetPasswordForm, NounForm, AdjectiveForm, VerbForm, AdverbForm
+from app.forms import ProperNounForm, SpecialForm
+from app.sentence_generator import generate_sentence
 from app.sentence_gen_statics import WORDLIST_TAGS_ALLOWED
 from datetime import datetime
 from werkzeug.urls import url_parse
@@ -86,8 +87,7 @@ def register():
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
     
-    return render_template('user.html', title='Profile: ' + user.username,
-                           user=user)
+    return render_template('user.html', title='Profile: ' + user.username, user=user)
 
 
 # Edit user
@@ -168,8 +168,13 @@ def reset_password(token):
 @app.route('/sentence', methods=['GET', 'POST'])
 def sentence():
 
-    sentence = generate_sentence()
+    # generate_sentence returns a LIST of word OBJECTS
+    sentence_list = generate_sentence()
 
+    sentence = ''
+    for item in sentence_list:
+        sentence += item.word + ' '
+    
     return render_template('sentence.html', sentence=sentence)
 
 
@@ -182,58 +187,102 @@ def manage_words():
         flash('Restricted area!')
         return redirect(url_for('index'))
 
-    form = WordForm()
+    noun_form = NounForm()
+    adj_form = AdjectiveForm()
+    verb_form = VerbForm()
+    adv_form = AdverbForm()
+    prop_noun_form = ProperNounForm()
+    special_form = SpecialForm()
 
-    # add new word (word, tag)
-    if form.submit_word.data and form.validate():
-        word = add_word(form.word.data, form.tag.data)
+    # POST
+    if request.method == 'POST':
 
-        # (possibly) assign article (a/an)
-        if form.article.data:
-            word.article = form.article.data
-
-        # assign gender
-        if form.gender.data:
-            word.gender = form.gender.data
-
-        # assign irregular status
-        if form.irregular.data:
-            word.irregular = form.irregular.data
-
-        # assign syllables
-        if form.syllables.data:
-            word.syllables = form.syllables.data
-
-        # assign categories
-        if form.categories.data:
-           word.categories = form.categories.data
-
-        # assign associations
-        if form.noun_assoc.data:
-            word.noun_assoc = form.noun_assoc.data
-        if form.adj_assoc.data:
-            word.adj_assoc = form.adj_assoc.data
-        if form.verb_assoc.data:
-            word.verb_assoc = form.verb_assoc.data
-
-        # assign subtype 
-        if form.subtype.data:
-            word.subtype = form.subtype.data
-
-        db.session.add(word)
-        db.session.commit()
-
-        flash('Word added.')
-        return redirect(url_for('manage_words'))
-
-
-    words = WordList.query.order_by(WordList.tag.asc()).all()
-
-    return render_template('manage_words.html',
-                           form=form, 
-                           words=words,
-                           tags=WORDLIST_TAGS_ALLOWED,
-                           title='Sentence generator word list')
+        # Add noun
+        if noun_form.submit_noun.data and noun_form.validate():
+            new_word = WordList(word=noun_form.word.data,
+                                tag='NN',
+                                article=noun_form.article.data,
+                                irregular=noun_form.irregular.data,
+                                gender=noun_form.gender.data,
+                                categories=noun_form.categories.data,
+                                adj_assoc=noun_form.adj_assoc.data,
+                                verb_assoc=noun_form.verb_assoc.data)
+            db.session.add(new_word)
+            db.session.commit()
+        
+            flash('Word added.')
+            return redirect(url_for('manage_words'))
+        # Add adjective
+        elif adj_form.submit_adj.data and adj_form.validate():
+            new_word = WordList(word=adj_form.word.data,
+                                tag='JJ',
+                                irregular=adj_form.irregular.data,
+                                mult_syll=adj_form.mult_syll.data,
+                                categories=adj_form.categories.data,
+                                noun_assoc=adj_form.noun_assoc.data)
+            db.session.add(new_word)
+            db.session.commit()
+        
+            flash('Word added.')
+            return redirect(url_for('manage_words'))
+        # Add verb
+        elif verb_form.submit_verb.data and verb_form.validate():
+            new_word = WordList(word=verb_form.word.data,
+                                tag='VB',
+                                irregular=verb_form.irregular.data,
+                                mult_syll=verb_form.mult_syll.data,
+                                categories=verb_form.categories.data,
+                                noun_assoc=verb_form.noun_assoc.data,
+                                subtype=verb_form.subtype.data)
+            db.session.add(new_word)
+            db.session.commit()
+        
+            flash('Word added.')
+            return redirect(url_for('manage_words'))
+        # Add adverb
+        elif adv_form.submit_adv.data and adv_form.validate():
+            new_word = WordList(word=adv_form.word.data,
+                                tag='RB',
+                                irregular=adv_form.irregular.data,
+                                categories=adv_form.categories.data,
+                                subtype=adv_form.subtype.data)
+            db.session.add(new_word)
+            db.session.commit()
+        
+            flash('Word added.')
+            return redirect(url_for('manage_words'))
+        # Add proper noun
+        elif prop_noun_form.submit_prop_noun.data and prop_noun_form.validate():
+            new_word = WordList(word=prop_noun_form.word.data,
+                                tag='NP',
+                                gender=prop_noun_form.gender.data)
+            db.session.add(new_word)
+            db.session.commit()
+        
+            flash('Word added.')
+            return redirect(url_for('manage_words'))
+        # Add special word
+        elif special_form.submit_spec.data and special_form.validate():
+            new_word = WordList(word=special_form.word.data,
+                                tag='SPEC')
+            db.session.add(new_word)
+            db.session.commit()
+        
+            flash('Word added.')
+            return redirect(url_for('manage_words'))        
+        
+    else:
+        words = WordList.query.order_by(WordList.tag.asc()).all()
+        return render_template('manage_words.html',
+                            noun_form=noun_form,
+                            adj_form=adj_form,
+                            verb_form=verb_form,
+                            adv_form=adv_form,
+                            prop_noun_form=prop_noun_form,
+                            special_form=special_form,
+                            words=words,
+                            tags=WORDLIST_TAGS_ALLOWED,
+                            title='Sentence generator word list')
 
 
 # Manage sentence models
@@ -271,8 +320,10 @@ def delete_item(item, id):
 
     if item == 'sentence':
         db_table = SentenceModel
+        redir = 'manage_sentences'
     elif item == 'word':
         db_table = WordList
+        redir = 'manage_words'
 
     del_item = db_table.query.filter_by(id=int(id)).first_or_404()
 
@@ -281,7 +332,7 @@ def delete_item(item, id):
 
     flash(item.capitalize() + ' deleted.')
 
-    return redirect(url_for('manage_sentences'))
+    return redirect(url_for(redir))
 
 
 @app.before_request
