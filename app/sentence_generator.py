@@ -3,9 +3,26 @@ from app import app, db
 from sqlalchemy.sql.expression import func, select
 from sqlalchemy import or_
 from app.models import SentenceModel, WordList
+
+# static assets
+# sortera finare
 from app.sentence_gen_statics import VOWELS, PRONOUNS, NOUN_EXCEPTIONS, SAME_IN_PLURAL, SAME_AS_ADJ
 from app.sentence_gen_statics import WORDLIST_TAGS_ALLOWED, MODEL_TAGS_ALLOWED
-from app.sentence_gen_statics import WORD_BLACKLIST, SPECIAL_WORDS
+from app.sentence_gen_statics import WORD_BLACKLIST, SPECIAL_WORDS, CONJUNCTIONS, PREPOSITIONS
+from app.sentence_gen_statics import CARDINALS, ORDINALS, IRREGULAR_VERBS, TAG_OPTIONS
+
+from app.sentence_gen_statics import NOUN, PROPER_NOUN, PRONOUN, ADJECTIVE
+from app.sentence_gen_statics import VERB, ADVERB, PREPOSITION, CONJUNCTION
+from app.sentence_gen_statics import CARDINAL, ORDINAL, DEF_ARTICLE, INDEF_ARTICLE
+from app.sentence_gen_statics import SPECIAL
+
+from app.sentence_gen_statics import SINGULAR, PLURAL, INHERIT
+from app.sentence_gen_statics import POSITIVE, COMPARATIVE, SUPERLATIVE
+
+from app.sentence_gen_statics import MALE, FEMALE, NEUTRAL
+
+from app.sentence_gen_statics import INFINITIVE, PRESENT_TENSE, PRESENT_PART
+from app.sentence_gen_statics import PAST_TENSE, PAST_PART
 
 
 '''
@@ -87,6 +104,8 @@ class Sentence:
         # gets model as string, convert to list
         self.mod_list = model.split('/')
     
+        # Randomly generate subtags if needed (if tags contain '??')
+        self.mod_list = self.set_random_tags(self.mod_list)
 
         # store subject, verb, object indices in dictionary
         self.SVO_ind = self.get_SVO_ind(self.mod_list)
@@ -101,17 +120,21 @@ class Sentence:
         #     # RAISE HELL
         #     pass
 
-        # initialize sentence
+        # initialize sentence (list of 'x', to be replaced)
         self.sentence = list('x' * len(self.mod_list))
         
         # get subject
+        self.current_word = self.SVO_ind['subj']
         self.sentence[self.SVO_ind['subj']] = self.get_word(self.mod_list[self.SVO_ind['subj']])
 
         # get verb
-        self.sentence[self.SVO_ind['verb']] = self.get_word(self.mod_list[self.SVO_ind['verb']])
+        if 'verb' in self.SVO_ind.keys():
+            self.current_word = self.SVO_ind['verb']
+            self.sentence[self.SVO_ind['verb']] = self.get_word(self.mod_list[self.SVO_ind['verb']])
             
         # get object
         if 'obj' in self.SVO_ind.keys():
+            self.current_word = self.SVO_ind['obj']
             self.sentence[self.SVO_ind['obj']] = self.get_word(self.mod_list[self.SVO_ind['obj']])
 
         # initialize list of indefinite article indices
@@ -119,18 +142,24 @@ class Sentence:
 
         # get rest of words
         for i in range(len(self.sentence)):
+
+            # update current working word index
+            self.current_word = i
+
             if self.sentence[i] == 'x':
 
-                # get indefinite article index
-                if self.mod_list[i].split('.')[0] == 'AI':
+                # get indefinite article index (because we need all nouns before
+                # we can choose correct articles for them)
+                if self.mod_list[i].split('.')[0] == INDEF_ARTICLE:
                     self.ai_inds.append(i)
                 # else get a word
                 else:
-                    self.sentence[i] = get_word(self.mod_list[i])
+                    self.sentence[i] = self.get_word(self.mod_list[i])
 
         # get any indefinite articles
         if self.ai_inds:
             for ind in self.ai_inds:
+                self.current_word = ind
                 self.sentence[ind] = self.get_indef_article(ind)
 
         # try to get an object:
@@ -149,39 +178,59 @@ class Sentence:
         # get remaining words
 
 
+    def set_random_tags(self, mod_list):
+        """ Checks model for '??' and replaces with random fitting tag, stored
+            in dict TAG_OPTIONS in statics. """
+
+        for tag, i in zip(mod_list, range(len(mod_list))):
+            subtags = tag.split('.')
+
+            # loop through list of subtags, replace '??' with
+            # value from dictionary in statics
+            for subtag, j in zip(subtags, range(len(subtags))):
+                if subtag == '??':
+                    self.mod_list[i] = self.mod_list[i].replace(self.mod_list[i] \
+                        .split('.')[j], random.choice(TAG_OPTIONS[subtags[0]][j]))
+
+        return mod_list
+
 
     def get_SVO_ind(self, tag_list):
-        ''' create a dictionary storing indices of subject, verb, object '''
+        """ create a dictionary storing indices of subject, verb, object """
         
         indices = {}
 
         for tag in tag_list:
-            if 's' in tag:
-                indices['subj'] = tag_list.index(tag)
-            elif 'o' in tag:
-                indices['obj'] = tag_list.index(tag)
-            elif tag.startswith('VB'):
-                indices['verb'] = tag_list.index(tag)
+            for subtag in tag.split('.'):
+                if subtag == 's':
+                    indices['subj'] = tag_list.index(tag)
+                elif subtag == 'o':
+                    indices['obj'] = tag_list.index(tag)
+                elif tag.split('.')[0] == 'VB':
+                    indices['verb'] = tag_list.index(tag)
         
         return indices
 
 
     def get_word(self, tag):
+        """ Word-getter function. Calls functions to retrieve words by word class.
+            Each of those functions create a new word object, either by retrieving
+            a word from database, from statics (pronouns, conjunctions), or 
+            sometimes raw words from sentence model. """
 
         get_func_dict = {
-            'NN': self.get_noun,
-            'NP': self.get_proper_noun,     # FINNS E J  ÄNNU
-            'PN': self.get_pronoun,
-            'JJ': self.get_adj,             # SAMMA
-            'VB': self.get_verb,
-            'RB': self.get_adv,             # MMMMmmmm
-            # NUMBERS, ORDINALS
-            # PREPOSITIONS
-            # CONJUNCTIONS
-            # ALLA SÅNNA HÄR FÅR BLI SINA EGNA WordList-objects som inte committas bara
-            'AD': self.get_def_article,
-            # 'AI': self.get_indef_article,
-            'SPEC': self.get_spec
+            NOUN: self.get_noun,
+            PROPER_NOUN: self.get_proper_noun,
+            PRONOUN: self.get_pronoun,
+            ADJECTIVE: self.get_adj,
+            VERB: self.get_verb,
+            ADVERB: self.get_adv,
+            PREPOSITION: self.get_prep,
+            CONJUNCTION: self.get_conj,  # CONJUNCTIONS
+            CARDINAL: self.get_card,  # CARDINAL NUMBER 
+            ORDINAL: self.get_ord,   # ORDINAL NUMBER
+            DEF_ARTICLE: self.get_def_article,
+            SPECIAL: self.get_spec
         }
 
         word = get_func_dict[tag.split('.')[0]](tag)
@@ -194,7 +243,7 @@ class Sentence:
                 
             Verb sentence model rules:
             0: Always 'VB' 
-            1: 'I', 'Z', 'D', 'G'
+            1: 'I', 'Z', 'D', 'G'  # ADD 'N' past participle
             2: TYPE KANSKE? ACTION, 
             '''            
 
@@ -205,32 +254,41 @@ class Sentence:
             .order_by(func.random()).first())
 
         # if not infinitive form, conjugate
-        if tags[1] != 'I':
-            verb.word = self.conjugate(verb.word, tags[1])
+        if tags[1] != INFINITIVE:
+
+            # if verb.word == 'be': # kanske också do, have??
+            # CONJUGATE 'be'
+            if verb.irregular == 1 and (tags[1] == PAST_TENSE or tags[1] == PAST_PART) and verb.word in list(IRREGULAR_VERBS):
+                verb.word = IRREGULAR_VERBS[verb.word][tags[1]]
+            else:
+                verb.word = self.conjugate(verb.word, verb.mult_syll, tags[1])
 
         # IRREGULAR VERBS???
 
         return verb
 
     
-    def conjugate(self, verb, tag):
+    def conjugate(self, verb, mult_syll, tag):
         ''' Conjugate and return correct form of verb. '''
 
-        # Present 3rd person singular
-        if tag == 'Z':
-            if self.end_cons_y(verb):
-                verb = verb[:-1] + 'i'
-                return verb + 'es'
-            else:
-                return verb + 's'
-        
+        # Present tense
+        if tag == PRESENT_TENSE:
+            subj_tag = self.mod_list[self.SVO_ind['subj']].split('.')
+            # for pronouns, only transform third person singular
+            if subj_tag[0] == PRONOUN:
+                if subj_tag[2] == SINGULAR and subj_tag[3] == '3':
+                    return self.present_tensify(verb)
+                else:
+                    return verb
+            return self.present_tensify(verb)
+            
         # Else either past tense or present participle
         else:
             # if last char is consonant and preceded by vowel, double consonant
             if verb[-1] not in VOWELS and verb[-2] in VOWELS:
                 # WARNING NOT REALLY GOOD, ALSO HAS TO DO WITH SYLLABLE STRESS
                 #  SO BEWARE WHEN ADDING WORDS
-                if not verb[-3] in VOWELS and verb.mult_syll == '0':
+                if verb[-3] not in VOWELS and mult_syll == 0:
                     if verb.endswith('c'):
                         verb += 'k'
                     elif verb[-1] not in ['h', 'w', 'x', 'y']:
@@ -240,15 +298,23 @@ class Sentence:
                 verb = verb[:-1]
             
             # past tense
-            if tag == 'D':
+            if tag == PAST_TENSE:
                 if self.end_cons_y(verb):
                     # if last char is 'y' and preceded by a consonant, replace with 'i'
                     verb = verb[:-1] + 'i' 
                 return verb + 'ed'
             
-            # else it will be 'G' (present participle)
+            # else it will be present participle
             else:
                 return verb + 'ing'
+
+    
+    def present_tensify(self, verb):
+        if self.end_cons_y(verb):
+            verb = verb[:-1] + 'i'
+            return verb + 'es'
+        else:
+            return verb + 's'
 
 
     def get_noun(self, tag):
@@ -267,7 +333,7 @@ class Sentence:
                               .order_by(func.random()).first())
 
         # pluralize
-        if tags[2] == 'P':
+        if tags[2] == PLURAL:
             noun.word = self.pluralize(noun.word)
 
         # handle possessive case
@@ -278,7 +344,7 @@ class Sentence:
 
 
     def pluralize(self, noun):
-        ''' Find and return proper plural form for noun '''
+        """ Find and return proper plural form for noun """
 
         # some nouns don't change in plural form
         if noun in SAME_IN_PLURAL:
@@ -326,7 +392,7 @@ class Sentence:
 
 
     def end_cons_y(self, word):
-        ''' Check if last character is 'y' and is preceded by a consonant '''
+        """ Check if last character is 'y' and is preceded by a consonant """
 
         if word[-1] == 'y' and word[-2] not in VOWELS:
             return True
@@ -345,6 +411,8 @@ class Sentence:
         proper_noun = (WordList.query.filter_by(tag=tag.split('.')[0])
                                      .order_by(func.random()).first())
 
+        proper_noun.word = proper_noun.word.capitalize()
+
         # handle possessive case
         if tag.split('.')[1] == '$':
              proper_noun.word += "'" if proper_noun.word[-1] == 's' else "'s"
@@ -352,7 +420,7 @@ class Sentence:
         return proper_noun
 
                 
-    def get_pronoun(self, tags):
+    def get_pronoun(self, tag):
         """ Pronouns aren't stored in database. Instead they're statically stored 
             in application (sentence_gen_statics.py), in nested dictionary form.
 
@@ -365,9 +433,10 @@ class Sentence:
             3: '1', '2', '3', 'IN'                  # first, second or third person or inherit
             4: 'MM', 'FF', 'NN', 'IN'               # gender or inherit """
 
+        tags = tag.split('.')
 
         # establish base pronoun
-        pronoun = self.get_base_pronoun(tags)
+        pronoun = self.get_base_pronoun(tag)
 
         # get correct form
         if tags[1] == 'o':
@@ -379,27 +448,25 @@ class Sentence:
         elif tags[1] == 'reflex':
             pronoun.word = PRONOUNS[pronoun.word]['reflex']
 
-        # ? == RANDOM???????????????????
-
         return pronoun
 
-    def get_base_pronoun(self, tags):
 
-        pronoun = WordList(word='', gender='NN', tag='PN')
+    def get_base_pronoun(self, tag):
 
-        # if referencing a word, get that word object
-        if tags[1] == 'ref_s':
-            ref = self.sentence[SVO_ind['subj']]
-        elif tags[1] == 'ref_o':
-            ref = self.sentence[SVO_ind['obj']]
+        tags = tag.split('.')
+
+        pronoun = WordList(word='', gender=NEUTRAL, tag=tags[0])
 
         # check inheritance
-        if tags[2] == 'IN':
-            # Inherit
-            pronoun = self.inherit_pronoun(tags, ref, pronoun)
+        if tags[2] == INHERIT:
+            # if referencing a word, inherit from that word object
+            if tags[1] == 'ref_s':
+                pronoun = self.inherit_pronoun(tags, self.sentence[self.SVO_ind['subj']], pronoun)
+            elif tags[1] == 'ref_o':
+                pronoun = self.inherit_pronoun(tags, self.sentence[self.SVO_ind['obj']], pronoun)
 
         # singular, i.e. I, you, he, she, it
-        elif tags[2] == 'S':
+        elif tags[2] == SINGULAR:
             # first person
             if tags[3] == '1':
                 pronoun.word = 'I'
@@ -407,18 +474,19 @@ class Sentence:
             elif tags[3] == '2':
                 pronoun.word = 'you'
             # third person
-            else:
+            elif tags[3] == '3':
                 # male
-                if tags[4] == 'MM':
+                if tags[4] == MALE:
                     pronoun.word = 'he'
-                    pronoun.gender = 'MM'
+                    pronoun.gender = MALE
                 # female
-                elif tags[4] == 'FF':
+                elif tags[4] == FEMALE:
                     pronoun.word = 'she'
-                    pronoun.gender = 'FF'
-                # neutral
+                    pronoun.gender = FEMALE
+                # default to neutral
                 else:
-                    pronoun.word == 'it'                
+                    pronoun.word = 'it'
+                    pronoun.gender = NEUTRAL
 
         # plural, i.e. either we, you, they
         elif tags[2] == 'P':
@@ -428,18 +496,18 @@ class Sentence:
             # second person
             elif tags[3] == '2':
                 pronoun.word = 'you'
-            # third person
+            # default to third person
             else:
                 pronoun.word = 'they'
 
         # default to random
         else:
-            pronoun.word = random.choice(PRONOUNS.keys())
+            pronoun.word = random.choice(list(PRONOUNS.keys()))
 
             if pronoun.word == 'he':
-                pronoun.gender = 'MM'
+                pronoun.gender = MALE
             elif pronoun.word == 'she':
-                pronoun.gender = 'FF'
+                pronoun.gender = FEMALE
 
         return pronoun
 
@@ -447,21 +515,21 @@ class Sentence:
     def inherit_pronoun(self, tags, ref, pronoun):
         ''' First checks if referenced word is a pronoun. If it is, return it.
             If it isn't a pronoun, it will be either a proper noun or a noun,
-            so a gender check will suffice to select proper pronoun. If not
+            so a gender check will suffice to select correct pronoun. If not
             male or female, function defaults to neutral, i.e. 'it'. '''
 
-        if ref.word in PRONOUNS.keys():
+        if ref.word in list(PRONOUNS):
             pronoun.word = ref.word
             pronoun.gender = ref.gender
-        elif ref.gender == 'MM':
+        elif ref.gender == MALE:
             pronoun.word = 'he'
-            pronoun.gender = 'MM'
-        elif ref.gender == 'FF':
+            pronoun.gender = MALE
+        elif ref.gender == FEMALE:
             pronoun.word = 'she'
-            pronoun.gender = 'FF'
+            pronoun.gender = FEMALE
         else:
             pronoun.word = 'it'
-            pronoun.gender = 'NN'
+            pronoun.gender = NEUTRAL
 
         return pronoun
 
@@ -477,11 +545,126 @@ class Sentence:
         tags = tag.split('.')
 
         adj = (WordList.query.filter_by(tag=tags[0])
-                        .order_by(func.random()).first())
+                       .order_by(func.random()).first())
+
+        # handle comparative, superlative forms
+        if tags[1] != POSITIVE:
+            adj.word = self.transform_adj(adj, tags[1]) 
 
         return adj
 
     
+    def transform_adj(self, adj, form):
+        """ Transform adjective to comparative or superlative form """
+
+        transform = {'C':{'pref':'more ','suff':'er'}, \
+                     'S':{'pref':'most ','suff':'est'}}
+        
+        word = adj.word
+        mult_syllables = adj.mult_syll
+
+        if adj.irregular == '0':
+            # one syllable adjectives
+            if mult_syllables == '0':
+                # if word ends in 'e', remove 'e'
+                if word[-1] == 'e':
+                    word = word[:-1]
+                # if word ends in vowel and consonant, double consonant
+                elif word[-1] not in VOWELS and word[-2] in VOWELS:
+                    if not word[-1] == 'n':
+                        word += word[-1]
+                # add suffix and return
+                return word + transform[form]['suff']
+
+            # two or more syllable adjectives
+            elif mult_syllables == '1':
+                # if word ends in 'y' replace with 'i'
+                if word.endswith('y'):
+                    word = word[:-1] + 'i'
+                    # add suffix and return
+                    return word + transform[form]['suff']
+                # else add prefix ('more ' or 'most ') and return
+                else:
+                    return transform[form]['pref'] + word            
+        # else HANDLE IRREGULAR ADJECTIVES!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        else:
+            return word
+
+    
+    def get_adv(self, tag):
+        """ Adverb object
+        
+            Sentence model rules:
+            0: 'RB'
+            1: 'P', 'C', 'S'            # positive, comparative, superlative 
+            2: 'N', 'T', 'F', 'P'       # 'Normal', Time, Frequency, Place
+            
+            More to be added later. """
+
+        tags = tag.split('.')
+
+        # get "normal" adverb, i.e. adjective-based
+        if tags[2] == 'N':
+            adv = (WordList.query.filter_by(tag=ADJECTIVE)
+                                 .order_by(func.random()).first())
+
+            # set tag to adverb
+            adv.tag = ADVERB
+
+            # adverbify
+            if adv.irregular == 0:
+                adv.word = self.adverbify(adv.word) 
+
+            # handle comparative, superlative forms
+            if tags[1] != POSITIVE and adv.irregular == 0:
+                adv.word = self.transform_adv(adv.word, tags[1])
+        else:
+            # FLYTTA TILL STATICS??????
+            subtypes = {'T':'time',
+                        'F':'frequency',
+                        'P':'place'}
+
+            adv = (WordList.query.filter_by(tag=tags[0], subtype=subtypes[tags[2]])
+                                 .order_by(func.random()).first())
+
+        return adv
+
+
+    def adverbify(self, adv):
+        """ Turn adjective into adverb. Checks some grammatical rules
+            and transforms adjective. """
+
+        if self.end_cons_y(adv):
+            adv = adv[:-1] + 'ily'
+        elif adv.endswith('le') and adv[-3] not in VOWELS:
+            adv = adv[:-1] + 'y'
+        elif adv.endswith('ic'):
+            if adv == 'public':
+                adv += 'ly'
+            else:
+                adv += 'ally'
+        else:
+            if not adv.endswith('ly') and adv not in SAME_AS_ADJ:
+                adv += 'ly'
+        
+        return adv
+
+
+    def transform_adv(self, adv, form):
+        """ Transform adverb into its comparative or superlative form. """
+
+        transform = {'C':{'pref':'more ','suff':'er'}, \
+                     'S':{'pref':'most ','suff':'est'}}
+
+        # either add prefix or suffix
+        if adv in SAME_AS_ADJ:
+            if adv[-1] == 'y':
+                adv = adv[:-1] + 'i'
+            return adv + transform[form]['suff']
+        else:
+            return transform[form]['pref'] + adv
+
+
     def get_def_article(self, tag):
         """ Create word object for definite article, i.e. 'the'. """
 
@@ -490,13 +673,109 @@ class Sentence:
         return article
 
 
-    def get_indef_article(self, i):
-        """ Create indefinite article object and choose the right one """
+    def get_conj(self, tag):
+        """ Create conjunction object.
+        
+        Sentence model rules:
+        0: 'CN'
+        1: desired conjunction word or '??' for random """
 
-        article = WordList(tag='AI')
+        tags = tag.split('.')
+
+        conj = WordList(tag=tags[0], word=tags[1])
+
+        return conj
+
+
+    def get_prep(self, tag):
+        """ Create preposition object.
+        
+        Sentence model rules:
+        0: 'IN'
+        1: desired preposition word or '??' for random """
+
+        tags = tag.split('.')
+
+        prep = WordList(tag=tags[0], word=tags[1])
+
+        return prep
+
+    
+    def get_card(self, tag):
+        """ Create cardinal number object. 
+            Can generate numbers ranging from 1 to 9999.
+        
+            Sentence model rules:
+            0: 'CD'
+            1: '1', '2', '3', '4', '??'     # length or random """
+
+        tags = tag.split('.')
+
+        num_len = int(tags[1])
+
+        # generate a number between 1 and maximum specified by num_len
+        num = random.randint(1, int('9' * num_len) + 1)
+
+        text_num = self.textify(num)
+
+        cardinal = WordList(tag=tags[0], word=text_num)
+
+        return cardinal
+
+    
+    def textify(self, num):
+        """ Translates a number into text """
+
+        text_num = ''
+
+        if num < 21:
+            text_num = CARDINALS[num]
+        else:
+            num = str(num)
+            if 0 < int(num[-2:]) < 21:
+                text_num = CARDINALS[int(num[-2:])]
+            else:
+                # get second-from-right number (tens)
+                if num[-2] != '0':
+                    text_num = CARDINALS[int(num[-2]) * 10]
+                # get last digit, append to string
+                if num[-1] != '0':
+                    text_num += '-' + CARDINALS[int(num[-1])]
+            # get hundreds number
+            if len(num) > 2 and int(num[-3]) != 0:
+                hundreds_num = CARDINALS[int(num[-3])] + ' hundred'
+                if int(num[-2:]) > 0:
+                    hundreds_num += ' and '
+                text_num = hundreds_num + text_num
+            # get thousands number
+            if len(num) > 3:
+                thousands_num = CARDINALS[int(num[0])] + ' thousand'
+                if int(num[-3:]) > 0:
+                    thousands_num += ', '
+                text_num = thousands_num + text_num
+
+        return text_num
+
+
+    def get_ord(self, tag):
+        """ Create ordinal number object. 
+            Simply retrieve a random ordinal number from a static list.
+            
+            Model rules:
+            0: 'OD' """
+
+        ord = WordList(tag=tag.split('.')[0], word=random.choice(ORDINALS))
+
+        return ord
+
+
+    def get_indef_article(self, i):
+        """ Create indefinite article object and choose the right one. """
+
+        article = WordList(tag=INDEF_ARTICLE)
 
         # if next word is noun, get its article
-        if self.sentence[i].tag == 'NN':
+        if self.sentence[i+1].tag == NOUN:
             article.word = self.sentence[i].article
         # else check if next word starts with a vowel (not great solution but oh well)
         elif self.sentence[i+1].word[0] in VOWELS:
@@ -538,288 +817,6 @@ def generate_sentence():
 def random_sentence_model():
     sentence_model = SentenceModel.query.order_by(func.random()).first()
     return sentence_model
-
-
-# Ask database for a word, process and return it to main function
-def get_word(tag):
-
-    # First check if word is in hardcoded special
-    # words list or is a hardcoded PRONOUN
-    if tag in SPECIAL_WORDS:
-        return SPECIAL_WORDS[tag]
-    else:
-        # Get a word from database
-        word = random_word(tag)
-   
-    # Process VERBs (all verb forms start with V)
-    if tag.startswith('V'):
-        return process_verb(word.word, word.tag, tag)
-
-    # Process NOUNs
-    elif tag.startswith('NN'):
-        return process_noun(word.word, tag)
-
-    # Process PROPER NOUNS
-    elif tag.startswith('NP'):
-        word = word.word.capitalize()
-        # possessive
-        if tag[-1] == '$':
-            word = word + "'" if word.endswith('s') else word + "'s"
-        return word
-    
-    # Process ADJECTIVES
-    elif tag.startswith('JJ'):
-        return process_adj(word.word, word.tag, tag)
-    
-    # Process ADVERBS
-    elif tag.startswith('RB'):
-        return process_adv(word.word, tag)
-
-    # else just return the word
-    else:
-        return word.word
-
-
-# Get random word from database matching part-of-speech tag
-def random_word(tag):
-    
-    # Verbs - Get infinitive verb for all verb forms
-    # All (and only) verb forms' tags start with 'V'
-    if tag.startswith('V'):
-        word = WordList.query.filter(or_(WordList.tag == 'VB1', WordList.tag == 'VB+')) \
-            .order_by(func.random()).first()
-    
-    # Nouns - Get noun base form for all forms (singular and plural)
-    elif tag.startswith('NN'):
-        word = WordList.query.filter_by(tag='NN').order_by(func.random()).first()
-    
-    # Adverbs - Many adverbs are generated from adjectives (JJ)
-    elif tag == 'RB' or tag.startswith('JJ'):
-        word = WordList.query.filter(or_(WordList.tag == 'JJ1', WordList.tag == 'JJ+')) \
-            .order_by(func.random()).first()
-    
-    # Proper nouns
-    elif tag.startswith('NP'):
-        # remove '$' if present
-        NP_tag = tag[:-1] if tag.endswith('$') else tag
-        word = WordList.query.filter_by(tag=NP_tag).order_by(func.random()).first()
-    
-    # if no special tense or anything is required, just query using tag argument
-    else:
-        word = WordList.query.filter_by(tag=tag).order_by(func.random()).first()
-
-    # return word object
-    return word
-
-
-'''
-# Process nouns
-def process_noun(noun, tag):
-    
-    # Singular form
-    if tag == 'NN':
-        return noun
-    
-    # Singular possessive
-    elif tag == 'NN$':
-        return noun + "'" if noun[-1] == 's' else noun + "'s"
-    
-    else:
-        noun = pluralize(noun)
-        # Plural form
-        if tag == 'NNS':
-            return noun
-        # Plural possessive
-        else:
-            return noun + "'" if noun[-1] == 's' else noun + "'s"
-
-
-def pluralize(noun):
-    
-    # some nouns don't change in plural form
-    if noun in SAME_IN_PLURAL:
-        return noun
-    
-    # if noun ends in 's', 'sh', 'ch', 'x', or 'z', 
-    # add 'es' instead of 's'
-    elif noun.endswith('s') or noun.endswith('sh') or \
-        noun.endswith('ch') or noun.endswith('x') or \
-        noun.endswith('z'):
-        return noun + 'es'
-    
-    # if noun ends in 'f' or 'fe', usually 'f' is changed
-    # to 've' before adding 's'
-    elif noun.endswith('f'):
-        if noun not in NOUN_EXCEPTIONS:
-            noun = noun[:-1]
-            return noun + 'ves'
-    elif noun.endswith('fe'):
-        if noun not in NOUN_EXCEPTIONS:
-            return noun[:-2] + 'ves'
-    
-    # if last letter is 'y' and preceding letter is a 
-    # consonant, replace 'y' with 'i', pluralize with 'es'
-    elif end_cons_y(noun):
-        noun = noun[:-1]
-        return noun + 'ies'
-
-    # if noun ends in 'o', usually pluralize with 'es'
-    elif noun.endswith('o') and noun not in NOUN_EXCEPTIONS:
-        return noun + 'es'
-
-    # if noun ends in 'on' or 'um', remove and pluralize with 'a',
-    # e.g. 'phenomenon' - 'phenomena'
-    elif noun.endswith('on') or noun.endswith('um'):
-        if noun not in NOUN_EXCEPTIONS:
-            noun = noun[:-2]
-            return noun + 'a'
-        else:
-            return noun + 's'
-
-    # if nothing funky is going on, pluralize by just adding 's'
-    else:
-        return noun + 's' '''
-
-
-# Process adjectives
-def process_adj(adj, adj_tag, tag):
-    '''
-        Takes adj_tag which is the word's tag in the database, used
-        to determine comparative & superlative forms (prefix or suffix)
-    '''
-
-    # if base form (positive) is requested, simply return word
-    if tag == 'JJ':
-        return adj
-
-    # else it will be either comparative (JJR) or superlative (JJT)
-    else:
-        # set prefix for comparative and superlative forms
-        adj_prefix = 'more ' if tag == 'JJR' else 'most '
-        adj_suffix = 'er' if tag == 'JJR' else 'est'
-
-        # one syllable adjectives
-        if adj_tag == 'JJ1':
-            # if word ends in 'e', remove 'e'
-            if adj[-1:] == 'e':
-                adj = adj[:-1]
-            # if word ends in vowel and consonant, double consonant
-            elif adj[-1] not in VOWELS and adj[-2] in VOWELS:
-                if not adj[-1] == 'n':
-                    adj += adj[-1]
-            # add suffix and return
-            return adj + adj_suffix
-            
-        # two or more syllable adjectives
-        elif adj_tag == 'JJ+':
-            # if word ends in 'y' replace with 'i'
-            if adj.endswith('y'):
-                adj = adj[:-1] + 'i'
-                # add suffix and return
-                return adj + adj_suffix
-            # else add prefix ('more ' or 'most ') and return
-            else:
-                return adj_prefix + adj
-
-
-'''
-# Process verbs
-def process_verb(verb, verb_tag, tag):
-
-    # if requested tag is verb base form (VB), simply return word
-    if tag == 'VB':
-        return verb
-    else:
-        # Present 3rd person singular
-        if tag == 'VBZ':
-            if end_cons_y(verb):
-                verb = verb[:-1] + 'i'
-                return verb + 'es'
-            else:
-                return verb + 's'
-        else:
-            # if last char is consonant and preceded by vowel, double consonant
-            if verb[-1] not in VOWELS and verb[-2] in VOWELS:
-                # WARNING NOT REALLY GOOD, ALSO HAS TO DO WITH SYLLABLE STRESS
-                #  SO BEWARE WHEN ADDING WORDS
-                if not verb[-3] in VOWELS and verb_tag == 'VB1':
-                    if verb.endswith('c'):
-                        verb += 'k'
-                    elif verb[-1] not in ['h', 'w', 'x', 'y']:
-                        verb += verb[-1]
-            # remove last letter if it is 'e'
-            elif verb[-1] == 'e' and verb[-2] not in VOWELS:
-                verb = verb[:-1]
-            
-            # past tense
-            if tag == 'VBD':
-                if end_cons_y(verb):
-                    # if last char is 'y' and preceded by a consonant, replace with 'i'
-                    verb = verb[:-1] + 'i' 
-                return verb + 'ed'
-            
-            # else it will be VBG (present participle)
-            else:
-                return verb + 'ing' '''
-
-
-# Process adverbs
-def process_adv(adv, tag):
-
-    TRANSFORMABLE = ['RB', 'RBR', 'RBT']
-
-    if tag in TRANSFORMABLE and adv not in SAME_AS_ADJ:
-        # MAYBE FUNCTION FOR COMMON IRREGULAR ADVERBS?
-        # if adv == 'good':
-        #     return 'well'
-        if end_cons_y(adv):
-            adv = adv[:-1] + 'ily'
-        elif adv.endswith('le') and adv[-3] not in VOWELS:
-            adv = adv[:-1] + 'y'
-        elif adv.endswith('ic'):
-            if adv == 'public':
-                adv += 'ly'
-            else:
-                adv += 'ally'
-        else:
-            if not adv.endswith('ly'):
-                adv += 'ly'
-
-    # else tag will be RBTM, RBPL or RBFR
-    else:
-        return adv
-
-    # comparative adverb    
-    if tag == 'RBR':
-        # either add prefix or suffix
-        if adv in SAME_AS_ADJ:
-            if adv[-1:] == 'y':
-                adv = adv[:-1] + 'i'
-            return adv + 'er'
-        else:
-            return 'more ' + adv
-    
-    # superlative adverbs
-    elif tag == 'RBT':
-        if adv in SAME_AS_ADJ:
-            if adv[-1:] == 'y':
-                adv = adv[:-1] + 'i'
-            return adv + 'est'
-        else:
-            return 'most ' + adv
-
-    # else: RB (base form)
-    else:
-        return adv
-
-
-'''
-# Check if last character is 'y' and is preceded by a consonant
-def end_cons_y(word):
-    if word[-1] == 'y' and word[-2] not in VOWELS:
-        return True
-    else:
-        return False '''
 
 
 # Check if tag is valid, used in WordForm to validate tag field

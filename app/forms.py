@@ -186,7 +186,7 @@ class AdjectiveForm(FlaskForm):
     word = StringField('Word', validators=[DataRequired(),
                        Length(min=1, max=32)])
     irregular = RadioField('Word regularity', 
-                           choices=[('0','Regular'),('1','Irregular')],
+                           choices=[('0','Regular'),('1','Irregular')], default='0',
                            validators=[DataRequired()])
     mult_syll = RadioField('Syllables count',
                            choices=[('0','One syllable'),('1','Multiple syllables')],
@@ -203,7 +203,7 @@ class VerbForm(FlaskForm):
     word = StringField('Word', validators=[DataRequired(),
                        Length(min=1, max=32)])
     irregular = RadioField('Word regularity', 
-                           choices=[('0','Regular'),('1','Irregular')],
+                           choices=[('0','Regular'),('1','Irregular')], default='0',
                            validators=[DataRequired()])
     mult_syll = RadioField('Syllables count',
                            choices=[('0','One syllable'),('1','Multiple syllables')],
