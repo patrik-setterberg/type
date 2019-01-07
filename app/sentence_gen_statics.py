@@ -29,6 +29,8 @@ PRESENT_TENSE = 'Z'
 PRESENT_PART = 'G'
 PAST_TENSE = 'D'
 PAST_PART = 'N'  # past participle
+PAST_CONT = 'C'  # past continuous
+FUTURE = 'F'
 
 # List of common prepositions
 PREPOSITIONS = [    
@@ -89,27 +91,27 @@ CONJUNCTIONS = [
 
 # Dictionary of valid options for subtags, used for random selection.
 TAG_OPTIONS = {
-    'NN':{  # Nouns, can be random: singular/plural
-        2: ['S', 'P']
+    NOUN:{  # Nouns, can be random: singular/plural
+        2: [SINGULAR, PLURAL]
     },
-    'PN':{  # Pronouns, can be random: singular/plural, 1st/2nd/3rd person, gender
-        2: ['S', 'P'],
+    PRONOUN:{  # Pronouns, can be random: singular/plural, 1st/2nd/3rd person, gender
+        2: [SINGULAR, PLURAL],
         3: ['1', '2', '3'],
-        4: ['MM', 'FF', 'NN']
+        4: [MALE, FEMALE, NEUTRAL]
     },
-    'JJ':{  # Adjectives, can be random: positive/comparative/superlative
-        1: ['P', 'C', 'S']
+    ADJECTIVE:{  # Adjectives, can be random: positive/comparative/superlative
+        1: [POSITIVE, COMPARATIVE, SUPERLATIVE]
     },
-    'RB':{  # Adverbs, can be random: positive/comparative/superlative
-        1: ['P', 'C', 'S']
+    ADVERB:{  # Adverbs, can be random: positive/comparative/superlative
+        1: [POSITIVE, COMPARATIVE, SUPERLATIVE]
     },
-    'CD':{  # Cardinal numbers, can be random: length(1-4)
+    CARDINAL:{  # Cardinal numbers, can be random: length(1-4)
         1: ['1', '2', '3', '4']
     },
-    'IN':{  # Prepositions, get random word from prepositions list
+    PREPOSITION:{  # Prepositions, get random word from prepositions list
         1: PREPOSITIONS
     },
-    'CN':{  # Conjunctions, get random word from conjunctions list
+    CONJUNCTION:{  # Conjunctions, get random word from conjunctions list
         1: CONJUNCTIONS
     }
 }
@@ -163,131 +165,380 @@ PRONOUNS = {'I':{
 IRREGULAR_VERBS = {
     """ From: https://www.englisch-hilfen.de/en/grammar/unreg_verben.htm """
     'beat':{
-        'D':'beat',
-        'N':'beaten'
+        PAST_TENSE:'beat',
+        PAST_PART:'beaten'
     },
     'become':{
-        'D':'became',
-        'N':'become'
+        PAST_TENSE:'became',
+        PAST_PART:'become'
     },
     'begin':{
-        'D':'began',
-        'N':'begun'
+        PAST_TENSE:'began',
+        PAST_PART:'begun'
     },
     'blow':{
-        'D':'blew',
-        'N':'blown'
+        PAST_TENSE:'blew',
+        PAST_PART:'blown'
     },
     'break':{
-        'D':'broke',
-        'N':'broken'
+        PAST_TENSE:'broke',
+        PAST_PART:'broken'
     },
     'bring':{
-        'D':'brought',
-        'N':'brought'
+        PAST_TENSE:'brought',
+        PAST_PART:'brought'
     },
     'build':{
-        'D':'built',
-        'N':'built'
+        PAST_TENSE:'built',
+        PAST_PART:'built'
     },
     'burst':{
-        'D':'burst',
-        'N':'burst'
+        PAST_TENSE:'burst',
+        PAST_PART:'burst'
     },
     'buy':{
-        'D':'bought',
-        'N':'bought'
+        PAST_TENSE:'bought',
+        PAST_PART:'bought'
     },
     'catch':{
-        'D':'caught',
-        'N':'caught'
+        PAST_TENSE:'caught',
+        PAST_PART:'caught'
     },
     'choose':{
-        'D':'chose',
-        'N':'chosen'
+        PAST_TENSE:'chose',
+        PAST_PART:'chosen'
     },
     'come':{
-        'D':'came',
-        'N':'come'
+        PAST_TENSE:'came',
+        PAST_PART:'come'
     },
     'cost':{
-        'D':'cost',
-        'N':'cost'
+        PAST_TENSE:'cost',
+        PAST_PART:'cost'
     },
     'cut':{
-        'D':'cut',
-        'N':'cut'
+        PAST_TENSE:'cut',
+        PAST_PART:'cut'
     },
     'deal':{
-        'D':'dealt',
-        'N':'dealt'
+        PAST_TENSE:'dealt',
+        PAST_PART:'dealt'
     },
     'do':{
-        'D':'did',
-        'N':'done'
+        PAST_TENSE:'did',
+        PAST_PART:'done'
     },
     'draw':{
-        'D':'drew',
-        'N':'drawn'
+        PAST_TENSE:'drew',
+        PAST_PART:'drawn'
     },
     'drink':{
-        'D':'drank',
-        'N':'drunk'
+        PAST_TENSE:'drank',
+        PAST_PART:'drunk'
     },
     'eat':{
-        'D':'ate',
-        'N':'eaten'
+        PAST_TENSE:'ate',
+        PAST_PART:'eaten'
     },
     'fall':{
-        'D':'fell',
-        'N':'fallen'
+        PAST_TENSE:'fell',
+        PAST_PART:'fallen'
     },
     'feed':{
-        'D':'fed',
-        'N':'fed'
+        PAST_TENSE:'fed',
+        PAST_PART:'fed'
     },
     'feel':{
-        'D':'felt',
-        'N':'felt'
+        PAST_TENSE:'felt',
+        PAST_PART:'felt'
     },
     'fight':{
-        'D':'fought',
-        'N':'fought'
+        PAST_TENSE:'fought',
+        PAST_PART:'fought'
     },
     'find':{
-        'D':'found',
-        'N':'found'
+        PAST_TENSE:'found',
+        PAST_PART:'found'
     },
     'fly':{
-        'D':'flew',
-        'N':'flown'
+        PAST_TENSE:'flew',
+        PAST_PART:'flown'
     },
     'forget':{
-        'D':'forgot',
-        'N':'forgotten'
+        PAST_TENSE:'forgot',
+        PAST_PART:'forgotten'
     },
     'freeze':{
-        'D':'froze',
-        'N':'frozen'
+        PAST_TENSE:'froze',
+        PAST_PART:'frozen'
     },
     'get':{
-        'D':'got',
-        'N':'gotten'
+        PAST_TENSE:'got',
+        PAST_PART:'gotten'
     },
-    '':{
-        PAST_TENSE:'',
-        PAST_PART:''
+    'give':{
+        PAST_TENSE:'gave',
+        PAST_PART:'given'
     },
-
-
-
-
-
-
-    '':{
-        'D':'',
-        'N':''
+    'go':{
+        PAST_TENSE:'went',
+        PAST_PART:'gone'
     },
+    'grown':{
+        PAST_TENSE:'grew',
+        PAST_PART:'grown'
+    },
+    'hang':{
+        PAST_TENSE:'hung',
+        PAST_PART:'hung'
+    },
+    'have':{
+        PAST_TENSE:'had',
+        PAST_PART:'had'
+    },
+    'hear':{
+        PAST_TENSE:'heard',
+        PAST_PART:'heard'
+    },
+    'hide':{
+        PAST_TENSE:'hid',
+        PAST_PART:'hidden'
+    },
+    'hit':{
+        PAST_TENSE:'hit',
+        PAST_PART:'hit'
+    },
+    'hold':{
+        PAST_TENSE:'held',
+        PAST_PART:'held'
+    },
+    'hurt':{
+        PAST_TENSE:'hurt',
+        PAST_PART:'hurt'
+    },
+    'keep':{
+        PAST_TENSE:'kept',
+        PAST_PART:'kept'
+    },
+    'know':{
+        PAST_TENSE:'knew',
+        PAST_PART:'known'
+    },
+    'lead':{
+        PAST_TENSE:'led',
+        PAST_PART:'led'
+    },
+    'leave':{
+        PAST_TENSE:'left',
+        PAST_PART:'left'
+    },
+    'lie':{
+        PAST_TENSE:'lay',
+        PAST_PART:'lain'
+    },
+    'light':{
+        PAST_TENSE:'lit',
+        PAST_PART:'llit'
+    },
+    'lose':{
+        PAST_TENSE:'lost',
+        PAST_PART:'lost'
+    },
+    'make':{
+        PAST_TENSE:'made',
+        PAST_PART:'made'
+    },
+    'mean':{
+        PAST_TENSE:'meant',
+        PAST_PART:'meant'
+    },
+    'meet':{
+        PAST_TENSE:'met',
+        PAST_PART:'met'
+    },
+    'pay':{
+        PAST_TENSE:'paid',
+        PAST_PART:'paid'
+    },
+    'put':{
+        PAST_TENSE:'put',
+        PAST_PART:'put'
+    },
+    'read':{
+        PAST_TENSE:'read',
+        PAST_PART:'read'
+    },
+    'ride':{
+        PAST_TENSE:'rode',
+        PAST_PART:'ridden'
+    },
+    'ring':{
+        PAST_TENSE:'rang',
+        PAST_PART:'rung'
+    },
+    'rise':{
+        PAST_TENSE:'rose',
+        PAST_PART:'risen'
+    },
+    'run':{
+        PAST_TENSE:'ran',
+        PAST_PART:'run'
+    },
+    'say':{
+        PAST_TENSE:'said',
+        PAST_PART:'said'
+    },
+    'see':{
+        PAST_TENSE:'saw',
+        PAST_PART:'seen'
+    },
+    'sell':{
+        PAST_TENSE:'sold',
+        PAST_PART:'sold'
+    },
+    'send':{
+        PAST_TENSE:'sent',
+        PAST_PART:'sent'
+    },
+    'shake':{
+        PAST_TENSE:'shook',
+        PAST_PART:'shaken'
+    },
+    'steal':{
+        PAST_TENSE:'stole',
+        PAST_PART:'stolen'
+    },
+    'shine':{
+        PAST_TENSE:'shone',
+        PAST_PART:'shone'
+    },
+    'shoot':{
+        PAST_TENSE:'shot',
+        PAST_PART:'shot'
+    },
+    'sing':{
+        PAST_TENSE:'sang',
+        PAST_PART:'sung'
+    },
+    'sink':{
+        PAST_TENSE:'sank',
+        PAST_PART:'sunk'
+    },
+    'sit':{
+        PAST_TENSE:'sat',
+        PAST_PART:'sat'
+    },
+    'sleep':{
+        PAST_TENSE:'slept',
+        PAST_PART:'slept'
+    },
+    'speak':{
+        PAST_TENSE:'spoke',
+        PAST_PART:'spoken'
+    },
+    'stand':{
+        PAST_TENSE:'stood',
+        PAST_PART:'stood'
+    },
+    'swear':{
+        PAST_TENSE:'swore',
+        PAST_PART:'sworn'
+    },
+    'swim':{
+        PAST_TENSE:'swam',
+        PAST_PART:'swum'
+    },
+    'take':{
+        PAST_TENSE:'took',
+        PAST_PART:'taken'
+    },
+    'teach':{
+        PAST_TENSE:'taught',
+        PAST_PART:'taught'
+    },
+    'tear':{
+        PAST_TENSE:'torn',
+        PAST_PART:'torn'
+    },
+    'tell':{
+        PAST_TENSE:'told',
+        PAST_PART:'told'
+    },
+    'think':{
+        PAST_TENSE:'thought',
+        PAST_PART:'thought'
+    },
+    'throw':{
+        PAST_TENSE:'threw',
+        PAST_PART:'thrown'
+    },
+    'understand':{
+        PAST_TENSE:'understood',
+        PAST_PART:'understood'
+    },
+    'wake':{
+        PAST_TENSE:'woke',
+        PAST_PART:'woken'
+    },
+    'wear':{
+        PAST_TENSE:'worn',
+        PAST_PART:'worn'
+    },
+    'win':{
+        PAST_TENSE:'won',
+        PAST_PART:'won'
+    },
+    'write':{
+        PAST_TENSE:'wrote',
+        PAST_PART:'written'
+    }
+}
+
+BE = {
+    NOUN: {
+        PRESENT_TENSE: {
+            SINGULAR: 'is',
+            PLURAL: 'are'
+        },
+        PAST_TENSE: {
+            SINGULAR: 'was',
+            PLURAL: 'were'
+        }
+    },
+    PROPER_NOUN: {
+        PRESENT_TENSE: 'is',
+        PAST_TENSE: 'was'
+    },
+    PRONOUN: {
+        'I': {
+            PRESENT_TENSE: 'am',
+            PAST_TENSE: 'was'
+        },
+        'you': {
+            PRESENT_TENSE: 'are',
+            PAST_TENSE: 'were'
+        },
+        'he': {
+            PRESENT_TENSE: 'is',
+            PAST_TENSE: 'was'
+        },
+        'she': {
+            PRESENT_TENSE: 'is',
+            PAST_TENSE: 'was'
+        },
+        'it': {
+            PRESENT_TENSE: 'is',
+            PAST_TENSE: 'was'
+        },
+        'we': {
+            PRESENT_TENSE: 'are',
+            PAST_TENSE: 'were'
+        },
+        'they': {
+            PRESENT_TENSE: 'are',
+            PAST_TENSE: 'were'
+        }
+    }
 }
 
 # cardinal numbers
@@ -396,6 +647,8 @@ MODEL_TAGS_ALLOWED = {
     'NN$': 'Noun, singular, possessive',
     'NNS': 'Noun, plural',
     'NNS$': 'Noun, plural, possessive',
+
+    'BE': 'forms of be',
 
     # Proper nouns
     'NPM': 'Proper noun, male',
