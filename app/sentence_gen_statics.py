@@ -1,7 +1,6 @@
-''' Static stuff for sentence_generator '''
+""" Static stuff for sentence_generator.py """
 
 VOWELS = ['a', 'e', 'i', 'o', 'u', 'y']
-
 
 NOUN = 'NN'
 PROPER_NOUN = 'NP'
@@ -11,18 +10,17 @@ VERB = 'VB'
 ADVERB = 'RB'
 PREPOSITION = 'IN'
 CONJUNCTION = 'CN'
+MOD_AUX = 'MD'  # Modal auxiliary
 CARDINAL = 'CD'
 ORDINAL = 'OD'
 DEF_ARTICLE = 'AD'
 INDEF_ARTICLE = 'AI'
 SPECIAL = 'SPEC'
 
-
 SINGULAR, PLURAL = 'S', 'P'
 POSITIVE, COMPARATIVE, SUPERLATIVE = 'P', 'C', 'S'
-INHERIT = 'IN'  # ÄNDRA TILL 'INH' ÖVERALLT??? 'IH'?
-
-MALE, FEMALE, NEUTRAL = 'MM', 'FF', 'NN'  # ändra till lowercase för att fixa ambiguity?
+INHERIT = 'IN'
+MALE, FEMALE, NEUTRAL = 'MM', 'FF', 'NN'
 
 INFINITIVE = 'I'
 PRESENT_TENSE = 'Z'
@@ -89,34 +87,62 @@ CONJUNCTIONS = [
     'except'
 ]
 
+# Common modal auxiliaries.
+MOD_AUXS = [
+    'can',
+    'could',
+    'may',
+    'might',
+    'must',
+    'shall',
+    'should',
+    'will',
+    'would'
+]
+
 # Dictionary of valid options for subtags, used for random selection.
 TAG_OPTIONS = {
-    NOUN:{  # Nouns, can be random: singular/plural
+    # Nouns, can be random: singular/plural
+    NOUN:{
         2: [SINGULAR, PLURAL]
     },
-    PRONOUN:{  # Pronouns, can be random: singular/plural, 1st/2nd/3rd person, gender
+    # Pronouns, can be random: singular/plural, 1st/2nd/3rd person 
+    # and gender
+    PRONOUN:{  
         2: [SINGULAR, PLURAL],
         3: ['1', '2', '3'],
         4: [MALE, FEMALE, NEUTRAL]
     },
-    ADJECTIVE:{  # Adjectives, can be random: positive/comparative/superlative
+    # Adjectives, can be random: 
+    # positive/comparative/superlative
+    ADJECTIVE:{  
+
         1: [POSITIVE, COMPARATIVE, SUPERLATIVE]
     },
-    ADVERB:{  # Adverbs, can be random: positive/comparative/superlative
+    # Adverbs, can be random: 
+    # positive/comparative/superlative
+    ADVERB:{
         1: [POSITIVE, COMPARATIVE, SUPERLATIVE]
     },
-    CARDINAL:{  # Cardinal numbers, can be random: length(1-4)
+    # Cardinal numbers, can be random: length(1-4)
+    CARDINAL:{
         1: ['1', '2', '3', '4']
     },
-    PREPOSITION:{  # Prepositions, get random word from prepositions list
+    # Prepositions, get random word from prepositions list
+    PREPOSITION:{
         1: PREPOSITIONS
     },
-    CONJUNCTION:{  # Conjunctions, get random word from conjunctions list
+    # Conjunctions, get random word from conjunctions list
+    CONJUNCTION:{
         1: CONJUNCTIONS
+    },
+    # Modal auxiliaries, get random word from mod aux list
+    MOD_AUX:{
+        1: MOD_AUXS
     }
 }
 
-# PRONOUNS CAN'T CURRENTLY HANDLE PLURAL 'YOU' :(
+# Pronouns and their forms
 PRONOUNS = {'I':{
                     'obj':'me',
                     'poss_adj': 'my',
@@ -144,7 +170,7 @@ PRONOUNS = {'I':{
             'it':{
                     'obj':'it',
                     'poss_adj': 'its',
-                    'poss_pronoun': 'its',  # INACCURATE. doesn't exist. Deal with it?
+                    'poss_pronoun': 'its',  # INACCURATE
                     'reflex': 'itself'
                 },
             'we':{
@@ -161,9 +187,9 @@ PRONOUNS = {'I':{
                 }
             }
 
-# Common irregular verbs
+# Common irregular verbs. From: 
+# https://www.englisch-hilfen.de/en/grammar/unreg_verben.htm
 IRREGULAR_VERBS = {
-    """ From: https://www.englisch-hilfen.de/en/grammar/unreg_verben.htm """
     'beat':{
         PAST_TENSE:'beat',
         PAST_PART:'beaten'
@@ -494,6 +520,7 @@ IRREGULAR_VERBS = {
     }
 }
 
+# Forms of word 'be'
 BE = {
     NOUN: {
         PRESENT_TENSE: {
@@ -541,7 +568,7 @@ BE = {
     }
 }
 
-# cardinal numbers
+# Cardinal numbers
 CARDINALS = {
     1:'one',
     2:'two',
@@ -604,111 +631,8 @@ ORDINALS = [
     'hundredth'
 ]
 
-# allowed sentence model tag characters
+# Allowed sentence model tag characters
 ALLOWED_CHARS = 'A-Za-z0-9$.?'
-
-# Add words to WordList, tags allowed
-WORDLIST_TAGS_ALLOWED = {
-
-    'NN': 'Noun',
-
-    'NP': 'Proper noun',
-
-    'JJ': 'Adjective',
-
-    'VB': 'Verb',
-
-    # Adverbs
-    'RBPL': 'Adverb of place', # e.g. indoors, outside, everywhere, abroad, here, upstairs
-    'RBTM': 'Adverb of time', # e.g. later, yesterday, now, tomorrow
-    'RBFR': 'Adverb of frequency', # e.g. often, seldom, rarely, daily, always, never, occasionally, soon
-
-    # Numbers, ordinals
-    'CD': 'Cardinal numbers', # one, two, 5 etc
-    'OD': 'Ordinal numbers', # first, third etc
-
-    # Modal auxiliiaries
-    'MD': 'Modal auxiliary', # e.g. can, could, may, might, must, ought to, shall, should, will, and would
-
-    # Prepositions
-    'IN': 'Preposition',
-
-    # Articles
-    'AI': 'Indefinite article (a/an)',
-    'AD': 'Definite article'
-}
-
-
-# Add sentence model, tags allowed
-# MAD EDITS REQUIRED
-MODEL_TAGS_ALLOWED = {
-    # Nouns
-    'NN': 'Noun, singular',
-    'NN$': 'Noun, singular, possessive',
-    'NNS': 'Noun, plural',
-    'NNS$': 'Noun, plural, possessive',
-
-    'BE': 'forms of be',
-
-    # Proper nouns
-    'NPM': 'Proper noun, male',
-    'NPM$': 'Proper noun, male, possessive',
-    'NPF': 'Proper noun, female',
-    'NPF$': 'Proper noun, female, possessive',
-    'NPN': 'Proper noun, neutral',
-    'NPN$': 'Proper noun, neutral, possessive',
-
-    # Adjectives
-    'JJ': 'Adjective, base (positive) form',
-    'JJR': 'Adjective, comparative form',
-    'JJT': 'Adjective, superlative form (morphologically)',
-
-    # Verbs
-    'VB': 'Verb, base form (also 3rd pers. plural, present)',
-    'VBZ': 'Verb, 3rd pers. singular, present',
-    'VBD': 'Verb, simple past tense',
-    'VBG': 'Verb, present participle',
-
-    # Adverbs
-    'RB': 'Adverb', # ALSO ALLOW IN WORDLIST???
-    'RBR': 'Adverb, comparative',
-    'RBT': 'Adverb, superlative',
-    'RBPL': 'Adverb of place', # e.g. indoors, outside, everywhere, abroad, here, upstairs
-    'RBTM': 'Adverb of time', # e.g. later, yesterday, now, tomorrow
-    'RBFR': 'Adverb of frequency', # e.g. often, seldom, rarely, daily, always, never, occasionally, soon
-
-    # Numbers, ordinals
-    'CD': 'Cardinal numbers', # one, two, 5 etc
-    'OD': 'Ordinal numbers', # first, third etc
-
-    # Modal auxiliaries
-    'MD': 'Modal auxiliary', # e.g. can, could, may, might, must, ought to, shall, should, will, and would
-
-    # Prepositions
-    'IN': 'Preposition',
-
-    # Articles
-    'AI': 'Indefinite article (a/an)',
-    'AD': 'Definite article (the)'
-}
-
-
-# Special words need not be stored in database
-# HOW DO WE EVEN
-SPECIAL_WORDS = {
-    'BEZ': 'is',
-    'BER': 'are',
-    'BED': 'were',
-    'BEDZ': 'was',
-    'HS': 'has',
-    'HV': 'have',
-    'HVD': 'had',
-    'NOT': 'not',
-    'TO': 'to',
-    'OF': 'of',
-    'BUT': 'but'
-}
-
 
 # (incomplete) List of exceptions to grammatical rules, processed differently
 NOUN_EXCEPTIONS = [
@@ -724,7 +648,6 @@ NOUN_EXCEPTIONS = [
     'moon',
     'zero'
 ]
-
 
 # (incomplete) List of nouns that don't change in plural form
 SAME_IN_PLURAL = [
@@ -744,9 +667,8 @@ SAME_IN_PLURAL = [
     'buffalo'
 ]
 
-
-# (incomplete) List of adverbs that don't change from their adjective form
-###### OBS ###### # HÄR ÄR NÅGRA
+# (incomplete) List of adverbs that don't change from their 
+# adjective form. Some here: 
 # https://www.englisch-hilfen.de/en/grammar/adverbien2.htm
 SAME_AS_ADJ = [
     'early',
@@ -762,8 +684,8 @@ SAME_AS_ADJ = [
     'wrong'
 ]
 
-
-# Words that don't play well with sentence generator, probably due to poor 
-# implementation of e.g. verb conjugation, but possibly also due to weird 
-# exceptions to grammatical rules or peculiarities of the English language
+# Words that don't play well with sentence generator, probably due to
+# poor implementation of e.g. verb conjugation, but possibly also due 
+# to weird exceptions to grammatical rules or peculiarities of the 
+# English language
 WORD_BLACKLIST = []

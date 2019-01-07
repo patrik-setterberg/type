@@ -4,7 +4,6 @@ from wtforms import StringField, PasswordField, BooleanField, RadioField, Submit
 from wtforms.validators import DataRequired, Email, EqualTo 
 from wtforms.validators import Length, ValidationError
 from app.models import User, WordList, SentenceModel
-from app.sentence_generator import check_word_tag, check_sentence_tags
 from app.sentence_gen_statics import WORD_BLACKLIST, ALLOWED_CHARS
 import re
 
@@ -102,16 +101,14 @@ class SentenceForm(FlaskForm):
         if not re.match(pattern, sentence.data):
             raise ValidationError('Sentence model formatted incorrectly.')
         # check tags
-        # tag = check_sentence_tags(sentence.data)
-        # if tag != 'allowed':
-        #     raise ValidationError('Sentence model contains illegal tag: ' + tag)
+        # IMPLEMENT
         # check duplicates
         existing_sentence = SentenceModel.query.filter_by(sentence=sentence.data).first()
         if existing_sentence is not None:
             raise ValidationError('Sentence model already exists in database.')
 
 '''
-# word classes template
+# word classes template (obsolete?)
 class WordForm(FlaskForm):
     word = StringField('Word', validators=[DataRequired(),
                        Length(min=1, max=32)])
@@ -142,11 +139,6 @@ class WordForm(FlaskForm):
         existing_word = WordList.query.filter_by(word=word.data).first()
         if existing_word is not None:
             raise ValidationError('Word already exists in database.')
-
-    def validate_tag(self, tag):
-        if not check_word_tag(tag.data):
-            raise ValidationError('Tag nog allowed. Check spelling or \
-                                  add tag to ALLOWED_TAGS')
 '''
 
 # Validate words before adding to WordList table
@@ -155,7 +147,7 @@ def val_word(word):
         if not re.match('[a-zA-Z0-9]+', letter):
             raise ValidationError('Only letters and numbers allowed')
         
-    if word in WORD_BLACKLIST:  ##### MAKE SURE WORD_BLACKLIST IS THERE
+    if word in WORD_BLACKLIST:
         raise ValidationError('Word banned. Sorry...')
 
     existing_word = WordList.query.filter_by(word=word).first()

@@ -7,7 +7,6 @@ from app.forms import EditEmailForm, EditPasswordForm, EditUsernameForm, Sentenc
 from app.forms import ResetPasswordForm, NounForm, AdjectiveForm, VerbForm, AdverbForm
 from app.forms import ProperNounForm, SpecialForm
 from app.sentence_generator import generate_sentence
-from app.sentence_gen_statics import WORDLIST_TAGS_ALLOWED
 from datetime import datetime
 from werkzeug.urls import url_parse
 from werkzeug.security import generate_password_hash
@@ -281,7 +280,6 @@ def manage_words():
                             prop_noun_form=prop_noun_form,
                             special_form=special_form,
                             words=words,
-                            tags=WORDLIST_TAGS_ALLOWED,
                             title='Sentence generator word list')
 
 
