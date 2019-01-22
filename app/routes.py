@@ -11,16 +11,26 @@ from datetime import datetime
 from werkzeug.urls import url_parse
 from werkzeug.security import generate_password_hash
 from app.email import send_password_reset_email
+from config import SECRET_HIGH_SCORE_KEY
+import json
 
 
 # Home
-@app.route('/')
-@app.route('/index')
+@app.route('/', methods=['GET'])
+@app.route('/index', methods=['GET'])
 def index():
     return render_template('index.html', title='Home')
 
 
-# Survive game
+# High score list
+@app.route('/high_scores', methods=['GET'])
+def high_scores():
+    scores = User.query.order_by(User.high_score.desc()).all()
+
+    return render_template('high_scores.html', title='High Scores', scores=scores)
+
+
+# Survive game ######## KANSKE TA BORT HELT OCH HÅLLET EN GÅNG FÖR ALLA????????
 @app.route('/survive')
 def survive():
     return render_template('survive.html', title='Survive: Type or die!')
@@ -163,18 +173,83 @@ def reset_password(token):
     return render_template('reset_password.html', form=form)
 
 
+# Get username and score
+@app.route('/get_name_and_score', methods=['GET'])
+def get_name_and_score():
+    user_info = {}
+    if current_user.is_authenticated:
+        user_info['username'] = current_user.username
+        try:
+            user_info['high_score'] = current_user.high_score
+        except:
+            user_info['high_score'] = 0
+    else:
+        user_info['username'] = 'anonymous'
+        user_info['high_score'] = 0
+
+    return json.dumps(user_info)
+
+
+# Get best score achieved by any user
+@app.route('/get_high_score', methods=['GET'])
+def get_high_score():
+    score_dict = {}
+    try:
+        leader = User.query.order_by(User.high_score.desc()).first()
+        score_dict['high_score'] = leader.high_score
+    except:
+        score_dict['high_score'] = 0
+
+    return json.dumps(score_dict)
+
+
+@app.route('/get_high_score_key', methods=['GET'])
+@login_required
+def get_high_score_key():
+    """ Get secret high score key. """
+
+    secret = {'high_score_key': SECRET_HIGH_SCORE_KEY}
+    return json.dumps(secret)
+
+
+@app.route('/update_user_score/<high_score_cypher>/<score>', methods=['GET'])
+@login_required
+def update_user_score(high_score_cypher, score):
+    """ Update user score. To prevent users from being able to
+        update scores manually by simply visiting e.g.
+        /update_user_score/2000 a weak security measure was added.
+        Scores are multiplied by a static number stored in app.config
+        and verified in this route. Not secure but good enough for
+        current app. """
+    score = int(score)
+    deciphered = int(high_score_cypher) / SECRET_HIGH_SCORE_KEY
+
+    if deciphered == score:
+        current_user.high_score = score
+        db.session.commit()
+        # log successful score update?
+        return str(current_user.high_score)
+    else:
+        return 'failure'
+        # else?
+        # log failed attempted?
+        # return something?
+
+
 # test sentence generator, TEMPORARY
 @app.route('/sentence', methods=['GET', 'POST'])
 def sentence():
-
-    # generate_sentence returns a LIST of word OBJECTS
-    sentence_list = generate_sentence()
-
-    sentence = ''
-    for item in sentence_list:
-        sentence += item.word + ' '
     
-    return render_template('sentence.html', sentence=sentence)
+    return render_template('sentence.html')
+
+
+@app.route('/get_sent', methods=['GET'])
+def get_sent():
+    """ Get and return a sentence from sentence_generator.py """
+
+    sentence = generate_sentence()
+    
+    return sentence
 
 
 # Manage word list

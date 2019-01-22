@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h3>High scores</h3>
+<table>
+    {% for user in scores %}
+    <tr>
+        <td>{{ loop.index }}.</td>
+        <td><p><b>{{ user.username }}</b></p></td>
+        <td><p>{{ user.high_score }}</p></td>                    
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

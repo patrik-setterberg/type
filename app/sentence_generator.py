@@ -559,7 +559,7 @@ class Sentence:
 
 
     def get_base_pronoun(self, tag):
-        """ Create pronoun wprd object and figure out correct base
+        """ Create pronoun word object and figure out correct base
             pronoun. """
 
         tags = tag.split('.')
@@ -906,7 +906,11 @@ def generate_sentence():
     sentence_model = random_sentence_model()
     new_sentence = Sentence(sentence_model.sentence)
 
-    return new_sentence.sentence
+    sentence = ''
+    for item in new_sentence.sentence:
+        sentence += item.word + ' '
+
+    return sentence.capitalize().rstrip() + '.'
 
 
 def random_sentence_model():

@@ -11,50 +11,43 @@
     </title>
 
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
     <!-- statics -->
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/style.css') }}">
-
     <!-- Google fonts -->
     <link href="https://fonts.googleapis.com/css?family=Heebo" rel="stylesheet">
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <body>
+<div class="page-wrapper">
     <div class="container">
         <header>        
             {# NAVIGATION #}
             <nav class="navbar">
                 <ul class="left">
                     <li>
-                        <a class="fromLeft" href="#">Games</a>
-                    </li>
-                    <li>
-                        <a class="fromLeft" href="#">High Scores</a>
+                        <a href="{{ url_for('high_scores') }}">High Scores</a>
                     </li>
                 </ul>
                 <ul class="site-header">
                     <li>
-                        <a class="fromLeft" href="{{ url_for('index') }}">Typemania</a>
+                        <a class="shadow" href="{{ url_for('index') }}">Typeman<span class="color-splash">i</span>a</a>
                     </li>
                 </ul>
                 <ul class="right">
-                {% if current_user.is_authenticated %}
-                    {% if current_user.username == 'admin' %}
                     <li>
-                        <a class="fromLeft" href="#">Admin</a> 
-                    </li>
+                    {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('user', username=current_user.username) }}"><i class="fas fa-user"></i> {{ current_user.username }}</a> 
+                        |
+                        <a href="{{ url_for('logout') }}">Logout</a> 
+                    
+                    {% else %}
+                        <a style="padding-right:0;" href="{{ url_for('login') }}">Login</a> 
+                        /
+                        <a href="{{ url_for('register') }}">Register</a>
                     {% endif %}
-                    <li>
-                        <a class="fromLeft" href="{{ url_for('logout') }}">Logout</a> 
-                    </li>    
-                {% else %}
-                    <li>
-                        <a class="fromLeft" href="{{ url_for('login') }}">Login</a> 
                     </li>
-                    <li style="padding:0;">/</li>
-                    <li>
-                        <a class="fromLeft" href="{{ url_for('register') }}">Register</a>
-                    </li>
-                {% endif %}
                 </ul>
             </nav>
             {% with messages = get_flashed_messages() %}
@@ -67,13 +60,14 @@
                 {% endif %}
             {% endwith %}
         </header>
-    </div>
-    
-
-    {# page content goes in here #}
-    <div class="container">
+        {# page content goes in here #}
         {% block content %}{% endblock %}
-    </div>
+        </div>
     
+    <div class="footer">
+        <p>Learning project, 2019. App source available on <a href="https://github.com/patrik-setterberg/type"><i class="fab fa-github"></i> GitHub</a>. Contact me at <a href="mailto:min@mail.com">my@email.com</a>.</p>
+    </div>
+</div>
+</div>
 </body>
 </html>

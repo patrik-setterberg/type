@@ -1,7 +1,17 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    <script>
+        $(document).ready(function(){
+            $("button").click(function(){
+                $.ajax({url: "/get_sent", success: function(result){
+                    $("#sent").html(result);
+                }});
+            });
+        });
+    </script>
     <div class="row">
-        <p>{{ sentence }}</p>        
-    </div>    
+        <p id="sent"></p>
+        <button>Get sentence</button>
+    </div>
 {% endblock %}
