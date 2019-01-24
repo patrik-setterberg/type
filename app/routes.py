@@ -173,9 +173,10 @@ def reset_password(token):
     return render_template('reset_password.html', form=form)
 
 
-# Get username and score
 @app.route('/get_name_and_score', methods=['GET'])
 def get_name_and_score():
+    """ Get username and score. Also make sure user 'anonymous' exists. """
+
     user_info = {}
     if current_user.is_authenticated:
         user_info['username'] = current_user.username
@@ -184,8 +185,21 @@ def get_name_and_score():
         except:
             user_info['high_score'] = 0
     else:
-        user_info['username'] = 'anonymous'
-        user_info['high_score'] = 0
+        try:
+            user = User.query.filter_by(username='anonymous').first()
+            try:
+                user_info['username'] = user.username
+                user_info['high_score'] = user.high_score
+            except:
+                user_info['username'] = 'anonymous'
+                user_info['high_score'] = 0
+        except:
+            anon = User(username='anonymous')
+            db.session.add(anon)
+            db.session.commit()
+
+            user_info['username'] = 'anonymous'
+            user_info['high_score'] = 0
 
     return json.dumps(user_info)
 
@@ -204,7 +218,6 @@ def get_high_score():
 
 
 @app.route('/get_high_score_key', methods=['GET'])
-@login_required
 def get_high_score_key():
     """ Get secret high score key. """
 
@@ -213,7 +226,6 @@ def get_high_score_key():
 
 
 @app.route('/update_user_score/<high_score_cypher>/<score>', methods=['GET'])
-@login_required
 def update_user_score(high_score_cypher, score):
     """ Update user score. To prevent users from being able to
         update scores manually by simply visiting e.g.
@@ -225,10 +237,16 @@ def update_user_score(high_score_cypher, score):
     deciphered = int(high_score_cypher) / SECRET_HIGH_SCORE_KEY
 
     if deciphered == score:
-        current_user.high_score = score
-        db.session.commit()
-        # log successful score update?
-        return str(current_user.high_score)
+        if current_user.is_authenticated:
+            current_user.high_score = score
+            db.session.commit()
+            # log successful score update?
+            return str(current_user.high_score)
+        else:
+            user = User.query.filter_by(username='anonymous').first()
+            user.high_score = score
+            db.session.commit()
+            return str(user.high_score)
     else:
         return 'failure'
         # else?

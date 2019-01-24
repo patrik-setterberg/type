@@ -153,16 +153,20 @@ div.column {
     transition: all 0.2s cubic-bezier(.25,.8,.25,1);
 }
 
+
+/* CARD */
+
 .card {
     background-color:white;
     width: 55%;
     display: block;
     margin: 1em auto 4em auto;
+    padding-bottom: 0.1em;  /* ??? */
     color: #333;
     border-radius: 4px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
     transition: all 0.2s cubic-bezier(.25,.8,.25,1);
-
+    
 }
 
 .card:hover {
@@ -192,6 +196,54 @@ div.column {
 
 .card a:hover {
     color:#333;
+}
+
+
+/* HIGH SCORES */
+
+.high-scores {
+    padding: 0 2em 1em 2em;
+    table-layout: fixed;
+    width: 96%;
+    border-collapse: collapse;
+    margin: 0 2% 0.5em 2%;
+    font-size: 1.5em;
+}
+
+.high-scores th {
+    text-align: left;
+    padding: 0.5em;
+    border-bottom: 1.5pt #ccc solid;
+}
+
+.high-scores th:nth-child(1) {
+    width: 10%;
+}
+
+.high-scores th:nth-child(2) {
+    width: 70%;
+}
+
+.high-scores th:nth-child(3) {
+    width: 20%;
+}
+
+.high-scores tr:nth-child(odd) {
+    background-color: #F7F7F7;
+}
+
+.high-scores td {
+    padding: 0.5em;
+}
+
+#anon-disclaimer {
+    font-size: 1em;
+    padding-bottom: 0;
+}
+
+.high-scores td:nth-child(1) {
+    text-align: center;
+    font-weight: bold;
 }
 
 .footer {

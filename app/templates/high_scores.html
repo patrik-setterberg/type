@@ -1,14 +1,23 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h3>High scores</h3>
-<table>
-    {% for user in scores %}
-    <tr>
-        <td>{{ loop.index }}.</td>
-        <td><p><b>{{ user.username }}</b></p></td>
-        <td><p>{{ user.high_score }}</p></td>                    
-    </tr>
-    {% endfor %}
-</table>
+<div class="card">
+<h3 class="shadow">H<span class="color-splash">i</span>gh scores</h3>
+<p>A user's score is their highest number of typed words per minute (WPM) or, more precisely, how many words they would have typed if they had continued typing at the same pace for a full minute. Click a user's name to view their user page.</p>
+    <table class="high-scores">
+        <tr>
+            <th>&nbsp;</th>
+            <th>User</th>
+            <th>WPM</th>
+        </tr>
+        {% for user in scores %} {# KANSKE FIXA PAGING HÄR? BARA VISA TYP 25 per sida #}
+        <tr>
+            <td>{{ loop.index }}.</td>
+            <td><a href="{{ url_for('user', username=user.username) }}">{{ user.username }}</a>{% if user.username == 'anonymous' %}*{% endif %}</td>
+            <td>{{ user.high_score }}</td>                    
+        </tr>
+        {% endfor %}
+    </table>
+    <p id="anon-disclaimer">* <em>Highest score achieved by users who are not logged in</em>.</p>
+</div>
 {% endblock %}

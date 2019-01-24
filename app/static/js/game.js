@@ -135,30 +135,30 @@ const endGame = () => {
 
 const processScore = (score, personalBest) => {
     let gameEndMessage;
-
-    if (currentPlayer.username === 'anonymous') {
+    if (score > siteHighScore) {
+        updateUserScore(score);
+        siteHighScore = score;
+        gameEndMessage = `New Site High Score: ${score} words per minute! Congratulations!`;
+    } else if (score < personalBest) {
         gameEndMessage = `You typed at ${score} words per minute!`;
-    } else {
-        if (score > siteHighScore) {
-            updateUserScore(score);
-            siteHighScore = score;
-            gameEndMessage = `New Site High Score: ${score} words per minute! Congratulations!`;
-        } else if (score < personalBest) {
+    } else if (score > personalBest) {
+        updateUserScore(score);
+        if (currentPlayer.username === 'anonymous') {
             gameEndMessage = `You typed at ${score} words per minute!`;
-        } else if (score > personalBest) {
-            updateUserScore(score);
-            gameEndMessage = `New personal High Score! ${score} words per minute!`;
-        } else if (score === siteHighScore) {
-            gameEndMessage = `Tied for a personal High Score at ${score} words per minute!`;
         } else {
-            gameEndMessage = 'Something went wrong, probably.';
+            gameEndMessage = `New personal High Score! ${score} words per minute!`;
         }
+    } else if (score === siteHighScore) {
+        gameEndMessage = `Tied for a site High Score at ${score} words per minute!`;
+    } else {
+        gameEndMessage = 'Something went wrong, probably.';
     }
+    
     timeDisplay.innerHTML = gameEndMessage;
 }
 
 const countFinalSentenceScore = () => {
-    let inputSentenceArr = gameInput.value.replace(/[^a-zA-Z-' ]/g, "").toLowerCase().split(" ");
+    let inputSentenceArr = gameInput.value.replace(/[^a-zA-Z-' ]/g, "").toLowerCase().trimStart().split(" ");
     let shortestArrLen;
     let score = 0;
 
