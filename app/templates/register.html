@@ -1,50 +1,37 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-6 mx-auto">
-        <h3>Register</h3>
-        <p>Registered users' scores are tracked on personal profile pages as well as site-wide high score lists.</p>
-        <p>Compete against yourself and others, and become a faster typist!</p>
-        <br>
-        
-        <form action="" method="POST">
-            {{ form.hidden_tag() }}
-            <p>
-                {{ form.username.label }}<br>
-                {{form.username(size=32) }}<br>
-                {% for error in form.username.errors %}
-                <span style="color:red;">[{{ error }}]</span>
-                {% endfor %}
-            </p>
-            <p>Your username is displayed on your profile page as well as on any high-score lists you manage to reach a position on.</p>
-            <br>
-            <p>
-                {{ form.email.label }}<br>
-                {{ form.email(size=32) }}<br>
-                {% for error in form.email.errors %}
-                <span style="color:red;">[{{ error }}]</span>
-                {% endfor %}
-            </p>
-            <p>Your e-mail address is only ever used to reset your login information should you forget your username or password.</p>
-            <br>
-            <p>
-                {{ form.password.label }}<br>
-                {{ form.password(size=32) }}<br>
-                {% for error in form.password.errors %}
-                <span style="color:red;">[{{ error }}]</span>
-                {% endfor %}                
-            </p>
-            <p>
-                {{ form.password2.label }}<br>
-                {{ form.password2(size=32) }}<br>
-                {% for error in form.password2.errors %}
-                <span style="color:red;">[{{ error }}]</span>
-                {% endfor %}                
-            </p>
-            <p>{{ form.submit() }}</p>
-        </form>
 
-    </div>
+<div class="card">
+    <h3>Reg<span class="color-splash">i</span>ster</h3>
+    <p>Registered users' scores are tracked on personal profile pages as well as on the site-wide high-score list. Email addresses are only ever used to reset your login information should you forget your username or password.</p>
+    <form class="user-form" action="" method="POST">
+        {{ form.hidden_tag() }}
+            {{ form.username.label }}<br>
+            {{form.username(size=24) }}<br>
+            {% for error in form.username.errors %}
+            <span>[ Error: {{ error }} ]</span><br><br>
+            {% endfor %}
+        
+            {{ form.email.label }}<br>
+            {{ form.email(size=24) }}<br>
+            {% for error in form.email.errors %}
+            <span style="color:red;">[{{ error }}]</span>
+            {% endfor %}
+        
+            {{ form.password.label }}<br>
+            {{ form.password(size=24) }}<br>
+            {% for error in form.password.errors %}
+            <span style="color:red;">[{{ error }}]</span>
+            {% endfor %}                
+        
+            {{ form.password2.label }}<br>
+            {{ form.password2(size=24) }}<br>
+            {% for error in form.password2.errors %}
+            <span style="color:red;">[{{ error }}]</span>
+            {% endfor %}                
+        
+            {{ form.submit() }}
+    </form>
 </div>
 {% endblock %}

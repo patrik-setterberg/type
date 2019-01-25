@@ -18,7 +18,7 @@ class LoginForm(FlaskForm):
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(),
                            Length(min=3, max=20)])
-    email = StringField('Email', validators=[DataRequired(), Email(),
+    email = StringField('Email address', validators=[DataRequired(), Email(),
                         Length(min=5, max=50)])
     password = PasswordField('Password', validators=[DataRequired(),
                              Length(min=6, max=50)])
@@ -28,7 +28,8 @@ class RegistrationForm(FlaskForm):
 
     def validate_username(self, username):
         user = User.query.filter_by(username=username.data).first()
-        if user is not None:
+        if (user is not None or username.data.lower() in 
+            ['admin', 'administrator', 'anon', 'anonymous']):
             raise ValidationError('Please use a different username.')
 
     def validate_email(self, email):
@@ -49,12 +50,13 @@ class EditUsernameForm(FlaskForm):
     def validate_username(self, username):
         if username.data != self.original_username:
             user = User.query.filter_by(username=self.username.data).first()
-            if user is not None:
+            if (user is not None or username.data.lower() in 
+            ['admin', 'administrator', 'anon', 'anonymous']):
                 raise ValidationError('Please use a different username.')
 
 
 class EditEmailForm(FlaskForm):
-    email = StringField('Change E-Mail Address', validators=[DataRequired(),
+    email = StringField('Change Email Address', validators=[DataRequired(),
                         Email(), Length(min=5, max=50)])
     submit_email = SubmitField('Submit')
 
