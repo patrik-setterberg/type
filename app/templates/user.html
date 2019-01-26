@@ -3,8 +3,8 @@
 {% block content %}
 <div class="card">
     <h2><i class="fa fa-user-circle"></i> {{ user.username }}<span id="trophy"><i class="fas fa-trophy"></i></span><script src="{{ url_for('static', filename='js/trophy.js') }}"></script><script>setColor({{ user.high_score_pos }});</script></h2>
-    <p id="rank">Current rank: <span class="float-right">#{{ user.high_score_pos }}</span></p>
-    <p id="best-score">Best score: <span class="float-right">{{ user.high_score }} WPM</span></p>
+    <p id="rank">Current rank: <span class="float-right bold">#{{ user.high_score_pos }}</span></p>
+    <p id="best-score">Best score: <span class="float-right bold">{{ user.high_score }} WPM</span></p>
     
     {% if current_user.username == user.username %}
     <h3><i class="fas fa-wrench"></i> Settings</h3>

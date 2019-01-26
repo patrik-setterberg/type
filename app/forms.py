@@ -41,7 +41,7 @@ class RegistrationForm(FlaskForm):
 class EditUsernameForm(FlaskForm):
     username = StringField('Change Username', validators=[DataRequired(),
                            Length(min=3, max=20)])
-    submit_username = SubmitField('Submit')
+    submit_username = SubmitField('Change')
 
     def __init__(self, original_username, *args, **kwargs):
         super(EditUsernameForm, self).__init__(*args, **kwargs)
@@ -58,7 +58,7 @@ class EditUsernameForm(FlaskForm):
 class EditEmailForm(FlaskForm):
     email = StringField('Change Email Address', validators=[DataRequired(),
                         Email(), Length(min=5, max=50)])
-    submit_email = SubmitField('Submit')
+    submit_email = SubmitField('Change')
 
     def __init__(self, original_email, *args, **kwargs):
         super(EditEmailForm, self).__init__(*args, **kwargs)
@@ -76,7 +76,7 @@ class EditPasswordForm(FlaskForm):
                              Length(min=6, max=50)])
     password2 = PasswordField('Repeat Password', validators=[
                               DataRequired(), EqualTo('password')])
-    submit_password = SubmitField('Submit')
+    submit_password = SubmitField('Change')
 
 
 class ResetPasswordRequestForm(FlaskForm):

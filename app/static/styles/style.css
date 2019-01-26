@@ -72,7 +72,7 @@ header ul.flash li {
     margin-left: 0.5em;
 }
 
-.user-form #submit {
+#submit, #submit_username, #submit_email, #submit_password {
     width: 25%;
     font-size: 1.4em;
     margin-top: 0;
@@ -326,6 +326,10 @@ div.column {
 
 .float-right {
     float: right;
+}
+
+.bold {
+    font-weight: bold;
 }
 
 /* FOOTER */
