@@ -94,7 +94,16 @@ def register():
 @app.route('/user/<username>')
 @login_required
 def user(username):
+    """  """
+
     user = User.query.filter_by(username=username).first_or_404()
+    high_scores = User.query.order_by(User.high_score.desc()).all()
+
+    name_list = []
+    for player in high_scores:
+        name_list.append(player.username)
+
+    user.high_score_pos = name_list.index(username) + 1
     
     return render_template('user.html', title='Profile: ' + user.username, user=user)
 

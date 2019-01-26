@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
 <div class="card">
     <h3>Reg<span class="color-splash">i</span>ster</h3>
     <p>Registered users' scores are tracked on personal profile pages as well as on the site-wide high-score list. Email addresses are only ever used to reset your login information should you forget your username or password.</p>
@@ -16,19 +15,19 @@
             {{ form.email.label }}<br>
             {{ form.email(size=24) }}<br>
             {% for error in form.email.errors %}
-            <span style="color:red;">[{{ error }}]</span>
+            <span>[ Error: {{ error }} ]</span><br><br>
             {% endfor %}
         
             {{ form.password.label }}<br>
             {{ form.password(size=24) }}<br>
             {% for error in form.password.errors %}
-            <span style="color:red;">[{{ error }}]</span>
+            <span>[ Error: {{ error }} ]</span><br><br>
             {% endfor %}                
         
             {{ form.password2.label }}<br>
             {{ form.password2(size=24) }}<br>
             {% for error in form.password2.errors %}
-            <span style="color:red;">[{{ error }}]</span>
+            <span>[ Error: {{ error }} ]</span><br><br>
             {% endfor %}                
         
             {{ form.submit() }}

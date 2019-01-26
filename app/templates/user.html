@@ -1,26 +1,20 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <!-- Word & Input -->
-    <div class="row">
-            <div class="col-md-6 mx-auto">
-                <h3><i class="fa fa-user-circle"></i> {{ user.username }}</h3>
-                {% if current_user.username == 'admin' and user.last_seen %}
-                <p>Last seen on: {{ user.last_seen.strftime("%Y-%m-%d at %H:%M") }}</p>
-                {% endif %}
-                <p class="lead">
-                    Welcome to yo user page.
-                </p>
+<div class="card">
+    <h2><i class="fa fa-user-circle"></i> {{ user.username }}<span id="trophy"><i class="fas fa-trophy"></i></span><script src="{{ url_for('static', filename='js/trophy.js') }}"></script><script>setColor({{ user.high_score_pos }});</script></h2>
+    <p id="rank">Current rank: <span class="float-right">#{{ user.high_score_pos }}</span></p>
+    <p id="best-score">Best score: <span class="float-right">{{ user.high_score }} WPM</span></p>
     
-                <!-- Box info -->
-                <div class="row mt-5">
-                    <div class="col-md-12">
-                        <div class="card card-body bg-secondary text-white">
-                            <h5>Note maybe:</h5>
-                            <p>Info about yo score and stuff perhaps eller ingen sån här box nödvändigtvis... Inte alls tror jag.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>    
+    {% if current_user.username == user.username %}
+    <h3><i class="fas fa-wrench"></i> Settings</h3>
+    <p>If you wish to change your username, registered email address or your password, go to the <a href="{{ url_for('edit_user') }}">edit user information</a> page.</p>
+    <p>Should you wish to delete your account permanently, head over to the <a href="{{ url_for('index') }}">delete account</a> page.</p>
+    {% else %}
+        {% if user.last_seen %}
+        <h3>Activity</h3>
+        <p>{{ user.username }} was last here on {{ user.last_seen.strftime("%A, %b %d, %Y") }}.</p>
+        {% endif %}
+    {% endif %}
+</div>  
 {% endblock %}

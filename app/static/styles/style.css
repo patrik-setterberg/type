@@ -218,19 +218,27 @@ div.column {
 }
 
 .card p {
-    margin: 1em;
-    padding: 0 0.5em 1em 0.5em;
+    margin: 2% 5% 5% 5%;
+    padding: 0;
     line-height: 1.8em;
     font-size: 1.2em;
 }
 
-.card h3 {
+.card h2, .card h3 {
+    margin: 5% 5% 0% 5%;
     font-weight: bold;
-    font-size: 1.4em;
     letter-spacing: 0.1em;
-    margin: 1em;
-    padding: 1em 0.5em 0 0.2em;
-    text-shadow: 1px 1px 2px rgba(92, 92, 92, 0.5);
+    text-shadow: 1px 1px 2px rgba(155, 155, 155, 0.2);
+}
+
+.card h2 {
+    font-size: 1.8em;
+    padding: 0.8em 0 0 0;
+}
+
+.card h3 {
+    font-size: 1.4em;
+    padding: 1em 0 0 0;
 }
 
 .card a, .card a:visited {
@@ -249,9 +257,9 @@ div.column {
 .high-scores {
     padding: 0 2em 1em 2em;
     table-layout: fixed;
-    width: 96%;
+    width: 90%;
     border-collapse: collapse;
-    margin: 0 2% 0.5em 2%;
+    margin: 0 5% 0.5em 5%;
     font-size: 1.5em;
 }
 
@@ -266,11 +274,11 @@ div.column {
 }
 
 .high-scores th:nth-child(2) {
-    width: 70%;
+    width: 74%;
 }
 
 .high-scores th:nth-child(3) {
-    width: 20%;
+    width: 16%;
 }
 
 .high-scores tr:nth-child(odd) {
@@ -286,11 +294,39 @@ div.column {
     font-weight: bold;
 }
 
+.high-scores td:nth-child(3) {
+    padding-left: 1.8em;
+}
+
 #anon-disclaimer {
     font-size: 1em;
     padding-bottom: 0;
 }
 
+
+/* USER PAGE */
+
+#rank, #best-score {
+    padding: 0;
+    margin: 3% 5%;
+    border-bottom: 1px rgb(230, 230, 230) solid;
+    font-size: 1.8em;
+}
+
+#rank {
+    padding-top: 4%;
+}
+
+#trophy {
+    float: right;
+    color: #BFC1C2;
+    text-shadow: none; /* override parent shadow */
+    border-bottom: 1px rgb(230, 230, 230) solid;
+}
+
+.float-right {
+    float: right;
+}
 
 /* FOOTER */
 
