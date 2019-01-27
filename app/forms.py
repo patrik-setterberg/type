@@ -1,6 +1,7 @@
 from flask import render_template, flash, redirect, url_for
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, RadioField, SubmitField
+from wtforms import StringField, PasswordField, BooleanField, RadioField 
+from wtforms import SubmitField
 from wtforms.validators import DataRequired, Email, EqualTo 
 from wtforms.validators import Length, ValidationError
 from app.models import User, WordList, SentenceModel
@@ -68,11 +69,12 @@ class EditEmailForm(FlaskForm):
         if email.data != self.original_email:
             mail = User.query.filter_by(email=self.email.data).first()
             if mail is not None:
-                raise ValidationError('Please choose a different e-mail address.')
+                raise ValidationError(
+                    'Please choose a different e-mail address.')
                 
 
 class EditPasswordForm(FlaskForm):
-    password = PasswordField('Change Password', validators=[DataRequired(),
+    password = PasswordField('New Password', validators=[DataRequired(),
                              Length(min=6, max=50)])
     password2 = PasswordField('Repeat Password', validators=[
                               DataRequired(), EqualTo('password')])
@@ -81,7 +83,7 @@ class EditPasswordForm(FlaskForm):
 
 class ResetPasswordRequestForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
-    submit = SubmitField('Request Password Reset')
+    submit = SubmitField('Reset')
 
 
 class ResetPasswordForm(FlaskForm):
@@ -89,7 +91,7 @@ class ResetPasswordForm(FlaskForm):
                              Length(min=6, max=50)])
     password2 = PasswordField('Repeat Password', validators=[
                               DataRequired(), EqualTo('password')])
-    submit = SubmitField('Request Password Reset')
+    submit = SubmitField('Submit')
 
 
 class SentenceForm(FlaskForm):
@@ -101,47 +103,18 @@ class SentenceForm(FlaskForm):
         # check model formatting
         pattern = '([' + ALLOWED_CHARS + ']+\/)+[' + ALLOWED_CHARS + ']+'
         if not re.match(pattern, sentence.data):
-            raise ValidationError('Sentence model formatted incorrectly.')
+            raise ValidationError(
+                'Sentence model formatted incorrectly.')
         # check tags
         # IMPLEMENT
         # check duplicates
-        existing_sentence = SentenceModel.query.filter_by(sentence=sentence.data).first()
+        existing_sentence = (SentenceModel.query
+                             .filter_by(sentence=sentence.data)
+                             .first())
         if existing_sentence is not None:
-            raise ValidationError('Sentence model already exists in database.')
+            raise ValidationError(
+                'Sentence model already exists in database.')
 
-'''
-# word classes template (obsolete?)
-class WordForm(FlaskForm):
-    word = StringField('Word', validators=[DataRequired(),
-                       Length(min=1, max=32)])
-    tag = StringField('Tag', validators=[DataRequired(),
-                      Length(min=1, max=16)])
-    article = RadioField('Article', choices=[('a','a'),('an','an')])
-    gender = RadioField('Gender', choices=[('MM','Male'),('FF','Female'),
-                        ('NN','Neutral')])
-    irregular = RadioField('Word regularity', 
-                           choices=[(0,'Regular'),(1,'Irregular')])
-    mult_syll = RadioField('Syllables count',
-                           choices=[(0,'One syllable'),(1,'Multiple syllables')])
-    categories = StringField('Categories')
-    noun_assoc = StringField('Noun associations')
-    adj_assoc = StringField('Adjective associations')
-    verb_assoc = StringField('Verb associations')
-    subtype = StringField('Subtype')
-    submit_word = SubmitField('Add word')
-
-    def validate_word(self, word):
-        for letter in word.data:
-            if not re.match('[a-zA-Z0-9]+', letter):
-                raise ValidationError('Only letters and numbers allowed')
-        
-        if word.data in WORD_BLACKLIST:  ##### MAKE SURE WORD_BLACKLIST IS THERE
-            raise ValidationError('Word banned. Sorry...')
-
-        existing_word = WordList.query.filter_by(word=word.data).first()
-        if existing_word is not None:
-            raise ValidationError('Word already exists in database.')
-'''
 
 # Validate words before adding to WordList table
 def val_word(word):
@@ -165,8 +138,9 @@ class NounForm(FlaskForm):
     irregular = RadioField('Word regularity', default='0',
                            choices=[('0','Regular'),('1','Irregular')],
                            validators=[DataRequired()])
-    gender = RadioField('Gender', default='NN', choices=[('MM','Male'),('FF','Female'),
-                        ('NN','Neutral')], validators=[DataRequired()])
+    gender = RadioField('Gender', default='NN', choices=[('MM','Male'),
+                        ('FF','Female'), ('NN','Neutral')], 
+                        validators=[DataRequired()])
     categories = StringField('Categories')
     adj_assoc = StringField('Adjective associations')
     verb_assoc = StringField('Verb associations')
@@ -180,10 +154,12 @@ class AdjectiveForm(FlaskForm):
     word = StringField('Word', validators=[DataRequired(),
                        Length(min=1, max=32)])
     irregular = RadioField('Word regularity', 
-                           choices=[('0','Regular'),('1','Irregular')], default='0',
+                           choices=[('0','Regular'),('1','Irregular')],
+                           default='0',
                            validators=[DataRequired()])
     mult_syll = RadioField('Syllables count',
-                           choices=[('0','One syllable'),('1','Multiple syllables')],
+                           choices=[('0','One syllable'),
+                                    ('1','Multiple syllables')],
                            validators=[DataRequired()])
     categories = StringField('Categories')
     noun_assoc = StringField('Noun associations')
@@ -197,10 +173,12 @@ class VerbForm(FlaskForm):
     word = StringField('Word', validators=[DataRequired(),
                        Length(min=1, max=32)])
     irregular = RadioField('Word regularity', 
-                           choices=[('0','Regular'),('1','Irregular')], default='0',
+                           choices=[('0','Regular'),('1','Irregular')], 
+                           default='0',
                            validators=[DataRequired()])
     mult_syll = RadioField('Syllables count',
-                           choices=[('0','One syllable'),('1','Multiple syllables')],
+                           choices=[('0','One syllable'),
+                                    ('1','Multiple syllables')],
                            validators=[DataRequired()])
     categories = StringField('Categories')
     noun_assoc = StringField('Noun associations')
@@ -232,7 +210,6 @@ class ProperNounForm(FlaskForm):
                         ('NN','Neutral')], validators=[DataRequired()])
     submit_prop_noun = SubmitField('Add word')
     
-
 
 # Special words
 class SpecialForm(FlaskForm):

@@ -106,10 +106,14 @@ const startGame = () => {
 }
 
 const updateSentences = () => {
+    /* Grabs a sentence from sentence buffer,
+       assigns it to currentSentence, 
+       updates DOM: displays current and next sentence,
+       then refills sentence buffer array */
+
     currentSentence = sentences.shift();
     gameSentence.innerHTML = currentSentence.rawSentence;
     nextSentence.innerHTML = sentences[0].rawSentence;
-    // refill sentence array
     sentences.push(getSentence());
 }
 
@@ -187,7 +191,7 @@ const populateSentencesArr = () => {
 
 const getSentence = () => {
     let newSentence = new Object();
-    $.ajax({url: "/get_sent", success: function(result){        
+    $.ajax({url: "/get_sent", success: (result) => {
         newSentence.rawSentence = result;
         newSentence.sentenceArr = result.replace(/[^a-zA-Z-' ]/g, "").toLowerCase().split(" ");
     }});

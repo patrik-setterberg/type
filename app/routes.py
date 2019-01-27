@@ -94,7 +94,8 @@ def register():
 @app.route('/user/<username>')
 @login_required
 def user(username):
-    """  """
+    """ Display user information, as well as links to settings
+        on user's own user page. """
 
     user = User.query.filter_by(username=username).first_or_404()
     high_scores = User.query.order_by(User.high_score.desc()).all()
@@ -180,6 +181,40 @@ def reset_password(token):
         return redirect(url_for('login'))
 
     return render_template('reset_password.html', form=form)
+
+
+# Delete account page
+@app.route('/delete_account', methods=['GET'])
+@login_required
+def delete_account():
+    """ Page asking for deletion confirmation """
+
+    if not current_user.is_authenticated:
+        return redirect(url_for('index'))
+
+    return render_template('delete_account.html')
+
+    
+# Delete user route
+@app.route('/delete_user', methods=['GET'])
+@login_required
+def delete_user():
+    """ Log out user, delete user account, redirect to index. """
+
+    if not current_user.is_authenticated:
+        return redirect(url_for('index'))
+    else:
+        user_id = current_user.id
+        logout_user()
+
+        del_user = User.query.filter_by(id=user_id).first_or_404()
+
+        if del_user:
+            db.session.delete(del_user)
+            db.session.commit()
+            flash('User account deleted.')
+
+        return redirect(url_for('index'))
 
 
 @app.route('/get_name_and_score', methods=['GET'])

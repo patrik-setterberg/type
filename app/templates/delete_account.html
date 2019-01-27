@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="card">
+        <h3>Delete account</h3>
+        <p>Thank you for visiting this website and playing the game! We're sad to see you wish to leave but hope you had fun nonetheless.</p>
+        <p>Clicking the link below will permanently and <span class="emphasize">irreversibly</span> delete your user account, including your username, email address and personal high-score.</p>
+        <p><a id="delete-user" href="{{ url_for('delete_user') }}">Delete my account</a></p>
+    </div>
+{% endblock %}

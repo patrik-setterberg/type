@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="card">
+    <div class="card">
         <h3>Log<span class="color-splash">i</span>n</h3>
         <p>Enter your username and password to login. Not yet a member? <a href="{{ url_for('register') }}">Click here</a> to sign up!</p>
         
-        <form class="user-form" action="" method="POST" novalidate autofocus>
+        <form class="user-form" action="" method="POST" novalidate>
             {{ form.hidden_tag() }}
             {{ form.username.label }}<br>
             {{form.username(size=32) }}<br>
@@ -23,5 +23,5 @@
             
         </form>
         <p>Forgot your password? <a href="{{ url_for('reset_password_request') }}">Click here</a> to reset it.</p>
-</div>
+    </div>
 {% endblock %}

@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="game-time-left"><p class="game-time-left-p">&nbsp;</p></div>
-<div class="game-sentence"><p class="game-sentence-p">&nbsp;</p></div>
-<div class="game-next-sentence"><p class="game-next-sentence-p">&nbsp;</p></div>
-<input type="text" class="game-input" autofocus>
-<div class="card">
-    <h3>Instruct<span class="color-splash">i</span>ons</h3>
-    <p>Compete against yourself and others to become a faster typist!</p>
-    <p>Type sentences as fast as you can for 30 seconds. You may disregard capitalization and punctuation (periods and commas). Potential apostrophes (') and hyphens (-) are required. </p>
-    <p>To track your scores and compete for the prestigious site High Score, <a href="#">register</a> an account and <a href="#">login</a>.</p>
-</div>
-<script src="{{ url_for('static', filename='js/game.js') }}"></script>
+    <div class="game-time-left"><p class="game-time-left-p">&nbsp;</p></div>
+    <div class="game-sentence"><p class="game-sentence-p">&nbsp;</p></div>
+    <div class="game-next-sentence"><p class="game-next-sentence-p">&nbsp;</p></div>
+    <input type="text" class="game-input" autofocus>
+    <div class="card">
+        <h3>Instruct<span class="color-splash">i</span>ons</h3>
+        <p>Compete against yourself and others to become a faster typist!</p>
+        <p>Type sentences as fast as you can for 30 seconds. You may disregard capitalization and punctuation (periods and commas). Potential apostrophes (') and hyphens (-) are required. </p>
+        <p>To track your scores and compete for the prestigious site High Score, <a href="{{ url_for('register') }}">register</a> an account and <a href="{{ url_for('login') }}">login</a>.</p>
+    </div>
+    <script src="{{ url_for('static', filename='js/game.js') }}"></script>
 {% endblock %}

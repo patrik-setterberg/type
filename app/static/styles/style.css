@@ -186,14 +186,14 @@ div.column {
     padding: 0.15em;
     font-size:2.5em;
     color: #333;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1), 0 3px 6px rgba(0,0,0,0.2);
     box-sizing: border-box;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
 }
 
 .game-input:hover {
-    box-shadow: 0 6px 14px rgba(0,0,0,0.25), 0 6px 6px rgba(0,0,0,0.22);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.1), 0 6px 6px rgba(0,0,0,0.2);
     transition: all 0.2s cubic-bezier(.25,.8,.25,1);
 }
 
@@ -208,13 +208,13 @@ div.column {
     padding-bottom: 0.1em;  /* ??? */
     color: #333;
     border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1), 0 3px 6px rgba(0,0,0,0.2);
     transition: all 0.2s cubic-bezier(.25,.8,.25,1);
     
 }
 
 .card:hover {
-    box-shadow: 0 6px 14px rgba(0,0,0,0.25), 0 6px 6px rgba(0,0,0,0.22);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.1), 0 6px 6px rgba(0,0,0,0.2);
 }
 
 .card p {
@@ -306,7 +306,7 @@ div.column {
 
 /* USER PAGE */
 
-#rank, #best-score {
+#rank, #highest-score {
     padding: 0;
     margin: 3% 5%;
     border-bottom: 1px rgb(230, 230, 230) solid;
@@ -329,6 +329,15 @@ div.column {
 }
 
 .bold {
+    font-weight: bold;
+}
+
+.emphasize {
+    font-style: italic;
+}
+
+#delete-user {
+    font-size: 1.1em;
     font-weight: bold;
 }
 
