@@ -1,0 +1,390 @@
+/* Colors */
+$body-background:       #EBEBEB; // also used for footer link hover
+$container-background:  #F7F7F7; // also used for high score zebra pattern
+$card-background:       #FFFFFF;
+$primary-text:          #333;
+$accent-color:          #FF7400; // used to accent headings, page links, navbar link hover
+$game-next-sent:        #BFBFBF;
+$soft-gray:             #E6E6E6; // used as trophy shelf, separator on user page, high scores 
+$footer-text:           #D8D8D8;
+
+
+body {
+    font-family: 'Heebo', 'Helvetica', sans-serif;
+    background-color: $body-background;
+    margin: 0;
+    padding: 0;
+}
+
+.page-wrapper {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    margin:0;
+    overflow: hidden;
+}
+
+.container {
+    background-color: $container-background;
+    width: 60%;
+    flex: 1;
+    min-width: 500px; /*????*/
+    margin: 0 auto;
+    -webkit-box-shadow: 0px 0px 64px 42px rgba(224,224,224,0.5);
+    -moz-box-shadow: 0px 0px 64px 42px rgba(224,224,224,0.5);
+    box-shadow: 0px 0px 64px 42px rgba(224,224,224,0.5);
+}
+
+header {
+    text-align: center;
+
+    ul.flash {
+        list-style-type: none;
+        display: inline-table;
+        
+        li {
+            font-style:italic;
+            display:inline;
+        }
+    }
+}
+
+
+/* NAVBAR */
+
+.navbar {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    font-size: 1.4em;
+
+    a, a:visited {
+        color: $primary-text;
+        text-decoration: none;
+        font-weight: 800;
+        display: inline-block;
+        margin: 0;
+        transition: color 0.2s;
+
+        &:hover {
+            color: $accent-color;
+        }
+    }
+
+    ul {
+        padding-left: 0;
+        list-style-type: none;
+
+        li {
+            display: inline;
+            padding: 0 0.5em 0 0.5em;
+        }
+
+        &.left, &.right {
+            width: 30%;
+            padding-bottom: 0.8em;
+        }
+
+        &.site-header {
+            width: 40%;
+            text-align: center;
+
+            a, a:visited {
+                font-size: 2.5em;
+                font-weight: bold;
+            }
+        }
+    }
+}
+
+
+/* USER FORM */
+
+.user-form {
+    margin: 0 5%;
+    text-align: left;
+
+    label {
+        font-size: 1.3em;
+        font-weight: bold;
+    }
+
+    input {
+        margin: 0.5em auto 1.5em auto;
+        padding: 0.15em;
+        font-size: 1.7em;
+        width: 100%;
+        color: $primary-text;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        border-radius: 5px;
+
+        &:focus {
+            border: 1pt solid darken($accent-color, 10%); 
+        }
+    }
+
+    span {
+        font-size: 1.2em;
+        color: $accent-color;
+    }
+
+    #remember_me {
+        display: inline-block;
+        width: 5%;
+        margin-left: 0.5em;
+    }
+
+    #submit, #submit_username, #submit_email, #submit_password {
+        width: 25%;
+        font-size: 1.4em;
+        margin-top: 0;
+        box-shadow: 1px 1px 2px rgba(92, 92, 92, 0.4);
+    }
+}
+
+
+/* THE GAME */
+
+.game-time-left {
+    color: $primary-text;
+    font-size: 2em;
+    text-align: center;
+}
+
+.game-sentence {
+    color: $primary-text;
+    font-size: 3em;
+    text-align: center;
+}
+
+.game-next-sentence {
+    text-align: center;
+    position: relative;
+    top: -3em;
+    margin: 0 auto;
+
+    p {
+        color: $game-next-sent;
+        font-size: 1.8em;
+        margin-bottom: 0.5em;
+    }
+}
+
+.game-input {
+    display: block;
+    width: 70%;
+    margin:0 auto 2em auto;
+    padding: 0.15em;
+    font-size:2.5em;
+    color: $primary-text;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1), 0 3px 6px rgba(0,0,0,0.2);
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+
+    &:hover {
+        box-shadow: 0 6px 14px rgba(97, 97, 97, 0.1), 0 6px 6px rgba(71, 71, 71, 0.2);
+        transition: all 0.2s cubic-bezier(.25,.8,.25,1);
+    }
+}
+
+
+/* CARD */
+
+.card {
+    background-color: $card-background;
+    width: 55%;
+    display: block;
+    margin: 1em auto 4em auto;
+    padding-bottom: 0.1em;  /* ??? */
+    color: $primary-text;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1), 0 3px 6px rgba(0,0,0,0.2);
+    transition: all 0.2s cubic-bezier(.25,.8,.25,1);
+ 
+    &:hover {
+        box-shadow: 0 6px 14px rgba(0,0,0,0.1), 0 6px 6px rgba(0,0,0,0.2);
+    }
+
+    p {
+        margin: 2% 5% 5% 5%;
+        padding: 0;
+        line-height: 1.8em;
+        font-size: 1.2em;
+    }
+
+    %card-heading-shared {
+        margin: 5% 5% 0% 5%;
+        font-weight: bold;
+        letter-spacing: 0.1em;
+        text-shadow: 1px 1px 2px rgba(155, 155, 155, 0.2);
+    }
+
+    h2 {
+        @extend %card-heading-shared;
+        font-size: 1.8em;
+        padding: 0.8em 0 0 0;
+    }
+
+    h3 {
+        @extend %card-heading-shared;
+        font-size: 1.4em;
+        padding: 1em 0 0 0;
+    }
+
+    a, a:visited {
+        color: $accent-color;
+        text-decoration: none;
+        transition: color 0.2s;
+
+        &:hover {
+            color: $primary-text;
+        }
+    }
+}
+
+
+/* HIGH SCORES */
+
+.high-scores {
+    padding: 0 2em 1em 2em;
+    table-layout: fixed;
+    width: 90%;
+    border-collapse: collapse;
+    margin: 0 5% 0.5em 5%;
+    font-size: 1.5em;
+
+    th {
+        text-align: left;
+        padding: 0.5em;
+        border-bottom: 1.5pt $soft-gray solid;
+
+        &:nth-child(1) {
+            width: 10%;
+        }
+
+        &:nth-child(2) {
+            width: 74%;
+        }
+
+        &:nth-child(3) {
+            width: 16%;
+        }
+    }
+
+    tr:nth-child(odd) {
+        background-color: $container-background;
+    }
+
+    td {
+        padding: 0.5em;
+
+        &:nth-child(1) {
+            text-align: center;
+            font-weight: bold;
+        }
+
+        &:nth-child(3) {
+            padding-left: 1.8em;
+        }
+    }
+}
+
+#anon-disclaimer {
+    font-size: 1em;
+    padding-bottom: 0;
+    
+    span {
+        font-style: italic;
+    }
+}
+
+
+/* USER PAGE */
+
+#rank, #highest-score {
+    padding: 0;
+    margin: 3% 5%;
+    border-bottom: 1px $soft-gray solid;
+    font-size: 1.8em;
+}
+
+#rank {
+    padding-top: 4%;
+}
+
+#trophy {
+    float: right;
+    text-shadow: none; // override parent shadow
+    border-bottom: 1px $soft-gray solid;
+}
+
+
+/* FOOTER */
+
+.footer {
+    box-sizing: border-box;
+    background-color: $primary-text;
+    margin: 0;
+    padding: 0;
+
+    p {
+        color: $footer-text;
+        font-size:1em;
+        padding: 0.5em;
+        margin: 0;
+        text-align: center;
+        letter-spacing: 0.06em;
+    }
+
+    a, a:visited {
+        color: $accent-color;
+        text-decoration: none;
+        transition: color 0.2s;
+
+        &:hover {
+            color: $body-background;
+        }
+    }
+}
+
+
+/* MISC */
+
+.float-right {
+    float: right;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.emphasize {
+    font-style: italic;
+}
+
+#delete-user {
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.shadow { // ANVÄNDS DEN HÄR ENS?
+    text-shadow: 1px 1px 2px rgba(92, 92, 92, 0.4);
+  }
+
+.color-splash {
+    color: $accent-color;
+}
+
+/* DE HÄR ANVÄNDS INTE ATM */
+div.column-wrapper {
+    display: flex;
+    flex-flow: row nowrap;
+}
+
+div.column {
+    width: 50%;
+}

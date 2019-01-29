@@ -6,3 +6,6 @@ venv/
 .flaskenv
 notes.txt
 logs/
+app/static/styles/style.css.map
+app/static/styles/.sass-cache
+*.css
