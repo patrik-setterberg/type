@@ -6,6 +6,7 @@ $primary-text:          #333;
 $accent-color:          #FF7400; // used to accent headings, page links, navbar link hover
 $game-next-sent:        #BFBFBF;
 $soft-gray:             #E6E6E6; // used as trophy shelf, separator on user page, high scores 
+$warning:               #B22222;
 $footer-text:           #D8D8D8;
 
 
@@ -28,7 +29,7 @@ body {
     background-color: $container-background;
     width: 60%;
     flex: 1;
-    min-width: 500px; /*????*/
+    min-width: 300px; /*????*/
     margin: 0 auto;
     -webkit-box-shadow: 0px 0px 64px 42px rgba(224,224,224,0.5);
     -moz-box-shadow: 0px 0px 64px 42px rgba(224,224,224,0.5);
@@ -293,7 +294,7 @@ header {
     }
 }
 
-#anon-disclaimer {
+#disclaimer {
     font-size: 1em;
     padding-bottom: 0;
     
@@ -305,7 +306,7 @@ header {
 
 /* USER PAGE */
 
-#rank, #highest-score {
+#rank, #highest-score, #times-played, #account-created {
     padding: 0;
     margin: 3% 5%;
     border-bottom: 1px $soft-gray solid;
@@ -377,6 +378,16 @@ header {
 
 .color-splash {
     color: $accent-color;
+}
+
+.warning {
+    color: $warning;
+}
+
+#admin-nav {
+    font-weight: bold;
+    font-size: 1.2em;
+    padding-top: 1em;
 }
 
 /* DE HÄR ANVÄNDS INTE ATM */

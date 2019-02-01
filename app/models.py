@@ -14,6 +14,8 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(120))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
     high_score = db.Column(db.Integer, index=True, default=0)
+    times_played = db.Column(db.Integer, index=True, default=0)
+    registered = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
         return '<User {}>'.format(self.username)

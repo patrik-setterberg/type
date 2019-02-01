@@ -18,3 +18,6 @@ class Config(object):
 
 # Secret high score key
 SECRET_HIGH_SCORE_KEY = 4738
+
+# Administrator username
+ADMIN_USER = 'admin'

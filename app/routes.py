@@ -11,7 +11,7 @@ from datetime import datetime
 from werkzeug.urls import url_parse
 from werkzeug.security import generate_password_hash
 from app.email import send_password_reset_email
-from config import SECRET_HIGH_SCORE_KEY
+from config import SECRET_HIGH_SCORE_KEY, ADMIN_USER
 import json
 
 
@@ -106,7 +106,7 @@ def user(username):
 
     user.high_score_pos = name_list.index(username) + 1
     
-    return render_template('user.html', title='Profile: ' + user.username, user=user)
+    return render_template('user.html', title='Profile: ' + user.username, user=user, admin=ADMIN_USER)
 
 
 # Edit user
@@ -277,25 +277,22 @@ def update_user_score(high_score_cypher, score):
         Scores are multiplied by a static number stored in app.config
         and verified in this route. Not secure but good enough for
         current app. """
+
     score = int(score)
     deciphered = int(high_score_cypher) / SECRET_HIGH_SCORE_KEY
 
     if deciphered == score:
-        if current_user.is_authenticated:
-            current_user.high_score = score
-            db.session.commit()
-            # log successful score update?
-            return str(current_user.high_score)
-        else:
-            user = User.query.filter_by(username='anonymous').first()
+        user = (current_user if current_user.is_authenticated
+                else User.query.filter_by(username='anonymous').first_or_404())
+
+        user.times_played = int(user.times_played) + 1
+
+        if score > user.high_score:
             user.high_score = score
-            db.session.commit()
-            return str(user.high_score)
-    else:
-        return 'failure'
-        # else?
-        # log failed attempted?
-        # return something?
+
+        db.session.commit()
+        
+    return str(score)  # Do I have to return something here?
 
 
 # test sentence generator, TEMPORARY
@@ -314,12 +311,36 @@ def get_sent():
     return sentence
 
 
+# Admin panel
+@app.route('/admin', methods=['GET'])
+@login_required
+def admin():
+    """ Administrator control panel. """
+
+    if not current_user.username == ADMIN_USER:
+        flash('Restricted area!')
+        return redirect(url_for('index'))
+    
+    users = db.session.query(User).all()
+
+    # Get user count, remove 2 to account for users admin and anonymous
+    user_count = len(users) - 2
+
+    times_played = 0 + sum([int(user.times_played) for user in users])
+
+    return render_template('admin.html',
+                           title='Admin panel',
+                           user_count=user_count,
+                           times_played=times_played,
+                           admin=ADMIN_USER)
+
+
 # Manage word list
 @app.route('/admin/manage_words', methods=['GET', 'POST'])
 @login_required
 def manage_words():
 
-    if current_user.username != 'admin':
+    if current_user.username != ADMIN_USER:
         flash('Restricted area!')
         return redirect(url_for('index'))
 
@@ -425,7 +446,7 @@ def manage_words():
 @login_required
 def manage_sentences():
 
-    if current_user.username != 'admin':
+    if current_user.username != ADMIN_USER:
         flash('Restricted area!')
         return redirect(url_for('index'))
 
@@ -448,10 +469,30 @@ def manage_sentences():
                            title='Sentence generator models')
 
 
+# Manage users
+@app.route('/admin/manage_users', methods=['GET'])
+@login_required
+def manage_users():
+    
+    if not current_user.username == ADMIN_USER:
+        flash('Restricted area')
+        return redirect(url_for('index'))
+
+    users = User.query.order_by(User.id.asc()).all()
+
+    return render_template('manage_users.html',
+                           users=users,
+                           title='Manage users',
+                           admin=ADMIN_USER)
+
 # Delete item from database
 @app.route('/admin/delete_item/<item>/<id>', methods=['GET'])
 @login_required
 def delete_item(item, id):
+
+    if not current_user.username == ADMIN_USER:
+        flash("You can't do that.")
+        return redirect(url_for('index'))
 
     if item == 'sentence':
         db_table = SentenceModel
@@ -459,8 +500,17 @@ def delete_item(item, id):
     elif item == 'word':
         db_table = WordList
         redir = 'manage_words'
+    elif item == 'user':
+        db_table = User
+        redir = 'manage_users'
+    else:
+        return redirect(url_for('index'))  # Maybe an admin landing page?
 
     del_item = db_table.query.filter_by(id=int(id)).first_or_404()
+
+    if del_item.username == current_user.username:
+        flash("Don't delete yourself, bro.")
+        return redirect(url_for('index')) # MAYBE HÄR OCKSÅ?
 
     db.session.delete(del_item)
     db.session.commit()

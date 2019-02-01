@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="card">
+        <h3>Admin panel <span id="trophy"><i class="fas fa-code"></i></span></h3>
+        <p id="admin-nav">Manage: <a href="{{ url_for('manage_users') }}">users</a>, <a href="{{ url_for('manage_words') }}">words</a> or <a href="{{ url_for('manage_sentences') }}">sentences</a></p>
+        <p>Registered users*<span class="float-right bold">{{ user_count }}</span><br>
+        Total games played<span class="float-right bold">{{ times_played }}</span></p>
+        <p>More usage statistics at <a href="{{ url_for('index') }}">Google Analytics</a></p>
+        <p id="disclaimer">* <span>Excludes users: {{ admin }} & anonymous</span>.</p>
+    </div>
+{% endblock %}

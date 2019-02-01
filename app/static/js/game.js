@@ -139,14 +139,13 @@ const endGame = () => {
 
 const processScore = (score, personalBest) => {
     let gameEndMessage;
+    updateUserScore(score);
     if (score > siteHighScore) {
-        updateUserScore(score);
         siteHighScore = score;
         gameEndMessage = `New Site High Score: ${score} words per minute! Congratulations!`;
     } else if (score < personalBest) {
         gameEndMessage = `You typed at ${score} words per minute!`;
     } else if (score > personalBest) {
-        updateUserScore(score);
         if (currentPlayer.username === 'anonymous') {
             gameEndMessage = `You typed at ${score} words per minute!`;
         } else {
