@@ -73,7 +73,6 @@ const updateUserScore = (score) => {
 }
 
 const initGame = () => {
-    console.log(currentPlayer);
     initTimer = 4; // shows countdown from 3 on screen
     gameInput.value = '';
     gameSentence.innerHTML = 'Get ready!';
@@ -100,7 +99,10 @@ const initCountDown = () => {
 const startGame = () => {
     playing = true;
     gameInput.value = '';
-    timeDisplay.innerHTML = `Time left: ${timeLeft} seconds`;
+    timeDisplay.innerHTML = `Time left: <span class="time-left">${timeLeft}</span> seconds`;
+    if ($('.time-left').hasClass('warning')) {
+        $('.time-left').removeClass('warning');
+    }
     updateSentences();
     gameTime = setInterval(countDown, 1000);
 }
@@ -118,12 +120,18 @@ const updateSentences = () => {
 }
 
 const countDown = () => {
+    /* Game time left countdown. Changes time-left color to red
+       when 5 seconds remaining. Ends game on 0. */
+
     if (timeLeft > 1) {
         timeLeft --;
-        timeDisplay.innerHTML = `Time left: ${timeLeft} seconds`;
+        timeDisplay.innerHTML = `Time left: <span class="time-left">${timeLeft}</span> seconds`;
+        if (timeLeft < 6 && (!$('.time-left').hasClass('warning'))) {
+            $('.time-left').addClass('warning');
+        }
     } else {
-        endGame();
         clearInterval(gameTime);
+        endGame();
     }
 }
 

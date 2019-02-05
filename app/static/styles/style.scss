@@ -306,7 +306,7 @@ header {
 
 /* USER PAGE */
 
-#rank, #highest-score, #times-played, #account-created {
+#rank, #highest-score, #times-played, {
     padding: 0;
     margin: 3% 5%;
     border-bottom: 1px $soft-gray solid;
@@ -388,6 +388,12 @@ header {
     font-weight: bold;
     font-size: 1.2em;
     padding-top: 1em;
+}
+
+hr {
+    border-top: 1px;
+    margin: 0 2em;
+    color: $soft-gray;
 }
 
 /* DE HÄR ANVÄNDS INTE ATM */
