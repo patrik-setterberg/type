@@ -22,6 +22,8 @@ let currentSentence;
 let counter; // setInterval object for pre-game countdown. Do I need this?
 let gameTime; // setInterval object for game time left. Do I need this?
 
+const currentWordCssString = ("display: inline-block; border-bottom: 4pt solid orange; line-height: 1.2;")
+
 // Initial setup
 const setupGame = () => {
     playing = false;
@@ -42,6 +44,7 @@ gameInput.addEventListener('input', () => {
             updateSentences();
             gameInput.value = '';
         }   
+        highlightCurrentWord();
     }
 });
 
@@ -104,6 +107,7 @@ const startGame = () => {
         $('.time-left').removeClass('warning');
     }
     updateSentences();
+    highlightCurrentWord();
     gameTime = setInterval(countDown, 1000);
 }
 
@@ -114,9 +118,17 @@ const updateSentences = () => {
        then refills sentence buffer array */
 
     currentSentence = sentences.shift();
-    gameSentence.innerHTML = currentSentence.rawSentence;
+    updateDOMCurrentSentence(currentSentence.rawSentence.split(" "));
     nextSentence.innerHTML = sentences[0].rawSentence;
     sentences.push(getSentence());
+}
+
+const updateDOMCurrentSentence = (sentence) => {
+    gameSentence.innerHTML = '';
+    sentence.forEach((element) => {
+        gameSentence.innerHTML += `<span id="word_${sentence.indexOf(element)}">${element}</span> `;
+    });
+    
 }
 
 const countDown = () => {
@@ -133,6 +145,27 @@ const countDown = () => {
         clearInterval(gameTime);
         endGame();
     }
+}
+
+const getInputSentenceArr = () => {
+    return gameInput.value.replace(/[^a-zA-Z-' ]/g, "").toLowerCase().trimStart().split(" ");
+}
+
+const highlightCurrentWord = () => {
+    let currentInput = getInputSentenceArr();
+    let currentInd;
+    let shortestArrLen = getShortestArrLen(getInputSentenceArr());
+    for (let i = 0; i < shortestArrLen; i++) {
+        if (currentInput[i] !== currentSentence.sentenceArr[i]) {
+            currentInd = i;
+            break;
+        }        
+    }
+
+    for (let j = 0; j < currentSentence.sentenceArr.length; j++) {
+        document.getElementById(`word_${j}`).style.cssText = null;
+    }
+    document.getElementById(`word_${currentInd}`).style.cssText = currentWordCssString;
 }
 
 const endGame = () => {
@@ -169,15 +202,9 @@ const processScore = (score, personalBest) => {
 }
 
 const countFinalSentenceScore = () => {
-    let inputSentenceArr = gameInput.value.replace(/[^a-zA-Z-' ]/g, "").toLowerCase().trimStart().split(" ");
-    let shortestArrLen;
+    let inputSentenceArr = getInputSentenceArr();
+    let shortestArrLen = getShortestArrLen(inputSentenceArr);
     let score = 0;
-
-    if (inputSentenceArr.length < currentSentence.sentenceArr) {
-        shortestArrLen = inputSentenceArr.length;
-    } else {
-        shortestArrLen = currentSentence.sentenceArr.length;
-    }
 
     for (let i = 0; i < shortestArrLen; i++) {
         if (inputSentenceArr[i] === currentSentence.sentenceArr[i]) {
@@ -186,6 +213,15 @@ const countFinalSentenceScore = () => {
     }
     return score;
 }
+
+const getShortestArrLen = (inputArr) => {
+    if (inputArr.length < currentSentence.sentenceArr) {
+        return inputSentenceArr.length;
+    } else {
+        return currentSentence.sentenceArr.length;
+    }
+}
+
 
 const populateSentencesArr = () => {
     for (let i = 0; i < 3; i++) {
