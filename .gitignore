@@ -8,4 +8,5 @@ notes.txt
 logs/
 app/static/styles/style.css.map
 app/static/styles/.sass-cache
+app/static/styles/style_backup.scss
 *.css

@@ -4,7 +4,13 @@
     <div class="card">
         <h3>H<span class="color-splash">i</span>gh scores</h3>
         <p>A user's score is their highest number of typed words per minute (WPM) or, more precisely, how many words they would have typed if they had continued typing at the same pace for a full minute.</p>
-        <p>If you are logged in you can click a user's name to view their user page.</p>
+        <p>
+            {% if current_user.is_authenticated %}
+            Click a user's name to view their user page.
+            {% else %}
+            If you are logged in you can click on a user's name to view their user page.
+            {% endif %}
+        </p>
         <table class="high-scores">
             <tr>
                 <th>&nbsp;</th>

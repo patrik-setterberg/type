@@ -22,7 +22,9 @@ let currentSentence;
 let counter; // setInterval object for pre-game countdown. Do I need this?
 let gameTime; // setInterval object for game time left. Do I need this?
 
-const currentWordCssString = ("display: inline-block; border-bottom: 4pt solid orange; line-height: 1.2;")
+const currentWordCssString = (
+    "display: inline-block; border-bottom: 4pt solid #FF7400; line-height: 1.2;"
+);
 
 // Initial setup
 const setupGame = () => {

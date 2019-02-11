@@ -24,19 +24,15 @@
         <div class="container">
             <header>        
                 {# NAVIGATION #}
-                <nav class="navbar">
-                    <ul class="left">
-                        <li>
+                <nav>
+                    <div class="site-header">
+                        <a class="shadow" href="{{ url_for('index') }}">Typeman<span class="color-splash">i</span>a.net</a>
+                    </div>
+                    <ul class="navigation">
+                        <li class="left">
                             <a href="{{ url_for('high_scores') }}">High Scores</a>
-                        </li>
-                    </ul>
-                    <ul class="site-header">
-                        <li>
-                            <a class="shadow" href="{{ url_for('index') }}">Typeman<span class="color-splash">i</span>a.net</a>
-                        </li>
-                    </ul>
-                    <ul class="right">
-                        <li>
+                        </li>                    
+                        <li class="right">
                         {% if current_user.is_authenticated %}
                             <a href="{{ url_for('user', username=current_user.username) }}"><i class="fas fa-user"></i> {{ current_user.username }}</a> 
                             |
