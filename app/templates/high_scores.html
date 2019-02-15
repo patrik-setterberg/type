@@ -11,13 +11,14 @@
             If you are logged in you can click on a user's name to view their user page.
             {% endif %}
         </p>
+        <h3>{% if scores|count == 25 %}Top 25 players{% else %}Top players{% endif %}</h3>
         <table class="high-scores">
             <tr>
                 <th>&nbsp;</th>
                 <th>User</th>
                 <th>WPM</th>
             </tr>
-            {% for user in scores %} {# KANSKE FIXA PAGING HÄR? BARA VISA TYP 25 per sida #}
+            {% for user in scores %}
             <tr>
                 <td>{{ loop.index }}.</td>
                 <td><a href="{{ url_for('user', username=user.username) }}">{{ user.username }}</a>{% if user.username == 'anonymous' %}*{% endif %}</td>

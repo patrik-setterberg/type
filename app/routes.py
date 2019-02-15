@@ -25,7 +25,7 @@ def index():
 # High score list
 @app.route('/high_scores', methods=['GET'])
 def high_scores():
-    scores = User.query.order_by(User.high_score.desc()).all()
+    scores = list(User.query.order_by(User.high_score.desc()).limit(25))
 
     return render_template('high_scores.html', title='High Scores', scores=scores)
 
@@ -504,13 +504,13 @@ def delete_item(item, id):
         db_table = User
         redir = 'manage_users'
     else:
-        return redirect(url_for('index'))  # Maybe an admin landing page?
+        return redirect(url_for('admin'))
 
     del_item = db_table.query.filter_by(id=int(id)).first_or_404()
 
     if del_item.username == current_user.username:
         flash("Don't delete yourself, bro.")
-        return redirect(url_for('index')) # MAYBE HÄR OCKSÅ?
+        return redirect(url_for('admin'))
 
     db.session.delete(del_item)
     db.session.commit()
