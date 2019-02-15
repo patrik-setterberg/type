@@ -520,6 +520,12 @@ def delete_item(item, id):
     return redirect(url_for(redir))
 
 
+# Site privacy policy
+@app.route('/privacy_policy', methods=['GET'])
+def privacy_policy():
+    return render_template('privacy_policy.html', title='Privacy Policy')
+
+
 @app.before_request
 def before_request():
     if current_user.is_authenticated:
