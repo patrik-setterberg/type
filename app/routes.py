@@ -12,6 +12,7 @@ from werkzeug.urls import url_parse
 from werkzeug.security import generate_password_hash
 from app.email import send_password_reset_email
 from config import SECRET_HIGH_SCORE_KEY, ADMIN_USER
+from sqlalchemy import func
 import json
 
 
@@ -429,7 +430,13 @@ def manage_words():
             return redirect(url_for('manage_words'))        
         
     else:
-        words = WordList.query.order_by(WordList.tag.asc()).all()
+        nouns = WordList.query.filter_by(tag='NN')
+        adjectives = WordList.query.filter_by(tag='JJ')
+        verbs = WordList.query.filter_by(tag='VB')
+        adverbs = WordList.query.filter_by(tag='RB')
+        proper_nouns = WordList.query.filter_by(tag='NP')
+        special_words = WordList.query.filter_by(tag='SPEC')
+
         return render_template('manage_words.html',
                             noun_form=noun_form,
                             adj_form=adj_form,
@@ -437,8 +444,13 @@ def manage_words():
                             adv_form=adv_form,
                             prop_noun_form=prop_noun_form,
                             special_form=special_form,
-                            words=words,
-                            title='Sentence generator word list')
+                            nouns=nouns,
+                            adjectives=adjectives,
+                            verbs=verbs,
+                            adverbs=adverbs,
+                            proper_nouns=proper_nouns,
+                            special_words=special_words,
+                            title='Word database management')
 
 
 # Manage sentence models
@@ -508,9 +520,14 @@ def delete_item(item, id):
 
     del_item = db_table.query.filter_by(id=int(id)).first_or_404()
 
-    if del_item.username == current_user.username:
-        flash("Don't delete yourself, bro.")
-        return redirect(url_for('admin'))
+    try:
+        if del_item.username == current_user.username:
+            flash("Don't delete yourself, bro.")
+            return redirect(url_for('admin'))
+    except AttributeError:
+        pass
+    else:
+        pass
 
     db.session.delete(del_item)
     db.session.commit()
@@ -524,6 +541,12 @@ def delete_item(item, id):
 @app.route('/privacy_policy', methods=['GET'])
 def privacy_policy():
     return render_template('privacy_policy.html', title='Privacy Policy')
+
+
+# About page
+@app.route('/about', methods=['GET'])
+def about():
+    return render_template('about.html', title="Website information")
 
 
 @app.before_request

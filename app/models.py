@@ -61,7 +61,7 @@ class WordList(db.Model):
     article = db.Column(db.String(5), nullable=True)
     # Proper nouns need gender to assign correct pronouns
     gender = db.Column(db.String(16), nullable=True, index=True)
-    # Irregular forms of words, e.g. nouns, adverbs, verbs, 1 or 0
+    # Irregular forms of words, e.g. adverbs, verbs, 1 or 0
     irregular = db.Column(db.Integer, nullable=True, index=True)
     # Syllable count is needed for verbs and adjectives for proper conjugation
     # mult(iple) syll(ables), 1 for true, 0 for false (i.e. 1 syllable)

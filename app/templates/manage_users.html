@@ -2,6 +2,7 @@
 
 {% block content %}
     <div class="card">
+        <p class="float-right no-margin-bottom"><a href="{{ url_for('admin') }}">Admin panel</a></p>
         <h3>Manage users</h3>
         <p><span class="warning bold">Caution</span>: Deletion links are hot! Users are deleted immediately and irreversibly once "Delete user"-links are clicked.</p>
         {% for user in users %}    

@@ -135,9 +135,6 @@ class NounForm(FlaskForm):
                        Length(min=1, max=32)])
     article = RadioField('Article', choices=[('a','a'),('an','an')], 
                          validators=[DataRequired()])
-    irregular = RadioField('Word regularity', default='0',
-                           choices=[('0','Regular'),('1','Irregular')],
-                           validators=[DataRequired()])
     gender = RadioField('Gender', default='NN', choices=[('MM','Male'),
                         ('FF','Female'), ('NN','Neutral')], 
                         validators=[DataRequired()])
@@ -182,7 +179,7 @@ class VerbForm(FlaskForm):
                            validators=[DataRequired()])
     categories = StringField('Categories')
     noun_assoc = StringField('Noun associations')
-    subtype = StringField('Subtype')
+    subtype = StringField('Subtype')  # currently unused
     submit_verb = SubmitField('Add word')
     
     def validate_word(self, word):

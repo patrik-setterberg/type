@@ -1,213 +1,213 @@
 {% extends 'base.html' %}
 
-{% block content %}
-    <div class="column-wrapper">
-        <div class="column">    
-            <h4>Add new word</h4>
-            <p>
-                Add <a class="noun-link" href="{{ url_for('manage_words') }}">noun</a>, 
-                <a class="adj-link" href="#">adjective</a>, 
-                <a class="verb-link" href="#">verb</a>, 
-                <a class="adv-link" href="#">adverb</a>, 
-                <a class="prop-noun-link" href="#">proper noun</a>,
-                <a class="special-link" href="#">special word</a>.
-            </p>
-            
-            <div class="noun-form">
-                <h3>Add noun</h3>
-                <form action="" method="post">
-                    {{ noun_form.hidden_tag() }}
-                    <p>
-                        {{ noun_form.word.label }}&nbsp;
-                        {{ noun_form.word(size=16) }}
-                        {% for error in noun_form.word.errors %}
-                        <br>
-                        <span style="color:red;">[{{ error }}]</span>
-                        {% endfor %}
-                    </p>
-                    <p>
-                        {{ noun_form.article.label }}&nbsp;
-                        {{ noun_form.article }}
-                    </p>
-                    <p>
-                        {{ noun_form.irregular.label }}&nbsp;
-                        {{ noun_form.irregular }}
-                    </p>
-                    <p>
-                        {{ noun_form.gender.label }}&nbsp;
-                        {{ noun_form.gender }}
-                    </p>
-                    <p>
-                        {{ noun_form.categories.label }}&nbsp;
-                        {{ noun_form.categories }}
-                    </p>
-                    <p>
-                        {{ noun_form.adj_assoc.label }}&nbsp;
-                        {{ noun_form.adj_assoc }}
-                    </p>
-                    <p>
-                        {{ noun_form.verb_assoc.label }}&nbsp;
-                        {{ noun_form.verb_assoc }}
-                    </p>
-                    <p>{{ noun_form.submit_noun() }}</p>
-                </form>
-            </div>
-            <div class="adj-form">
-                <h3>Add adjective</h3>
-                <form action="" method="post">
-                    {{ adj_form.hidden_tag() }}
-                    <p>
-                        {{ adj_form.word.label }}&nbsp;
-                        {{ adj_form.word(size=16) }}
-                        {% for error in adj_form.word.errors %}
-                        <br>
-                        <span style="color:red;">[{{ error }}]</span>
-                        {% endfor %}
-                    </p>
-                    <p>
-                        {{ adj_form.irregular.label }}&nbsp;
-                        {{ adj_form.irregular }}
-                    </p>
-                    <p>
-                        {{ adj_form.mult_syll.label }}&nbsp;
-                        {{ adj_form.mult_syll }}
-                    </p>
-                    <p>
-                        {{ adj_form.categories.label }}&nbsp;
-                        {{ adj_form.categories }}
-                    </p>
-                    <p>
-                        {{ adj_form.noun_assoc.label }}&nbsp;
-                        {{ adj_form.noun_assoc }}
-                    </p>
-                    <p>{{ adj_form.submit_adj() }}</p>
-                </form>
-            </div>
-            <div class="verb-form">
-                <h3>Add verb</h3>
-                <form action="" method="post">
-                    {{ verb_form.hidden_tag() }}
-                    <p>
-                        {{ verb_form.word.label }}&nbsp;
-                        {{ verb_form.word(size=16) }}
-                        {% for error in verb_form.word.errors %}
-                        <br>
-                        <span style="color:red;">[{{ error }}]</span>
-                        {% endfor %}
-                    </p>
-                    <p>
-                        {{ verb_form.irregular.label }}&nbsp;
-                        {{ verb_form.irregular }}
-                    </p>
-                    <p>
-                        {{ verb_form.mult_syll.label }}&nbsp;
-                        {{ verb_form.mult_syll }}
-                    </p>
-                    <p>
-                        {{ verb_form.categories.label }}&nbsp;
-                        {{ verb_form.categories }}
-                    </p>
-                    <p>
-                        {{ verb_form.noun_assoc.label }}&nbsp;
-                        {{ verb_form.noun_assoc }}
-                    </p>
-                    <p>
-                        {{ verb_form.subtype.label }}&nbsp;
-                        {{ verb_form.subtype }}
-                    </p>
-                    <p>{{ verb_form.submit_verb() }}</p>
-                </form>
-            </div>
-            <div class="adv-form">
-                <h3>Add adverb</h3>
-                <form action="" method="post">
-                    {{ adv_form.hidden_tag() }}
-                    <p>
-                        {{ adv_form.word.label }}&nbsp;
-                        {{ adv_form.word(size=16) }}
-                        {% for error in adv_form.word.errors %}
-                        <br>
-                        <span style="color:red;">[{{ error }}]</span>
-                        {% endfor %}
-                    </p>
-                    <p>
-                        {{ adv_form.irregular.label }}&nbsp;
-                        {{ adv_form.irregular }}
-                    </p>
-                    <p>
-                        {{ adv_form.categories.label }}&nbsp;
-                        {{ adv_form.categories }}
-                    </p>
-                    <p>
-                        {{ adv_form.subtype.label }}&nbsp;
-                        {{ adv_form.subtype }}
-                    </p>
-                    <p>{{ adv_form.submit_adv() }}</p>
-                </form>
-            </div>
-            <div class="prop-noun-form">
-                <h3>Add proper noun</h3>
-                <form action="" method="post">
-                    {{ prop_noun_form.hidden_tag() }}
-                    <p>
-                        {{ prop_noun_form.word.label }}&nbsp;
-                        {{ prop_noun_form.word(size=16) }}
-                        {% for error in prop_noun_form.word.errors %}
-                        <br>
-                        <span style="color:red;">[{{ error }}]</span>
-                        {% endfor %}
-                    </p>
-                    <p>
-                        {{ prop_noun_form.gender.label }}&nbsp;
-                        {{ prop_noun_form.gender }}
-                    </p>
-                    <p>{{ prop_noun_form.submit_prop_noun() }}</p>
-                </form>
-            </div>
-            <div class="special-form">
-                <h3>Add special word</h3>
-                <form action="" method="post">
-                    {{ special_form.hidden_tag() }}
-                    <p>
-                        {{ special_form.word.label }}&nbsp;
-                        {{ special_form.word(size=16) }}
-                        {% for error in special_form.word.errors %}
-                        <br>
-                        <span style="color:red;">[{{ error }}]</span>
-                        {% endfor %}
-                    </p>
-                    <p>{{ special_form.submit_spec() }}</p>
-                </form>
-            </div>            
-            <br>
-            <h3>Manage words</h3>
-            <table>
-                <tr>
-                    <td>Tags</td>
-                </tr>
-                {% for word in words %}
-                <tr>
-                    <td>
-                        <p><b>{{ word.word }}</b></p>
-                    </td>
-                    <td>
-                        <p>{{ word.tag }}</p>
-                    </td>                    
-                    <td>
-                        <p style="text-align:right;">
-                            <a href="{{ url_for('delete_item', item='word', id=word.id) }}">Delete word</a>
-                        </p>
-                    </td>
-                </tr>
+{% block content %}    
+    <div class="card">  
+        <p class="float-right no-margin-bottom"><a href="{{ url_for('admin') }}">Admin panel</a></p>  
+        <h2>Add new word</h2>
+        <p>Store all words in lowercase, even proper nouns. The application handles capitalization automatically.</p>
+        <p>Not all words require storage in database: Pronouns as well as common prepositions, conjunctions, modal auxiliaries (helper verbs), and cardinal &amp; ordinal numbers are stored in static assets.</p>
+        <p>Certain nouns (e.g. 'deer') are the same in plural form (not 'deers'). Some adverbs look the same as their adjective counterparts (e.g. 'late' in 'I will be late', not 'I will be lately'). A number of these exceptions are stored in sentence_gen_statics.py. If you discover more words that don't look right when chewed through the generator, see if they fit in any of the exceptions lists or add them to the word blacklist.</p>
+        <p>Unfortunately, features <span class="emphasize">Categories</span> and <span class="emphasize">Associations</span> are not yet implemented so for now those fields can be left blank unless you wish to prepare the database for their implementation.</p>
+        <p><span class="words-title bold">Add new noun </span><button class="noun-link float-right"><i class="fas fa-plus"></i></button></p>
+        <div class="noun-form">
+            <p>Store only nouns in singular form. The application handles pluralization automatically.</p>
+            <p>Don't store nouns that are always capitalized, e.g. names of people and places. Instead, store them as proper nouns.</p>
+            <p>Nouns' genders are most often neutral. However, certain nouns have masculine (e.g. 'father', 'prince', 'bull') and feminine (e.g. 'waitress', 'woman') gender, and the application needs to know in order to select correct pronouns.</p>
+            <form class="word-form" action="" method="post">
+                {{ noun_form.hidden_tag() }}
+                
+                {{ noun_form.word.label }}<br>
+                {{ noun_form.word }}<br>
+                {% for error in noun_form.word.errors %}
+                <span>[{{ error }}]</span><br><br>
                 {% endfor %}
-            </table>
-                    
+            
+                {{ noun_form.article.label }}<br>
+                {{ noun_form.article }}<br>
+            
+                {{ noun_form.gender.label }}<br>
+                {{ noun_form.gender }}<br>
+                
+                {{ noun_form.categories.label }}<br>
+                {{ noun_form.categories }}<br>
+            
+                {{ noun_form.adj_assoc.label }}<br>
+                {{ noun_form.adj_assoc }}<br>
+            
+                {{ noun_form.verb_assoc.label }}<br>
+                {{ noun_form.verb_assoc }}<br>
+                
+                {{ noun_form.submit_noun() }}
+            </form>
         </div>
-        <div class="column">
-            <p>notes</p>
-            <p>allowed tags</p>
+        <hr>
+        <p><span class="words-title bold">Add new adjective </span><button class="adj-link float-right"><i class="fas fa-plus"></i></button></p>
+        <div class="adj-form">
+            <p>Store adjectives in base (positive) form only. The application handles transformation into comparative and superlative forms. For correct transformation the application needs to know whether the adjective has one or more syllables.</p>
+            <p>Almost all adjectives are regular. The most important exceptions are: good, well (healthy), bad, far.</p>
+            <form class="word-form" action="" method="post">
+                {{ adj_form.hidden_tag() }}
+                
+                {{ adj_form.word.label }}<br>
+                {{ adj_form.word }}<br>
+                {% for error in adj_form.word.errors %}
+                <span>[{{ error }}]</span><br><br>
+                {% endfor %}
+            
+                {{ adj_form.irregular.label }}<br>
+                {{ adj_form.irregular }}<br>
+                
+                {{ adj_form.mult_syll.label }}<br>
+                {{ adj_form.mult_syll }}<br>
+
+                {{ adj_form.categories.label }}<br>
+                {{ adj_form.categories }}<br>
+        
+                {{ adj_form.noun_assoc.label }}<br>
+                {{ adj_form.noun_assoc }}<br>
+                
+                {{ adj_form.submit_adj() }}
+            </form>
         </div>
+        <hr>
+        <p><span class="words-title bold">Add new verb </span><button class="verb-link float-right"><i class="fas fa-plus"></i></button></p>
+        <div class="verb-form">
+            <p>Store verbs in their base (infinitive) form only. The application handles conjugation automatically. For correct conjugation, the application needs to know whether the verb has one or more syllables.</p>
+            <p>The application's static assets contain a list of common irregular verbs' irregular forms. If the verb you wish to add is uncommon, it might be a good idea to check sentence_gen_statics.py's irregular verbs dictionary and update it.</p>
+            <form class="word-form" action="" method="post">
+                {{ verb_form.hidden_tag() }}
+                
+                {{ verb_form.word.label }}<br>
+                {{ verb_form.word }}<br>
+                {% for error in verb_form.word.errors %}
+                <span>[{{ error }}]</span><br><br>
+                {% endfor %}
+            
+                {{ verb_form.irregular.label }}<br>
+                {{ verb_form.irregular }}<br>
+            
+                {{ verb_form.mult_syll.label }}<br>
+                {{ verb_form.mult_syll }}<br>
+            
+                {{ verb_form.categories.label }}<br>
+                {{ verb_form.categories }}<br>
+            
+                {{ verb_form.noun_assoc.label }}<br>
+                {{ verb_form.noun_assoc }}<br>
+            
+                {{ verb_form.submit_verb() }}
+            </form>
+        </div>
+        <hr>
+        <p><span class="words-title bold">Add new adverb </span><button class="adv-link float-right"><i class="fas fa-plus"></i></button></p>
+        <div class="adv-form">
+            <p>Most adverbs do not need to be stored in database. 'Normal' adverbs (generally ending in '-ly' are generated by application from their adjective base words and transformed into comparative and superlative as needed.</p>
+            <p>On top of 'normal' adverbs, the application can handle adverbs of time (e.g. 'early', 'soon'), adverbs of place (e.g. 'nearby', 'upstairs') and adverbs of frequency (e.g. 'sometimes', 'usually'). For Subtype, input 'time', 'place', or 'frequency' respectively MEN ÄNDRA TILL RADIO ISTÄLLET. JÖSSES...!</p>
+            <form class="word-form" action="" method="post">
+                {{ adv_form.hidden_tag() }}
+            
+                {{ adv_form.word.label }}<br>
+                {{ adv_form.word }}<br>
+                {% for error in adv_form.word.errors %}
+                <span>[{{ error }}]</span><br><br>
+                {% endfor %}
+            
+                {{ adv_form.irregular.label }}<br>
+                {{ adv_form.irregular }}<br>
+            
+                {{ adv_form.categories.label }}<br>
+                {{ adv_form.categories }}<br>
+            
+                {{ adv_form.subtype.label }}<br>
+                {{ adv_form.subtype }}<br>
+            
+                {{ adv_form.submit_adv() }}
+            </form>
+        </div>
+        <hr>
+        <p><span class="words-title bold">Add new proper noun </span><button class="prop-noun-link float-right"><i class="fas fa-plus"></i></button></p>
+        <div class="prop-noun-form">
+            <p>Don't capitalize proper nouns, the application handles it automatically.</p>
+            <p>Proper nouns such as names of countries and cities have neutral gender.</p>
+            <form class="word-form" action="" method="post">
+                {{ prop_noun_form.hidden_tag() }}
+
+                {{ prop_noun_form.word.label }}<br>
+                {{ prop_noun_form.word }}<br>
+                {% for error in prop_noun_form.word.errors %}
+                <span>[{{ error }}]</span><br><br>
+                {% endfor %}
+
+                {{ prop_noun_form.gender.label }}<br>
+                {{ prop_noun_form.gender }}<br>
+
+                {{ prop_noun_form.submit_prop_noun() }}
+            </form>
+        </div>
+        <hr>
+        <p><span class="words-title bold">Add new special word </span><button class="special-link float-right"><i class="fas fa-plus"></i></button></p>
+        <div class="special-form">
+            <p>Special words can be accessed directly by sentence models. Store words you wish to repeat for every sentence generated by that model.</word></p>
+            <form class="word-form" action="" method="post">
+                {{ special_form.hidden_tag() }}
+                
+                {{ special_form.word.label }}<br>
+                {{ special_form.word }}<br>
+                {% for error in special_form.word.errors %}
+                <span>[{{ error }}]</span><br><br>
+                {% endfor %}
+            
+                {{ special_form.submit_spec() }}
+            </form>
+        </div>            
     </div>
+    <div class="card">
+        <h2>Manage words</h2>
+        <p>Click a word to see or edit its details.</p>
+        <p><span class="warning bold">Caution</span>: Delete-buttons are hot: they immediately delete words from word database.</p>
+        <p><span class="words-title bold">Nouns (<span class="color-splash">{{ nouns.count() }}</span>)</span><button class="nouns-button float-right"><i class="fas fa-plus"></i></button></p>
+        <div class="words nouns">
+            {% for noun in nouns %}
+            <p><a href="#">{{ noun.word }}</a><span class="float-right"><button onclick='window.location.href="{{ url_for('delete_item', item='word', id=noun.id) }}"'><i class="far fa-trash-alt"></i></button></span></p>
+            {% endfor %}
+        </div>
+        <hr>
+        <p><span class="words-title bold">Adjectives (<span class="color-splash">{{ adjectives.count() }}</span>)</span><button class="adjectives-button float-right"><i class="fas fa-plus"></i></button></p>
+        <div class="words adjectives">
+            {% for adjective in adjectives %}
+            <p><a href="">{{ adjective.word }}</a><span class="float-right"><button onclick='window.location.href="{{ url_for('delete_item', item='word', id=adjective.id) }}"'><i class="far fa-trash-alt"></i></button></span></p>
+            {% endfor %}
+        </div>
+        <hr>
+        <p><span class="words-title bold">Verbs (<span class="color-splash">{{ verbs.count() }}</span>)</span><button class="verbs-button float-right"><i class="fas fa-plus"></i></button></p>
+        <div class="words verbs">
+            {% for verb in verbs %}
+            <p><a href="">{{ verb.word }}</a><span class="float-right"><button onclick='window.location.href="{{ url_for('delete_item', item='word', id=verb.id) }}"'><i class="far fa-trash-alt"></i></button></span></p>
+            {% endfor %}
+        </div>
+        <hr>
+        <p><span class="words-title bold">Adverbs (<span class="color-splash">{{ adverbs.count() }}</span>)</span><button class="adverbs-button float-right"><i class="fas fa-plus"></i></button></p>
+        <div class="words adverbs">
+            {% for adverb in adverbs %}
+            <p><a href="">{{ adverb.word }}</a><span class="float-right"><button onclick='window.location.href="{{ url_for('delete_item', item='word', id=adverb.id) }}"'><i class="far fa-trash-alt"></i></button></span></p>
+            {% endfor %}
+        </div>
+        <hr>
+        <p><span class="words-title bold">Proper nouns (<span class="color-splash">{{ proper_nouns.count() }}</span>)</span><button class="proper-nouns-button float-right"><i class="fas fa-plus"></i></button></p>
+        <div class="words proper-nouns">
+            {% for proper_noun in proper_nouns %}
+            <p><a href="">{{ proper_noun.word }}</a><span class="float-right"><button onclick='window.location.href="{{ url_for('delete_item', item='word', id=proper_noun.id) }}"'><i class="far fa-trash-alt"></i></button></span></p>
+            {% endfor %}
+        </div>
+        <hr>
+        <p><span class="words-title bold">Special words (<span class="color-splash">{{ special_words.count() }}</span>)</span><button class="specials-button float-right"><i class="fas fa-plus"></i></button></p>
+        <div class="words special-words">
+            {% for special_word in special_words %}
+            <p><a href="">{{ special_word.word }}</a><span class="float-right"><button onclick='window.location.href="{{ url_for('delete_item', item='word', id=special_word.id) }}"'><i class="far fa-trash-alt"></i></button></span></p>
+            {% endfor %}
+        </div>        
+    </div>
+    
     <script src="{{ url_for('static', filename='js/show_form.js') }}"></script>
 {% endblock %}
     

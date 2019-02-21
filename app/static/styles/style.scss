@@ -260,25 +260,40 @@ nav {
 
 /* USER FORM */
 
+%label-shared {
+    font-size: 1.3rem;
+    font-weight: bold;
+
+    @include small {
+        font-size: 1.4rem;
+    }
+
+    @include medium {
+        font-size: 1.5rem;
+    }
+
+    @include large {
+        font-size: 1.6rem;
+    }
+}
+
+%button-shared {
+    width: 25%;
+    font-size: 1.4rem;
+    margin-top: 0;
+    box-shadow: 1px 1px 2px rgba(92, 92, 92, 0.3);
+
+    @include large {
+        font-size: 1.6rem;
+    }
+}
+
 .user-form {
     margin: 0 5%;
     text-align: left;
 
     label {
-        font-size: 1.3rem;
-        font-weight: bold;
-
-        @include small {
-            font-size: 1.4rem;
-        }
-
-        @include medium {
-            font-size: 1.5rem;
-        }
-
-        @include large {
-            font-size: 1.6rem;
-        }
+        @extend %label-shared;
     }
 
     input {
@@ -331,14 +346,7 @@ nav {
     }
 
     #submit, #submit_username, #submit_email, #submit_password {
-        width: 25%;
-        font-size: 1.4rem;
-        margin-top: 0;
-        box-shadow: 1px 1px 2px rgba(92, 92, 92, 0.3);
-
-        @include large {
-            font-size: 1.6rem;
-        }
+        @extend %button-shared;
     }
 }
 
@@ -623,6 +631,90 @@ nav {
 }
 
 
+/* MANAGE WORDS */
+
+.word-form {
+    margin: 2% 5% 5% 5%;
+    font-size: 1.4rem;
+    color: $primary-text;
+
+        @include medium {
+            font-size: 1.55rem;
+        }
+
+        @include large {
+            font-size: 1.6rem;
+        }
+    
+    label {
+        @extend %label-shared;
+    }
+
+    input {
+        font-size: 1.7rem;
+        padding: 0.2rem;
+        
+        @include small {
+            font-size: 1.8rem;
+        }
+
+        @include medium {
+            font-size: 1.9rem;
+        }
+
+        @include large {
+            font-size: 2rem;
+        }
+    }
+
+    input[type=text] {
+        margin: 1rem auto 2rem auto;
+    }
+
+    ul {
+        list-style-type: none;
+        padding-left: 0;
+    }
+
+    #submit_noun, 
+    #submit_adj, 
+    #submit_verb, 
+    #submit_adv, 
+    #submit_prop_noun, 
+    #submit_spec {
+        @extend %button-shared;
+    }
+}
+
+.words-title {
+    font-size: 1.7rem;
+
+        @include medium {
+            font-size: 1.8rem;
+        }
+
+        @include large {
+            font-size: 2rem;
+        }
+}
+
+.words {
+
+
+    a {
+        font-size:1.7rem;
+        font-weight: bold;
+
+        @include medium {
+            font-size: 1.9rem;
+        }
+
+        @include large {
+            font-size: 2rem;
+        }
+    }
+}
+
 /* FOOTER */
 
 .footer {
@@ -668,6 +760,10 @@ nav {
 
 .bold {
     font-weight: bold;
+}
+
+.no-margin-bottom {
+    margin-bottom: 0 !important; 
 }
 
 .emphasize {

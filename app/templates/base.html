@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Soeedtyping webapp built as a learning project, by Patrik Setterberg, 2019.">
+    <meta name="description" content="Speedtyping webapp built as a learning project, by Patrik Setterberg, 2019.">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     
     <title>
-        {% if title %}T Y P E - {{ title }}{% else %}Typemania{% endif %}
+        {% if title %}Typemania - {{ title }}{% else %}Typemania{% endif %}
     </title>
 
     <!-- Font Awesome -->
@@ -58,7 +58,7 @@
             {% block content %}{% endblock %}
         </div>
         <div class="footer">
-            <p>Learning project, 2019. App source available on <a href="https://github.com/patrik-setterberg/type"><i class="fab fa-github"></i> GitHub</a>.&nbsp;&nbsp;|&nbsp;&nbsp;View <a href="{{ url_for('privacy_policy') }}">Privacy Policy</a>.&nbsp;&nbsp;|&nbsp;&nbsp;Contact me at <a href="mailto:min@mail.com">my@email.com</a>.</p>
+            <p><a href="{{ url_for('about') }}">What is this place?</a>&nbsp;&nbsp;|&nbsp;&nbsp;App source available on <a href="https://github.com/patrik-setterberg/type"><i class="fab fa-github"></i> GitHub</a>&nbsp;&nbsp;|&nbsp;&nbsp;View <a href="{{ url_for('privacy_policy') }}">Privacy Policy</a>&nbsp;&nbsp;|&nbsp;&nbsp;Contact me at <a href="mailto:min@mail.com">my@email.com</a></p>
         </div>
     </div>
 </body>

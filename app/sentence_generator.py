@@ -700,6 +700,7 @@ class Sentence:
                 else:
                     return transform[form]['pref'] + word            
         # else HANDLE IRREGULAR ADJECTIVES!!
+        # https://www.englishclub.com/vocabulary/irregular-adjectives.htm
         else:
             return word
 
