@@ -2,12 +2,12 @@
 
 {% block content %}
     <div class="card">
-        <p class="float-right no-margin-bottom"><a href="{{ url_for('admin') }}">Admin panel</a></p>
+        <p class="float-right no-margin-bottom"><a href="{{ url_for('admin') }}"><span class="bold">Admin panel</span></a></p>
         <h3>Manage users</h3>
         <p><span class="warning bold">Caution</span>: Deletion links are hot! Users are deleted immediately and irreversibly once "Delete user"-links are clicked.</p>
         {% for user in users %}    
         <p>
-           {{ user.id }}: <span class="bold"><a href="{{ url_for('user', username=user.username) }}">{{ user.username }}</a></span>{% if not user.username == admin %}<span class="float-right"><a href="{{ url_for('delete_item', item='user', id=user.id) }}">Delete user</a></span>{% endif %}<br>
+           <span class="bold">{{ user.id }}</span>: <span class="bold"><a href="{{ url_for('user', username=user.username) }}">{{ user.username }}</a></span>{% if not user.username == admin %}<span class="float-right"><button onclick='window.location.href="{{ url_for('delete_item', item='user', id=user.id) }}"'><i class="far fa-trash-alt"></i></button></span>{% endif %}<br>
            Times played: {{ user.times_played }}<br>
            Registered: {{ user.registered.strftime("%A, %b %d, %Y") }}<br>
            Last seen: {{ user.last_seen.strftime("%A, %b %d, %Y") }}

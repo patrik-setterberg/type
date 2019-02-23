@@ -193,7 +193,11 @@ class AdverbForm(FlaskForm):
                            choices=[('0','Regular'),('1','Irregular')],
                            validators=[DataRequired()])
     categories = StringField('Categories')
-    subtype = StringField('Subtype')
+    subtype = RadioField('Subtype', 
+                         choices=[('time','Time'),
+                         ('place','Place'),
+                         ('frequency','Frequency')],
+                           validators=[DataRequired()])
     submit_adv = SubmitField('Add word')
     
     def validate_word(self, word):

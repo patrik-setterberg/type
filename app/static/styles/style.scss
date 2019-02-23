@@ -345,7 +345,7 @@ nav {
         margin-left: 1rem;
     }
 
-    #submit, #submit_username, #submit_email, #submit_password {
+    input[type=submit] {
         @extend %button-shared;
     }
 }
@@ -592,7 +592,7 @@ nav {
 }
 
 #disclaimer {
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     padding-bottom: 0;
     
     span {
@@ -676,12 +676,7 @@ nav {
         padding-left: 0;
     }
 
-    #submit_noun, 
-    #submit_adj, 
-    #submit_verb, 
-    #submit_adv, 
-    #submit_prop_noun, 
-    #submit_spec {
+    input[type=submit] {
         @extend %button-shared;
     }
 }
@@ -700,7 +695,6 @@ nav {
 
 .words {
 
-
     a {
         font-size:1.7rem;
         font-weight: bold;
@@ -713,6 +707,43 @@ nav {
             font-size: 2rem;
         }
     }
+}
+
+
+/* MANAGE SENTENCES */
+
+.sentence-form {
+
+    input[type=text] {
+        letter-spacing: 0.25rem;
+    }
+}
+
+#submit_sentence {
+    width: 16rem;
+}
+
+.sentences {
+    @include display-flex();
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 0;
+    width: 100%;
+}
+
+.sentence {
+    @include flex(1);
+    word-break: break-word;
+    letter-spacing: 0.08rem;
+
+    @include large {
+        letter-spacing: 0.1rem;
+    }
+}
+
+.delete-sentence {
+    text-align: right;
 }
 
 /* FOOTER */

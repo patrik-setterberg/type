@@ -3,44 +3,31 @@
 {% block content %}
 
     <div class="card">
-        <p class="float-right no-margin-bottom"><a href="{{ url_for('admin') }}">Admin panel</a></p>
-        <div class="column">    
-            <h4>Add new sentence model</h4>
-            <form action="" method="post">
-                {{ sentence_form.hidden_tag() }}
-                <p>
-                    {{ sentence_form.sentence.label }}<br>
-                    {{ sentence_form.sentence(size=32) }}<br>
-                    {% for error in sentence_form.sentence.errors %}
-                    <span style="color:red;">[{{ error }}]</span>
-                    {% endfor %}
-                </p>
-                <p>{{ sentence_form.submit_sentence() }}</p>
-            </form>
-            <br>
-            <h4>Manage sentences</h4>
-            <table>
-                <tr>
-                    <td>Tags</td>
-                </tr>
-                {% for sentence in sentences %}
-                <tr>
-                    <td>
-                        <p><b>{{ sentence.sentence }}</b></p>
-                    </td>
-                    <td>
-                        <p style="text-align:right;">
-                            <a href="{{ url_for('delete_item', item='sentence', id=sentence.id) }}">Delete sentence</a>
-                        </p>
-                    </td>
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
-        <div class="column">
-            <p>notes</p>
-            <p>allowed tags</p>
-        </div>
+        <p class="float-right no-margin-bottom"><a href="{{ url_for('admin') }}"><span class="bold">Admin panel</span></a></p>
+        <h2>Add new sentence model</h2>
+        <p>Here be a bunch of instructions for how to uhh... add new sentence models.</p>
+        <form class="user-form sentence-form" action="" method="post">
+            {{ sentence_form.hidden_tag() }}
+            
+            {{ sentence_form.sentence.label }}<br>
+            {{ sentence_form.sentence(size=32) }}<br>
+            {% for error in sentence_form.sentence.errors %}
+            <span>[{{ error }}]</span>
+            {% endfor %}
+            
+            {{ sentence_form.submit_sentence() }}
+        </form>
     </div>    
+    <div class="card">
+        <h2>Manage sentences</h2>
+        <p>text Here</p>
+        <p><span class="warning bold">Caution</span>: Delete-buttons are hot: they immediately delete words from word database.</p>
+        {% for sentence in sentences %}
+        <div class="sentences">
+            <p class="bold sentence">{{ sentence.sentence }}</p><p class="float-right delete-sentence"><button onclick="window.location.href='{{ url_for("delete_item", item="sentence", id=sentence.id) }}'"><i class="far fa-trash-alt"></i></button></p>        
+        </div>
+        {% endfor %}
+    </div>
+    
 {% endblock %}
     
