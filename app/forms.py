@@ -13,7 +13,7 @@ class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     remember_me = BooleanField('Remember me')
-    submit = SubmitField('Sign in')
+    submit_login = SubmitField('Sign in')
 
 
 class RegistrationForm(FlaskForm):
@@ -25,7 +25,8 @@ class RegistrationForm(FlaskForm):
                              Length(min=6, max=50)])
     password2 = PasswordField('Repeat Password', validators=[
                               DataRequired(), EqualTo('password')])
-    submit = SubmitField('Register')
+    agree = BooleanField('I accept', validators=[DataRequired()])
+    submit_registration = SubmitField('Register')
 
     def validate_username(self, username):
         user = User.query.filter_by(username=username.data).first()
@@ -106,7 +107,7 @@ class SentenceForm(FlaskForm):
             raise ValidationError(
                 'Sentence model formatted incorrectly.')
         # check tags
-        # IMPLEMENT
+        ### IMPLEMENT ###
         # check duplicates
         existing_sentence = (SentenceModel.query
                              .filter_by(sentence=sentence.data)

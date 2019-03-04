@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect, request, url_for
+from flask import render_template, flash, redirect, request, url_for, session, make_response
 from flask_login import current_user, login_user, logout_user, login_required
 from app import app, db
 from app.models import User, SentenceModel, WordList
@@ -31,12 +31,6 @@ def high_scores():
     return render_template('high_scores.html', title='High Scores', scores=scores)
 
 
-# Survive game ######## KANSKE TA BORT HELT OCH HÅLLET EN GÅNG FÖR ALLA????????
-@app.route('/survive')
-def survive():
-    return render_template('survive.html', title='Survive: Type or die!')
-
-
 # Login
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -67,6 +61,7 @@ def login():
 @app.route('/logout')
 def logout():
     logout_user()
+    session.clear()
     return redirect(url_for('index'))
 
 
@@ -543,6 +538,12 @@ def privacy_policy():
     return render_template('privacy_policy.html', title='Privacy Policy')
 
 
+# Site cookie policy
+@app.route('/cookie_policy', methods=['GET'])
+def cookie_policy():
+    return render_template('cookie_policy.html', title='Cookie Policy')
+
+
 # About page
 @app.route('/about', methods=['GET'])
 def about():
@@ -556,4 +557,40 @@ def before_request():
         db.session.commit()
 
 
+@app.after_request
+def after_request(response):
+    """ Clear session after request unless users have consented
+        to cookies to make sure no session cookie is created
+        illegaly. """
+    resp = make_response(response)
 
+    if request.cookies.get('cookie_consent') == 'true':    
+        # check if user is logged in
+            # check if they opted out of GA:
+                # session['GA'] = 0
+        pass
+    else:
+        session.clear()
+
+    return resp
+
+
+# Check cookies consent
+# Thanks: https://stackoverflow.com/a/51935872
+@app.context_processor
+def inject_template_scope():
+    injections = dict()
+
+    def cookies_check():
+        """ Check if users have consented to cookies """
+        value = request.cookies.get('cookie_consent')
+        return value == 'true'
+    injections.update(cookies_check=cookies_check)
+
+    def analytics_check():
+        """ Check if users opted out of Google Analytics tracking """
+        value = request.cookies.get('ga_consent')
+        return value == 'true'
+    injections.update(analytics_check=analytics_check)
+
+    return injections

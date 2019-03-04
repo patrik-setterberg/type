@@ -1,3 +1,30 @@
+// FONTS
+
+/* heebo-regular - latin */
+@font-face {
+    font-family: 'Heebo';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Heebo'), local('Heebo-Regular'),
+         url('../fonts/heebo-v4-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
+         url('../fonts/heebo-v4-latin-regular.woff') format('woff'), /* Modern Browsers */
+         url('../fonts/heebo-v4-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
+  }
+  
+  /* heebo-700 - latin */
+  @font-face {
+    font-family: 'Heebo';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Heebo Bold'), local('Heebo-Bold'),
+         url('../fonts/heebo-v4-latin-700.woff2') format('woff2'), /* Super Modern Browsers */
+         url('../fonts/heebo-v4-latin-700.woff') format('woff'), /* Modern Browsers */
+         url('../fonts/heebo-v4-latin-700.ttf') format('truetype'), /* Safari, Android, iOS */
+  }  
+
+  $primary-font: 'Heebo', 'Helvetica', sans-serif;
+
+
 // COLORS
 $body-background:       #EBEBEB; // also used for footer link hover
 $container-background:  #F7F7F7; // also used for high score zebra pattern
@@ -8,10 +35,8 @@ $game-next-sent:        #BFBFBF;
 $soft-gray:             #E6E6E6; // used as trophy shelf, separator on user page, high scores 
 $warning:               #B22222;
 $footer-text:           #D8D8D8;
+$gradient-bright:       #f0cd06;
 
-
-// FONTS
-$primary-font: 'Heebo', 'Helvetica', sans-serif;
 
 
 // Media breakpoints - taken from Bootstrap, with thanks
@@ -134,6 +159,60 @@ header {
     }
 }
 
+
+/* COOKIE CONSENT */
+
+#cookie-consent-container {
+    margin: 0;
+    text-align: center;
+    width: 100%;
+    background-color: $accent-color;
+    background-image:
+        linear-gradient(
+            to top right, 
+            $accent-color, $gradient-bright
+    );
+    z-index: 2;
+
+    p {
+        @extend %p-font-size;
+        margin-left: 0.5rem;
+        margin-right: 0.5rem;
+    }
+
+    a, a:visited {
+        color: $primary-text;
+        font-weight: bold;
+    }
+
+    a:hover {
+        text-decoration: none;
+    }
+}
+
+#consent-box {
+    display: inline-block;
+    margin-left: 1.5rem;
+    margin-right: 1rem;   
+    vertical-align: middle;
+    
+    @include large {
+        -ms-transform: scale(1.25); /* IE */
+        -moz-transform: scale(1.25); /* FF */
+        -webkit-transform: scale(1.25); /* Safari and Chrome */
+        -o-transform: scale(1.25); /* Opera */
+    }
+}
+
+#cookie-consent {
+    display: inline-block;
+    margin-left: 1rem;
+    font-size: 1.4rem;
+    
+    @include large {
+        font-size: 1.6rem;
+    }
+}
 
 /* NAVBAR */
 
@@ -300,7 +379,6 @@ nav {
         margin: 0.5rem auto 1.5rem auto;
         padding: 0.4rem;
         font-size: 1.7rem;
-        width: 100%;
         color: $primary-text;
         box-sizing: border-box;
         border-radius: 5px;
@@ -320,6 +398,10 @@ nav {
         &:focus {
             border: 1pt solid darken($accent-color, 5%); 
         }
+    }
+
+    input[type=text], input[type=password] {
+        width: 100%;
     }
 
     span {
@@ -348,6 +430,17 @@ nav {
     input[type=submit] {
         @extend %button-shared;
     }
+}
+
+
+/* REGISTRATION */
+
+#agree {
+    margin: 2rem 1rem 2.5rem 0;
+}
+
+#submit_registration {
+    margin-bottom: 2rem;
 }
 
 
@@ -452,6 +545,18 @@ nav {
 
 /* CARD */
 
+%p-font-size {
+    font-size: 1.4rem;
+
+        @include medium {
+            font-size: 1.55rem;
+        }
+
+        @include large {
+            font-size: 1.6rem;
+        }
+}
+
 .card {
     background-color: $card-background;
     width: 92%;
@@ -481,15 +586,7 @@ nav {
         margin: 2% 5% 5% 5%;
         padding: 0;
         line-height: 3rem;
-        font-size: 1.4rem;
-
-        @include medium {
-            font-size: 1.55rem;
-        }
-
-        @include large {
-            font-size: 1.6rem;
-        }
+        @extend %p-font-size;
     }
 
     %card-heading-shared {
@@ -603,7 +700,7 @@ nav {
 
 /* USER PAGE */
 
-#rank, #highest-score, #times-played, {
+#rank, #highest-score, #times-played {
     padding: 0;
     margin: 3% 5%;
     border-bottom: 1px $soft-gray solid;
@@ -818,6 +915,10 @@ nav {
     color: $accent-color;
 }
 
+.green {
+    color: #00b300;
+}
+
 .warning {
     color: $warning;
 }
@@ -836,18 +937,12 @@ nav {
     }
 }
 
+#user-consent {
+    color: #333;
+}
+
 hr {
     border-top: 1px;
     margin: 0 2em;
     color: $soft-gray;
-}
-
-/* DE HÄR ANVÄNDS INTE ATM */
-div.column-wrapper {
-    @include display-flex();
-    flex-flow: row nowrap;
-}
-
-div.column {
-    width: 50%;
 }

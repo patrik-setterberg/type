@@ -1,8 +1,11 @@
 import os
+import datetime
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'you_will_neve_kvarjo'
+
+    REMEMBER_COOKIE_DURATION = datetime.timedelta(days=7)
 
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
         'sqlite:///' + os.path.join(basedir, 'app.db')

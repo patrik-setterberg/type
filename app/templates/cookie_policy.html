@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card">
+    <h2>Cookie Policy</h2>
+    <p>This is the Typemania.net Cookie Policy. It outlines the website's use of cookies: What they are as well as how and why they are used by Typemania. For additional information, feel free to <a href="#">contact me</a>.</p>
+    <h3>What are cookies?</h3>
+    <p><a href="https://en.wikipedia.org/wiki/HTTP_cookie" target="_blank">Cookies</a> are small files that help websites in communicating with users' web browsers. Websites send these files to users' browsers who store them until they expire or are cleared manually or automatically. Most modern websites use cookies. They can help a website keep track of a user's movement across different pages on the site, help manage logins, store user preferences, shopping carts et cetera.</p>
+    <h3>Cookies on this website</h3>
+    <p>Typemania.net use cookies for two reasons:</p>
+    <p><span class="bold">1) Essential website functionality</span><br>
+    A cookie is used to handle user logins. By helping the website remember the user, the cookie allows users to remain logged in while they visit the website's different pages. This cookie is removed upon logging out or when the browser is closed.</p>
+    <p>When logging in, users are presented with an optional "Remember me" checkbox. This setting allows users to stay logged in even if they close their browsers and return later. To achieve this functionality, a cookie is used. The cookie expires seven days after creation, which means the website will remember users as logged in for up to a week.</p>
+    <p>Users' cookie consent and usage tracking preferences are stored in cookies. These cookies also expire seven days after being created.</p>
+    <p>These cookies are <span class="emphasize">essential</span> to website functionality.</p>
+    <p><span class="bold">2) Collecting usage statistics</span><br>
+    In addition to Typemania's own cookies, the website also uses third party cookies from <a href="https://marketingplatform.google.com/about/analytics/" target="_blank">Google Analytics</a>, a <a href="https://en.wikipedia.org/wiki/Google_Analytics">widely used</a> web analytics service. The cookies from Google Analytics track usage statistics, such as which country users connect from, time spent on the website, and which pages they visit.</p>
+    <p>For information on usage statistics collection (i.e. what data I collect and what I do with it), please see the Typemania.net <a href="{{ url_for('privacy_policy') }}">Privacy Policy</a>.</p>
+    <p>For more information on Google Analytics and their cookies, please see the official Google Analytics page.</p>
+    <p>These cookies are not essential to website functionality.</p>
+    <h2>Manage cookies settings</h2>
+    {% if cookies_check() %}
+    <p>If you wish, you can opt out of usage tracking, as well as revoke your consent to our use of cookies completely. The latter is not recommended, see below.</p>
+    <h3>Usage statistics collection</h3>
+        {% if analytics_check() %}
+    <p>Opt out of usage tracking by Google Analytics by pressing the button below. If you change your mind, you can opt back in on this page.</p>
+    <p><button>Opt out</button></p>
+        {% else %}
+    <p>Opt in to allow usage tracking by Google Analytics by pressing the button below. If you change your mind, you can opt out at any time from this page.</p>
+    <p><button>Opt in</button></p>
+        {% endif %}
+    <h3>Revoke cookie consent</h3>
+    <p>You can, if you wish, revoke your consent to having <span class="emphasize">any</span> cookies sent to you by Typemania.net. This action will immediately remove all cookies created by this website.</p>
+    <p><span class="bold">Important:</span><br>Except for those involved in usage statistics collection, <span class="warning">all cookies used on this website are <span class="emphasize">essential to its functionality</span>. This means that by not allowing them you will render yourself unable to log in, if you are a registered user, and access your userpage and user information until you give consent. Additionally, other parts of the website might not behave correctly</span>.</p>
+    <p>For these reasons it is <span class="bold">not recommended</span> to revoke cookies consent completely.</p>
+    <p>Revoke cookies consent by pressing the button below.</p>
+    <p><button>Revoke consent</button></p>
+    {% else %}
+    <p>After consenting to our use of cookies you can, at any time, return to this page to change your settings (revoke your cookie consent as well as opt out of usage statistics collection). Please note, however, that this affects website functionality.</p>
+    {% endif %}
+</div>
+{% endblock %}
