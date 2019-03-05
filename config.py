@@ -5,6 +5,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'you_will_neve_kvarjo'
 
+    # "Remember me"-token max age
     REMEMBER_COOKIE_DURATION = datetime.timedelta(days=7)
 
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
@@ -24,3 +25,6 @@ SECRET_HIGH_SCORE_KEY = 4738
 
 # Administrator username
 ADMIN_USER = 'admin'
+
+# Max age of cookies 'cookie_consent' and 'ga_consent'
+COOKIE_MAX_AGE = 604800  # one week in seconds

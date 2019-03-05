@@ -11,7 +11,7 @@ from datetime import datetime
 from werkzeug.urls import url_parse
 from werkzeug.security import generate_password_hash
 from app.email import send_password_reset_email
-from config import SECRET_HIGH_SCORE_KEY, ADMIN_USER
+from config import SECRET_HIGH_SCORE_KEY, ADMIN_USER, COOKIE_MAX_AGE
 from sqlalchemy import func
 import json
 
@@ -542,6 +542,31 @@ def privacy_policy():
 @app.route('/cookie_policy', methods=['GET'])
 def cookie_policy():
     return render_template('cookie_policy.html', title='Cookie Policy')
+
+
+# Clear cookies and session
+@app.route('/clear_cookies', methods=['GET'])
+def clear_cookies():
+    all_cookies = [cookie for cookie in request.cookies]
+    # only available from /cookie_policy so redirects there
+    resp = make_response(redirect(url_for('cookie_policy')))
+
+    for cookie in all_cookies:
+        resp.set_cookie(cookie, '', expires=0)
+    
+    return resp
+
+
+# Toggle Analytics consent
+@app.route('/toggle_ga', methods=['GET'])
+def toggle_ga():
+    resp = make_response(redirect(url_for('cookie_policy')))
+    if request.cookies.get('ga_consent') == 'true':
+        resp.set_cookie('ga_consent', 'false', max_age=COOKIE_MAX_AGE)
+    else:
+        resp.set_cookie('ga_consent', 'true', max_age=COOKIE_MAX_AGE)
+    
+    return resp
 
 
 # About page

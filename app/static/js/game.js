@@ -41,7 +41,7 @@ gameInput.addEventListener('input', () => {
     if(gameInput.value === START_GAME_TRIGGER && playing === false) {
         setTimeout(initGame, 300);
     } else if (playing) {
-        if (gameInput.value.replace(/[^a-zA-Z-' ]/g, "").toLowerCase().trimStart() === currentSentence.rawSentence.replace(/[^a-zA-Z-' ]/g, "").toLowerCase()) {
+        if (gameInput.value.replace(/[^a-zA-Z-' ]/g, "").toLowerCase().replace(/\s+/g, " ").trim() === currentSentence.rawSentence.replace(/[^a-zA-Z-' ]/g, "").toLowerCase()) {
             currentScore += currentSentence.sentenceArr.length;
             updateSentences();
             gameInput.value = '';
@@ -150,7 +150,7 @@ const countDown = () => {
 }
 
 const getInputSentenceArr = () => {
-    return gameInput.value.replace(/[^a-zA-Z-' ]/g, "").toLowerCase().trimStart().split(" ");
+    return gameInput.value.replace(/[^a-zA-Z-' ]/g, "").toLowerCase().replace(/\s+/g, " ").trim().split(" ");
 }
 
 const highlightCurrentWord = () => {
