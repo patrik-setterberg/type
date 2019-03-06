@@ -6,6 +6,9 @@
         <p>Registered users' scores are tracked on personal profile pages as well as on the site-wide high-score list.</p>
         <p>Email addresses are only ever used to reset login information should you forget your username or password.</p>
         <p>Passwords are hashed and probably pretty secure. Even so, please don't use a password you use for anything sensitive, or anywhere else, preferably. Passwords must be between 6 and 50 characters long.</p>
+        {% if not cookies_check() %}
+        <p>Before registering you must consent to our use of cookies.</p>
+        {% endif %}
         <form class="user-form" action="" method="POST">
             {{ form.hidden_tag() }}
             {{ form.username.label }}<br>
@@ -31,7 +34,9 @@
             {% for error in form.password2.errors %}
             <span>[ Error: {{ error }} ]</span><br><br>
             {% endfor %}                
-            <span id="user-consent">To become a registered member you must accept and consent to our handling of your personal data as specified in our <a href="{{ url_for('privacy_policy') }}" target="_blank">Privacy Policy</a>.</span><br>
+            <span id="user-consent">To become a registered member you must accept and consent to: Typemania.net's <a href="{{ url_for('privacy_policy') }}" target="_blank">handling of your personal data</a>, as well as the website's <a href="{{ url_for('cookie_policy')}}" target="_blank">use of cookies</a>.</span><br>
+        
+                
             {{ form.agree }}{{ form.agree.label }}<br>
             {{ form.submit_registration() }}
         </form>

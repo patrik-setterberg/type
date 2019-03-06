@@ -430,6 +430,10 @@ nav {
     input[type=submit] {
         @extend %button-shared;
     }
+
+    ul {
+        font-size: 1.6rem;
+    }
 }
 
 
@@ -939,6 +943,7 @@ nav {
 
 #user-consent {
     color: #333;
+    line-height: 3rem;
 }
 
 hr {

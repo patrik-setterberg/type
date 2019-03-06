@@ -572,7 +572,7 @@ def toggle_ga():
 # About page
 @app.route('/about', methods=['GET'])
 def about():
-    return render_template('about.html', title="Website information")
+    return render_template('about.html', title="About this place")
 
 
 @app.before_request

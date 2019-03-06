@@ -27,7 +27,7 @@
     <p>Opt in to allow usage tracking by Google Analytics by pressing the button below. If you change your mind, you can opt out at any time from this page.</p>
         {% endif %}
     <p><button onclick="window.location.href='{{ url_for("toggle_ga") }}';">{% if analytics_check() %}Opt out{% else %}Opt in{% endif %}</button></p>
-    <h3>Revoke cookie consent</h3>
+    <h3>Revoke cookies consent</h3>
     <p>You can, if you wish, revoke your consent to having <span class="emphasize">any</span> cookies sent to you by Typemania.net. This action will immediately remove all cookies created by this website.</p>
     <p><span class="bold">Important:</span><br>Except for those involved in usage statistics collection, <span class="warning">all cookies used on this website are <span class="emphasize">essential to its functionality</span>. This means that, if you are a registered user, by not allowing cookies you will render yourself unable to log in, and access your userpage and user information until you again give consent. Additionally, other parts of the website might not behave correctly. For example, the website will forget your usage statistics collection settings</span>.</p>
     <p>For these reasons it is <span class="bold">not recommended</span> to revoke cookies consent completely.</p>
