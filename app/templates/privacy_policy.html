@@ -2,7 +2,7 @@
 
 {% block content %}
     <div class="card">
-        <h2>Pr<span class="color-splash">i</span>vacy policy</h2>
+        <h2>Privacy pol<span class="color-splash">i</span>cy</h2>
         <p>Typemania.net is a non-commercial personal project created for learning purposes by me, Patrik Setterberg. The application's full source code can be found on <a href="https://github.com/patrik-setterberg/type">GitHub</a>.</p>
         <p>This website stores user data for some of its features, and tracks website usage. How Typemania.net handles users' personal information as well as tracks their use of the website is detailed on this page.</p>
         <h3>Email adresses and user accounts</h3>
@@ -11,7 +11,7 @@
         <p>Users can, at any time, <a href="{{ url_for('edit_user') }}">change their login credentials</a> and permanently <a href="{{ url_for('delete_account') }}">delete their user accounts</a> without delay (requires logging in) which erases all user information (such as email address, username) from the website database.</p>
         <h3>Usage tracking</h3>
         <p>Website usage is tracked with <a href="https://marketingplatform.google.com/about/analytics/" target="_blank">Google Analytics</a>, a popular web analytics service. It can report user details such as their IP address, information about their web browsers, which pages of a website a user visits and how long they spend on each page, as well as other "diagnostic data".</p>
-        <p>For Typemania.net, only anonymized IP addresses are reported. This means that I can only really see what country users connect from. CONFIRM!!!??</p>
+        <p>For Typemania.net, only anonymized IP addresses are reported. This allows me to see from what parts of the world my users connect. However, their true IP addresses and consequently geographical locations remain obfuscated.</p>
         <p>Users may opt out of usage tracking at any time by visiting the Cookie Policy page, see below.</p>
         <p>Typemania.net's purpose for collecting usage data are:</p>
         <p><span class="bold">1) Learning</span>. Google Analytics is widely used and I wanted to learn how to implement and use it.</p>
@@ -22,6 +22,6 @@
         <p>The application and its database are stored on a secure, widely used hosting platform.</p>
         <p>I will never share user email addresses or any anonymized usage data with any third parties, except to comply with possible legal investigations or obligations.</p>
         <h3>Contact me</h3>
-        <p>For any inquiries regarding Typemania.net's handling of personal data, use of cookies or anything else, please <a href="#">contact me</a>.</p>
+        <p>For any inquiries regarding Typemania.net's handling of personal data, use of cookies or anything else, please <a href="{{ url_for('contact') }}">contact me</a>.</p>
     </div>
 {% endblock %}

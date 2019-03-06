@@ -10,7 +10,7 @@
         <form class="user-form" action="" method="POST" novalidate>
             {{ form.hidden_tag() }}
             {{ form.username.label }}<br>
-            {{form.username() }}<br>
+            {{ form.username() }}<br>
             {% for error in form.username.errors %}
             <span>[ Error: {{ error }} ]</span><br><br>
             {% endfor %}

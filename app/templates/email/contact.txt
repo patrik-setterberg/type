@@ -1,0 +1,8 @@
+New message!
+
+From:
+{{ sender_name }}
+{{ sender_email }}
+
+Message:
+{{ message }}

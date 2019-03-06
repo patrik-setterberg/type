@@ -1,16 +1,18 @@
-from flask import render_template, flash, redirect, request, url_for, session, make_response
+from flask import render_template, flash, redirect, request, url_for 
+from flask import session, make_response
 from flask_login import current_user, login_user, logout_user, login_required
 from app import app, db
 from app.models import User, SentenceModel, WordList
 from app.forms import LoginForm, RegistrationForm, ResetPasswordRequestForm
-from app.forms import EditEmailForm, EditPasswordForm, EditUsernameForm, SentenceForm
-from app.forms import ResetPasswordForm, NounForm, AdjectiveForm, VerbForm, AdverbForm
-from app.forms import ProperNounForm, SpecialForm
+from app.forms import EditEmailForm, EditPasswordForm, EditUsernameForm
+from app.forms import SentenceForm, ResetPasswordForm, NounForm, AdjectiveForm
+from app.forms import VerbForm, AdverbForm, ProperNounForm, SpecialForm
+from app.forms import ContactForm
 from app.sentence_generator import generate_sentence
 from datetime import datetime
 from werkzeug.urls import url_parse
 from werkzeug.security import generate_password_hash
-from app.email import send_password_reset_email
+from app.email import send_password_reset_email, send_contact_me_message
 from config import SECRET_HIGH_SCORE_KEY, ADMIN_USER, COOKIE_MAX_AGE
 from sqlalchemy import func
 import json
@@ -532,6 +534,29 @@ def delete_item(item, id):
     return redirect(url_for(redir))
 
 
+# About page
+@app.route('/about', methods=['GET'])
+def about():
+    return render_template('about.html', title='About this place')
+
+
+# Contact form
+@app.route('/contact', methods=['GET', 'POST'])
+def contact():
+    """ Send an email to website administrator with a message
+        from a website visitor containing their name, email address
+        and the message body. """
+
+    form = ContactForm()
+
+    if form.validate_on_submit():
+        send_contact_me_message(form.name.data, form.email.data, form.message.data)
+        flash('Message sent. Thank you!')
+        return redirect(url_for('contact'))
+
+    return render_template('contact.html', title='Contact', form=form)
+
+
 # Site privacy policy
 @app.route('/privacy_policy', methods=['GET'])
 def privacy_policy():
@@ -569,12 +594,6 @@ def toggle_ga():
     return resp
 
 
-# About page
-@app.route('/about', methods=['GET'])
-def about():
-    return render_template('about.html', title="About this place")
-
-
 @app.before_request
 def before_request():
     if current_user.is_authenticated:
@@ -589,10 +608,7 @@ def after_request(response):
         illegaly. """
     resp = make_response(response)
 
-    if request.cookies.get('cookie_consent') == 'true':    
-        # check if user is logged in
-            # check if they opted out of GA:
-                # session['GA'] = 0
+    if request.cookies.get('cookie_consent') == 'true':
         pass
     else:
         session.clear()

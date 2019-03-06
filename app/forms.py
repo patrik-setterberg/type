@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, RadioField 
-from wtforms import SubmitField
+from wtforms import TextAreaField, SubmitField
 from wtforms.validators import DataRequired, Email, EqualTo 
 from wtforms.validators import Length, ValidationError
 from app.models import User, WordList, SentenceModel
@@ -14,6 +14,15 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     remember_me = BooleanField('Remember me')
     submit_login = SubmitField('Sign in')
+
+
+class ContactForm(FlaskForm):
+    name = StringField('Your name', validators=[DataRequired()])
+    email = StringField('Your email address', validators=[DataRequired(), Email()])
+    message = TextAreaField('Message', validators=[DataRequired(),
+                            Length(min=1, max=3000)])
+    agree = BooleanField('I understand and consent', validators=[DataRequired()])
+    submit_message = SubmitField('Send message')
 
 
 class RegistrationForm(FlaskForm):

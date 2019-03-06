@@ -367,6 +367,14 @@ nav {
     }
 }
 
+%input-shared {
+    margin: 0.5rem auto 1.5rem auto;
+    padding: 0.4rem;
+    color: $primary-text;
+    box-sizing: border-box;
+    border-radius: 5px;
+}
+
 .user-form {
     margin: 0 5%;
     text-align: left;
@@ -376,27 +384,37 @@ nav {
     }
 
     input {
-        margin: 0.5rem auto 1.5rem auto;
-        padding: 0.4rem;
-        font-size: 1.7rem;
-        color: $primary-text;
-        box-sizing: border-box;
-        border-radius: 5px;
+        @extend %input-shared;
+        font-size: 1.6rem;
 
         @include small {
-            font-size: 1.8rem;
+            font-size: 1.7rem;
         }
 
         @include medium {
-            font-size: 1.9rem;
+            font-size: 1.8rem;
         }
 
         @include large {
-            font-size: 2rem;
+            font-size: 1.9rem;
         }
 
         &:focus {
             border: 1pt solid darken($accent-color, 5%); 
+        }
+    }
+
+    textarea {
+        @extend %input-shared;
+        width: 100%;
+        resize: none;
+        font-size: 1.4rem;
+        line-height: 2rem;
+        overflow: auto;
+
+        @include large {
+            font-size: 1.5rem;
+            line-height: 2.2rem;
         }
     }
 

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card">
+    <h2>Contact me</h2>
+    <p>If you have any feedback or questions regarding this website and its operation or for any other reason wish to contact me, please don't hesitate to send me a message.</p>
+    <form class="user-form" action="" method="POST" novalidate>
+            {{ form.hidden_tag() }}
+            {{ form.name.label }}<br>
+            {{ form.name() }}<br>
+            {% for error in form.name.errors %}
+            <span>[ Error: {{ error }} ]</span><br><br>
+            {% endfor %}
+            {{ form.email.label }}<br>
+            {{ form.email() }}<br>
+            {% for error in form.email.errors %}
+            <span>[ Error: {{ error }} ]</span><br><br>
+            {% endfor %}
+            {{ form.message.label }}<br>
+            {{ form.message(rows=6) }}<br>
+            {% for error in form.message.errors %}
+            <span>[ Error: {{ error }} ]</span><br><br>
+            {% endfor %}
+            <span id="user-consent">To send a message you must consent to this website's handling of your personal data (your name and email address) as specified in the Typemania.net <a href="{{ url_for('privacy_policy') }}" target="_blank">Privacy Policy</a>.</span><br>
+            {{ form.agree() }} {{ form.agree.label }}<br>
+            {% for error in form.agree.errors %}
+            <span>[ Error: {{ error }} ]</span><br><br>
+            {% endfor %}
+            {{ form.submit_message() }} 
+        </form>
+</div>
+{% endblock %}
