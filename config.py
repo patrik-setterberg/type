@@ -1,9 +1,12 @@
 import os
 import datetime
+from dotenv import load_dotenv
+
 basedir = os.path.abspath(os.path.dirname(__file__))
+load_dotenv(os.path.join(basedir, '.env'))
 
 class Config(object):
-    SECRET_KEY = os.environ.get('SECRET_KEY') or os.urandom(24)
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'application.secret_key'
 
     # "Remember me"-token max age
     REMEMBER_COOKIE_DURATION = datetime.timedelta(days=7)

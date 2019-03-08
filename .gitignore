@@ -4,6 +4,7 @@ venv/
 *.db
 .vscode/
 .flaskenv
+.env
 notes.txt
 logs/
 app/static/styles/style.css.map
