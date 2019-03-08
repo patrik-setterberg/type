@@ -9,7 +9,7 @@
         <p id="times-played">Number of times played: <span class="float-right bold">{{ user.times_played }}</span></p>
         <h3><i class="fas fa-toolbox"></i> Settings</h3>
             {% if current_user.username == admin %}
-            <p>Manage users and sentences from the <a href="{{ url_for('admin') }}"><span class="bold">admin panel</span></a>.</p>
+            <p>Manage users and sentences from the <a href="{{ url_for('admin') }}">Admin panel</a>.</p>
                 {% if user.username == admin %}
                 <p>Edit admin login information <a href="{{ url_for('edit_user') }}">here</a>.</p>
                 {% endif %}

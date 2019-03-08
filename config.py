@@ -3,7 +3,7 @@ import datetime
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config(object):
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'you_will_neve_kvarjo'
+    SECRET_KEY = os.environ.get('SECRET_KEY') or os.urandom(24)
 
     # "Remember me"-token max age
     REMEMBER_COOKIE_DURATION = datetime.timedelta(days=7)

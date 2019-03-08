@@ -2,13 +2,13 @@
 
 {% block content %}
     <div class="card">
-        <p class="float-right no-margin-bottom"><a href="{{ url_for('admin') }}"><span class="bold">Admin panel</span></a></p>
+        <p class="float-right no-margin-bottom"><a href="{{ url_for('admin') }}">Admin panel</a></p>
         <h3>Manage users</h3>
-        <p><span class="warning bold">Caution</span>: Deletion links are hot! Users are deleted immediately from database once "Delete user"-links are clicked.</p>
+        <p><span class="warning bold">Caution</span>: Buttons are hot! Users are deleted immediately from database once buttons are clicked.</p>
         <p>I should address that. Add some kind of confirmation before user deletion.</p>
         {% for user in users %}    
         <p>
-           <span class="bold">{{ user.id }}</span>: <span class="bold"><a href="{{ url_for('user', username=user.username) }}">{{ user.username }}</a></span>{% if not user.username == admin %}<span class="float-right"><button onclick='window.location.href="{{ url_for('delete_item', item='user', id=user.id) }}"'><i class="far fa-trash-alt"></i></button></span>{% endif %}<br>
+           <span class="bold">{{ user.id }}</span>: <a href="{{ url_for('user', username=user.username) }}">{{ user.username }}</a>{% if not user.username == admin %}<span class="float-right"><button onclick='window.location.href="{{ url_for('delete_item', item='user', id=user.id) }}"'><i class="far fa-trash-alt"></i></button></span>{% endif %}<br>
            Times played: <span class="bold">{{ user.times_played }}</span><br>
            Highest score: <span class="bold">{{ user.high_score }}</span><br>
            Registered: {{ user.registered.strftime("%A, %b %d, %Y") }}<br>
@@ -16,7 +16,6 @@
         </p>
         <hr>
         {% endfor %}
-    
     </div>
 {% endblock %}
 

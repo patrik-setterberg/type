@@ -49,6 +49,8 @@ def login():
             return redirect(url_for('login'))
         
         login_user(user, remember=form.remember_me.data)
+        app.logger.info('[LOGIN] User signed in: (' + 
+                        str(user.id) + ') ' + user.username)
         next_page = request.args.get('next')
 
         if not next_page or url_parse(next_page).netloc != '':
@@ -62,6 +64,13 @@ def login():
 # Logout
 @app.route('/logout')
 def logout():
+    """ Logout user, add event to log and clear session. """
+
+    if current_user:
+        app.logger.info('[LOGOUT] User signed out: (' + 
+                        str(current_user.id) + ') ' + 
+                        current_user.username)
+
     logout_user()
     session.clear()
     return redirect(url_for('index'))
@@ -81,6 +90,9 @@ def register():
         user.set_password(form.password.data) # NIFTY
         db.session.add(user)
         db.session.commit()
+
+        app.logger.info('[REGISTRATION] New user registered: (' + 
+                        str(user.id) + ') ' + user.username)
 
         flash('Success! You are now a registered user.')
         return redirect(url_for('login'))
@@ -153,6 +165,9 @@ def reset_password_request():
         user = User.query.filter_by(email=form.email.data).first()
         if user:
             send_password_reset_email(user)
+            app.logger.info(
+                '[PASSWORD_RESET] User requested a password reset: (' + 
+                str(user.id) + ') ' + user.username)
         flash('Check your email for instructions to reset your password.')
         return redirect(url_for('login'))
         
@@ -208,6 +223,9 @@ def delete_user():
         del_user = User.query.filter_by(id=user_id).first_or_404()
 
         if del_user:
+            app.logger.info(
+                '[DELETE_ACCOUNT] User deöeted their account: (' +
+                str(del_user.id) + ') ' + del_user.username)
             db.session.delete(del_user)
             db.session.commit()
             flash('User account deleted.')
@@ -526,6 +544,10 @@ def delete_item(item, id):
     else:
         pass
 
+    if item == 'user':
+        app.logger.info('[ADMIN] Admin deleted user: (' + 
+                        str(del_item.id) + ') ' + del_item.username)
+
     db.session.delete(del_item)
     db.session.commit()
 
@@ -550,8 +572,12 @@ def contact():
     form = ContactForm()
 
     if form.validate_on_submit():
-        send_contact_me_message(form.name.data, form.email.data, form.message.data)
+        send_contact_me_message(form.name.data,
+                                form.email.data,
+                                form.message.data)
         flash('Message sent. Thank you!')
+        app.logger.info('[MESSAGE] Visitor sent message through \
+            contact form: (' + form.name.data + ') ' + form.email.data)
         return redirect(url_for('contact'))
 
     return render_template('contact.html', title='Contact', form=form)

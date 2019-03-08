@@ -26,15 +26,18 @@ def send_password_reset_email(user):
                html_body=render_template('email/reset_password.html',
                                          user=user, token=token))
 
+
 def send_contact_me_message(sender_name, sender_email, message):
-        send_email('New message from Typemania.net visitor',
-                   sender=app.config['ADMINS'][0],  # ELLLER NÅN NO-REPLY ADDRESS?
-                   recipients=[app.config['ADMINS'][0]],
-                   text_body=render_template('email/contact.txt',
-                                             sender_name=sender_name,
-                                             sender_email=sender_email,
-                                             message=message),
-                   html_body=render_template('email/contact.html',
-                                             sender_name=sender_name,
-                                             sender_email=sender_email,
-                                             message=message))
+    """ Send an email to website administrator through contact page's
+        contact form. """
+    send_email('New message from Typemania.net visitor',
+              sender=app.config['ADMINS'][0],  # ELLLER NÅN NO-REPLY ADDRESS?
+              recipients=[app.config['ADMINS'][0]],
+              text_body=render_template('email/contact.txt',
+                                        sender_name=sender_name,
+                                        sender_email=sender_email,
+                                        message=message),
+              html_body=render_template('email/contact.html',
+                                        sender_name=sender_name,
+                                        sender_email=sender_email,
+                                        message=message))

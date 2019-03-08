@@ -604,6 +604,10 @@ nav {
         box-shadow: 0 6px 12px rgba(0,0,0,0.1), 0 6px 6px rgba(0,0,0,0.2);
     }
 
+    a {
+        font-weight: bold;
+    }
+
     p {
         margin: 2% 5% 5% 5%;
         padding: 0;
@@ -816,7 +820,6 @@ nav {
 
     a {
         font-size:1.7rem;
-        font-weight: bold;
 
         @include medium {
             font-size: 1.9rem;
@@ -937,16 +940,11 @@ nav {
     color: $accent-color;
 }
 
-.green {
-    color: #00b300;
-}
-
 .warning {
     color: $warning;
 }
 
 #admin-nav {
-    font-weight: bold;
     font-size: 1.4rem;
     padding-top: 1rem;
 
