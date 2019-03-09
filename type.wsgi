@@ -12,5 +12,5 @@ load_dotenv(os.path.join(basedir, '.env'))
 
 logging.basicConfig(stream=sys.stderr)
 sys.path.insert(0, '/home/spacedoctor/typemania/type/')
-from app import app as application
+from type import app as application
 application.secret_key = os.environ.get('SECRET_KEY')

@@ -66,14 +66,17 @@ def login():
 def logout():
     """ Logout user, add event to log and clear session. """
 
+    resp = make_response(redirect(url_for('index')))
+
     if current_user:
         app.logger.info('[LOGOUT] User signed out: (' + 
                         str(current_user.id) + ') ' + 
                         current_user.username)
 
-    logout_user()
-    session.clear()
-    return redirect(url_for('index'))
+        resp.set_cookie('remember_token', '', max_age=0)
+        logout_user()
+        session.clear()
+    return resp
 
 
 # Register
@@ -87,7 +90,7 @@ def register():
 
     if form.validate_on_submit():
         user = User(username=form.username.data, email=form.email.data)
-        user.set_password(form.password.data) # NIFTY
+        user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
 
