@@ -26,11 +26,15 @@ class Config(object):
     # Logs directory
     LOGS_DIR = 'logs/'
 
+
+# FLYTTA IN DE HÄR. BLIR JOBBIGT MEN ÄNDÅ
+
 # Secret high score key
 SECRET_HIGH_SCORE_KEY = 4738
 
 # Administrator username
 ADMIN_USER = 'admin'
+ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL') or 'admin@typemania.net'
 
 # Max age of cookies 'cookie_consent' and 'ga_consent'
 COOKIE_MAX_AGE = 604800  # one week in seconds

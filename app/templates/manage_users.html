@@ -7,7 +7,7 @@
         <p>Click a user's username to view full account information and logged website activity. Generated extract is not easy on the eyes, however it is formatted to be easily copyable in the event a user wishes to access all of Typemania.net's stored information about them.</p>
         {% for user in users %}    
         <p>
-           <span class="bold">{{ user.id }}</span>: <a href="{{ url_for('get_data', user_id=user.id) }}">{{ user.username }}</a>{% if not user.username == admin %}<span class="float-right"><button onclick='if (confirm("Are you sure you want to delete user?")) {window.location.href="{{ url_for('delete_item', item='user', id=user.id) }}"};'><i class="far fa-trash-alt"></i></button></span>{% endif %}<br>
+           <span class="bold">{{ user.id }}</span>: {% if not user.username == 'anonymous' %}<a href="{{ url_for('get_data', user_id=user.id) }}">{{ user.username }}</a>{% else %}<span class="bold">anonymous</span>{% endif %}{% if not user.username == admin %}<span class="float-right"><button onclick='if (confirm("Are you sure you want to delete user?")) {window.location.href="{{ url_for('delete_item', item='user', id=user.id) }}"};'><i class="far fa-trash-alt"></i></button></span>{% endif %}<br>
            Times played: <span class="bold">{{ user.times_played }}</span><br>
            Highest score: <span class="bold">{{ user.high_score }}</span><br>
            Registered: {{ user.registered.strftime("%A, %b %d, %Y") }}<br>

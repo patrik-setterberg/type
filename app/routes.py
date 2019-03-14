@@ -13,7 +13,8 @@ from datetime import datetime
 from werkzeug.urls import url_parse
 from werkzeug.security import generate_password_hash
 from app.email import send_password_reset_email, send_contact_me_message
-from config import SECRET_HIGH_SCORE_KEY, ADMIN_USER, COOKIE_MAX_AGE, Config
+from config import SECRET_HIGH_SCORE_KEY, COOKIE_MAX_AGE, Config
+from config import ADMIN_USER, ADMIN_EMAIL
 from sqlalchemy import func
 import json
 import os
@@ -310,8 +311,14 @@ def update_user_score(high_score_cypher, score):
     deciphered = int(high_score_cypher) / SECRET_HIGH_SCORE_KEY
 
     if deciphered == score:
-        user = (current_user if current_user.is_authenticated
-                else User.query.filter_by(username='anonymous').first_or_404())
+        if current_user.is_authenticated:
+            user = current_user
+        else:
+            try:
+                user = (User.query.filter_by(username='anonymous')
+                        .first())
+            except Exception as e:
+                print(e)
 
         user.times_played = int(user.times_played) + 1
 
@@ -685,8 +692,29 @@ def toggle_ga():
     return resp
 
 
+@app.before_first_request
+def ensure_admin_anon():
+    """ Make sure that users 'admin' and 'Anonymous' exist on
+        app startup. """
+
+    anon = User.query.filter_by(username='anonymous').first()
+    if not anon:
+        new_anon = User(username='anonymous', email='anon@typemania.net')
+        db.session.add(new_anon)
+        db.session.commit()
+
+    admin = User.query.filter_by(username=ADMIN_USER).first()
+    if not admin:
+        new_admin = User(username=ADMIN_USER, email=ADMIN_EMAIL)
+        new_admin.set_password('admin')
+        db.session.add(new_admin)
+        db.session.commit()
+
+
 @app.before_request
 def before_request():
+    """ Update user last seen. """
+
     if current_user.is_authenticated:
         current_user.last_seen = datetime.utcnow()
         db.session.commit()
