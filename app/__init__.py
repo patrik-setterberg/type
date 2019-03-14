@@ -43,6 +43,6 @@ if not app.debug:
     app.logger.addHandler(file_handler)
 
     app.logger.setLevel(logging.INFO)
-    app.logger.info('Typemania.net - startup')
+    app.logger.info('[STARTUP] Application started //')
 
 from app import routes, models, errors

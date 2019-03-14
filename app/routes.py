@@ -9,6 +9,7 @@ from app.forms import SentenceForm, ResetPasswordForm, NounForm, AdjectiveForm
 from app.forms import VerbForm, AdverbForm, ProperNounForm, SpecialForm
 from app.forms import ContactForm
 from app.sentence_generator import generate_sentence
+from collections import deque
 from datetime import datetime
 from werkzeug.urls import url_parse
 from werkzeug.security import generate_password_hash
@@ -366,11 +367,26 @@ def admin():
 
     times_played = 0 + sum([int(user.times_played) for user in users])
 
+    log = []
+
+    with open(app.config['LOGS_DIR'] + 'type.log') as f:
+        log_deque = deque(f, 10)
+
+        # Ugly, please look away (removes excess timestamp and path)
+        for item in log_deque:
+            if "INFO" in item:
+                log.append(item[0:16] + " " + item[30:].split('//')[0])
+            else:
+                log.append(item)
+
+    log.reverse()
+
     return render_template('admin.html',
                            title='Admin panel',
                            user_count=user_count,
                            times_played=times_played,
-                           admin=ADMIN_USER)
+                           admin=ADMIN_USER,
+                           log=log)
 
 
 # Manage word list

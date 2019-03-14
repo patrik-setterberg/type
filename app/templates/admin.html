@@ -9,10 +9,8 @@
         <p>More usage statistics at <a href="{{ url_for('index') }}">Google Analytics</a></p>
         <p id="disclaimer">* <span>Excludes users: {{ admin }} & anonymous</span>.</p>
         <h3>Recent activity</h3>
-        <p>LISTA MED DE 10-ELLER-NÅTT SENASTE GREJERNA SOM HÄNT.</p>
-        <p>LISTA MED DE 10-ELLER-NÅTT SENASTE GREJERNA SOM HÄNT.</p>
-        <p>LISTA MED DE 10-ELLER-NÅTT SENASTE GREJERNA SOM HÄNT.</p>
-        <p>LISTA MED DE 10?-ELLER-NÅTT SENASTE GREJERNA SOM HÄNT.</p>
-        <p><a href="#">Click here</a> to view full most-recent log file.</p>
+        {% for entry in log %}
+        <p>{{ entry }}</p>
+        {% endfor %}
     </div>
 {% endblock %}
