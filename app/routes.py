@@ -237,7 +237,7 @@ def delete_user():
 
         if del_user:
             app.logger.info(
-                '[DELETE_ACCOUNT] User deöeted their account: (' +
+                '[DELETE_ACCOUNT] User deleted their account: (' +
                 str(del_user.id) + ') //')
             db.session.delete(del_user)
             db.session.commit()
@@ -725,6 +725,7 @@ def after_request(response):
     """ Clear session after request unless users have consented
         to cookies to make sure no session cookie is created
         illegaly. """
+
     resp = make_response(response)
 
     if request.cookies.get('cookie_consent') == 'true':

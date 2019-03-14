@@ -906,12 +906,14 @@ def generate_sentence():
 
     sentence_model = random_sentence_model()
     new_sentence = Sentence(sentence_model.sentence)
+    
+    new_sentence.sentence[0].word = new_sentence.sentence[0].word.capitalize()
 
     sentence = ''
     for item in new_sentence.sentence:
         sentence += item.word + ' '
 
-    return sentence.capitalize().rstrip() + '.'
+    return sentence.rstrip() + '.'
 
 
 def random_sentence_model():
