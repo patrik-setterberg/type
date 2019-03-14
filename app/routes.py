@@ -13,9 +13,10 @@ from datetime import datetime
 from werkzeug.urls import url_parse
 from werkzeug.security import generate_password_hash
 from app.email import send_password_reset_email, send_contact_me_message
-from config import SECRET_HIGH_SCORE_KEY, ADMIN_USER, COOKIE_MAX_AGE
+from config import SECRET_HIGH_SCORE_KEY, ADMIN_USER, COOKIE_MAX_AGE, Config
 from sqlalchemy import func
 import json
+import os
 
 
 # Home
@@ -50,7 +51,7 @@ def login():
         
         login_user(user, remember=form.remember_me.data)
         app.logger.info('[LOGIN] User signed in: (' + 
-                        str(user.id) + ') ' + user.username)
+                        str(user.id) + ') //')
         next_page = request.args.get('next')
 
         if not next_page or url_parse(next_page).netloc != '':
@@ -70,8 +71,7 @@ def logout():
 
     if current_user:
         app.logger.info('[LOGOUT] User signed out: (' + 
-                        str(current_user.id) + ') ' + 
-                        current_user.username)
+                        str(current_user.id) + ') //')
 
         resp.set_cookie('remember_token', '', max_age=0)
         logout_user()
@@ -95,7 +95,7 @@ def register():
         db.session.commit()
 
         app.logger.info('[REGISTRATION] New user registered: (' + 
-                        str(user.id) + ') ' + user.username)
+                        str(user.id) + ') //')
 
         flash('Success! You are now a registered user.')
         return redirect(url_for('login'))
@@ -134,6 +134,8 @@ def edit_user():
     if user_form.submit_username.data and user_form.validate():
         current_user.username = user_form.username.data
         db.session.commit()
+        app.logger.info('[EDIT_USER] User changed their username: (' + 
+                        str(current_user.id) + ') //')
         flash('Username updated successfully!')
         return redirect(url_for('edit_user'))
         
@@ -141,6 +143,8 @@ def edit_user():
     elif mail_form.submit_email.data and mail_form.validate():
         current_user.email = mail_form.email.data
         db.session.commit()
+        app.logger.info('[EDIT_USER] User changed their email address: (' + 
+                        str(current_user.id) + ') //')
         flash('Email updated successfully!')
         return redirect(url_for('edit_user'))
 
@@ -148,6 +152,8 @@ def edit_user():
     elif pass_form.submit_password.data and pass_form.validate():
         current_user.password_hash = generate_password_hash(pass_form.password.data)
         db.session.commit()
+        app.logger.info('[EDIT_USER] User changed their password: (' + 
+                        str(current_user.id) + ') //')
         flash('Password updated successfully!')
         return redirect(url_for('edit_user'))
             
@@ -170,7 +176,7 @@ def reset_password_request():
             send_password_reset_email(user)
             app.logger.info(
                 '[PASSWORD_RESET] User requested a password reset: (' + 
-                str(user.id) + ') ' + user.username)
+                str(user.id) + ') //')
         flash('Check your email for instructions to reset your password.')
         return redirect(url_for('login'))
         
@@ -193,6 +199,9 @@ def reset_password(token):
     if form.validate_on_submit():
         user.set_password(form.password.data)
         db.session.commit()
+        app.logger.info(
+                '[PASSWORD_RESET] User reset their password: (' + 
+                str(user.id) + ') //')
         flash('Your password has been reset.')
         return redirect(url_for('login'))
 
@@ -228,7 +237,7 @@ def delete_user():
         if del_user:
             app.logger.info(
                 '[DELETE_ACCOUNT] User deöeted their account: (' +
-                str(del_user.id) + ') ' + del_user.username)
+                str(del_user.id) + ') //')
             db.session.delete(del_user)
             db.session.commit()
             flash('User account deleted.')
@@ -308,6 +317,9 @@ def update_user_score(high_score_cypher, score):
 
         if score > user.high_score:
             user.high_score = score
+            app.logger.info(
+                '[HIGH_SCORE] User set new personal high score: (' + 
+                str(user.id) + ') //')
 
         db.session.commit()
         
@@ -515,6 +527,56 @@ def manage_users():
                            title='Manage users',
                            admin=ADMIN_USER)
 
+
+# Get all user data
+@app.route('/admin/get_data/<user_id>', methods=['GET'])
+@login_required
+def get_data(user_id):
+    """ To allow users to exercise their right of access to data,
+        get all their user info and all lines in log files
+        where their usernames and email addresses occur. """
+
+    if not current_user.username == ADMIN_USER:
+        return redirect(url_for('index'))
+
+    try:
+        user = User.query.filter_by(id=user_id).first_or_404()
+    except:
+        flash('No user with that ID')
+        return redirect(url_for('manage_users'))
+
+    if user:
+        try:
+            response_str = (
+                "*** USER DATA***<br>" +
+                "User ID: " + str(user.id) + "<br>" +
+                "Username: " + user.username + "<br>" +
+                "Email address: " + user.email + "<br>" +
+                "Registered: " + user.registered.strftime("%A, %b %d, %Y") +
+                "<br>" +
+                "Last seen: " + user.last_seen.strftime("%A, %b %d, %Y") +
+                "<br>" +
+                "High score: " + str(user.high_score) + "<br>" +
+                "Times played: " + str(user.times_played) + "<br><br>" +
+                "*** IN LOGS ***<br>")
+        except:
+            response_str = 'Something went wrong. Probably a value missing.'
+
+        logfiles = os.listdir(app.config['LOGS_DIR'])
+
+        for current_file in logfiles:
+            with open(app.config['LOGS_DIR'] + current_file) as f:
+                lines = []
+                for line in f:
+                    if '(' + str(user_id) + ')' in line:
+                        lines.append(line.split('//')[0] + "<br>")
+                lines.reverse()
+                for line in lines:
+                    response_str += line
+
+        return response_str
+
+
 # Delete item from database
 @app.route('/admin/delete_item/<item>/<id>', methods=['GET'])
 @login_required
@@ -549,7 +611,7 @@ def delete_item(item, id):
 
     if item == 'user':
         app.logger.info('[ADMIN] Admin deleted user: (' + 
-                        str(del_item.id) + ') ' + del_item.username)
+                        str(del_item.id) + ') //')
 
     db.session.delete(del_item)
     db.session.commit()
@@ -579,8 +641,8 @@ def contact():
                                 form.email.data,
                                 form.message.data)
         flash('Message sent. Thank you!')
-        app.logger.info('[MESSAGE] Visitor sent message through \
-            contact form: (' + form.name.data + ') ' + form.email.data)
+        app.logger.info('[MESSAGE] Visitor sent a message through \
+            contact form.')
         return redirect(url_for('contact'))
 
     return render_template('contact.html', title='Contact', form=form)

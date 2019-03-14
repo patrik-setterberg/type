@@ -11,7 +11,7 @@
         <p>Users can, at any time, <a href="{{ url_for('edit_user') }}">change their login credentials</a> and permanently <a href="{{ url_for('delete_account') }}">delete their user accounts</a> without delay (requires logging in) which erases all user information (such as email address, username) from the website database.</p>
         <p>Additionally, email addresses are collected when visitors send a message to me through the contact form on the contact page. Email addresses are included in the message sent by the application to me, so that I will be able to message them back.</p>
         <h3>Logging</h3>
-        <p>Like most websites, Typemania.net stores logs of usage activity for debugging and security purposes. These log files might include personal data (unique user ID numbers, usernames, and for the contact form, senders' names and email addresses). These logs have a size limit and are recycled automatically with continued website activity.</p>
+        <p>Like most websites, Typemania.net stores logs of usage activity for debugging and security purposes. These log files do not include any directly identifiable user information, only a unique user ID number associated with a user's account. These logs have a size limit and are recycled automatically with continued website activity.</p>
         <h3>Usage tracking</h3>
         <p>Website usage is tracked with <a href="https://marketingplatform.google.com/about/analytics/" target="_blank">Google Analytics</a>, a popular web analytics service. It can report user details such as their IP address, information about their web browsers, which pages of a website a user visits and how long they spend on each page, as well as other "diagnostic data".</p>
         <p>For Typemania.net, only anonymized IP addresses are reported. This allows me to see from what parts of the world my users connect. However, their true IP addresses and consequently geographical locations remain obfuscated.</p>
@@ -21,9 +21,8 @@
         <p><span class="bold">2) Personal curiosity</span>. Or, for fun. I will not actually do anything with the usage data except occasionally look at it.</p>
         <h3>Control your data</h3>
         <p>Registered as well as formerly registered users may, at any time, exercise their:</p>
-        <p><span class="bold">1) Right of access to data</span>. Users may request an extract of all data Typemania.net has stored about them.</p>  
-        <p><span class="bold">2) Right to be forgotten</span>. Users may request that all of their personal data (username, email address) be permanently deleted from Typemania.net's logs.</p>
-        <p>For each request, contact me through the contact page, linked below. Please include <span class="emphasize">username</span> as well as the <span class="emphasize">email address</span> used to register your account at Typemania.net.</p>
+        <p><span class="bold">1) Right of access to data</span>. Users may request an extract of all data Typemania.net has stored about them. To request your data, contact me through the contact page. Please include <span class="emphasize">username</span> as well as the <span class="emphasize">email address</span> used to register your account at Typemania.net.</p>  
+        <p><span class="bold">2) Right to be forgotten</span>. Typemania.net's only means of connecting logged website activity with a specific user is through their unique user ID numbers. <a href="{{ url_for('delete_account') }}">Deleting one's user account</a> permanently severs this connection. As a result, after an account has been deleted, the website has effectively <span class="emphasize">forgotten</span> the user.</p>
         <h3>Cookies</h3>
         <p>This website uses <a href="https://en.wikipedia.org/wiki/HTTP_cookie" target="_blank">cookies</a> for essential website functionality as well as for usage tracking. For more information about cookies, please see the Typemania.net <a href="{{ url_for('cookie_policy') }}">Cookie Policy</a>.</p>
         <h3>Security of data</h3>

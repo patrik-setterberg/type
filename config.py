@@ -23,6 +23,9 @@ class Config(object):
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     ADMINS = ['min@email.se']
 
+    # Logs directory
+    LOGS_DIR = 'logs/'
+
 # Secret high score key
 SECRET_HIGH_SCORE_KEY = 4738
 
