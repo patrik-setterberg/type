@@ -25,6 +25,7 @@ import os
 @app.route('/', methods=['GET'])
 @app.route('/index', methods=['GET'])
 def index():
+
     return render_template('index.html', title='Home')
 
 
@@ -538,7 +539,7 @@ def manage_sentences():
 @app.route('/admin/manage_users', methods=['GET'])
 @login_required
 def manage_users():
-    
+
     if not current_user.username == ADMIN_USER:
         flash('Restricted area')
         return redirect(url_for('index'))
@@ -751,6 +752,26 @@ def after_request(response):
 
     return resp
 
+@app.after_request
+def log_unauthorized(response):
+    """ Log attempt to access restricted areas
+        (pages with 'admin' in URL (except '/user/admin/'))
+        if user is not admin. """
+    
+    try:
+        user = current_user.username
+    except:
+        user = 'anon'
+
+    if (not request.endpoint == 'user'
+        and not user == ADMIN_USER 
+        and 'admin' in request.path):
+
+        app.logger.info('[UNAUTHORIZED] Attempted access: "' +
+                        request.endpoint + '" //')
+
+    resp = make_response(response)
+    return resp
 
 # Check cookies consent
 # Thanks: https://stackoverflow.com/a/51935872
