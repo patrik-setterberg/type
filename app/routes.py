@@ -335,13 +335,6 @@ def update_user_score(high_score_cypher, score):
     return str(score)  # Do I have to return something here?
 
 
-# test sentence generator, TEMPORARY
-@app.route('/sentence', methods=['GET', 'POST'])
-def sentence():
-    
-    return render_template('sentence.html')
-
-
 @app.route('/get_sent', methods=['GET'])
 def get_sent():
     """ Get and return a sentence from sentence_generator.py """
