@@ -88,9 +88,8 @@ from app.sentence_gen_statics import PAST_TENSE, PAST_PART, PAST_CONT, FUTURE
     where each tag represents a word, e.g. "TAG/TAG/TAG/TAG/TAG". Each 
     tag in turn consists of subtags, separated by periods (.) that 
     represent properties of each word, e.g. singular vs plural for 
-    nouns or whether a verb is regular or irregular. See each word 
-    class' word-getter-functions' doc strings or instructions on 
-    manage_sentences admin page for details.
+    nouns. See each word class' word-getter-functions' doc strings or 
+    instructions on manage_sentences admin page for details.
 """
 
 
@@ -427,7 +426,7 @@ class Sentence:
             
             Noun sentence model rules:
             0: Always 'NN'
-            1: 's', 'o', '$', 'n'   
+            1: 's', 'o', '$', 'n'
             2: 'S', 'P' """
 
         tags = tag.split('.')
@@ -509,10 +508,13 @@ class Sentence:
             
             proper noun sentence model rules:
             0: Always 'NP'
-            1: 's', 'o', '$', 'n' """
+            1: 's', 'o', '$', 'n'
+            2: 'MM', 'FF', 'NN', '??' """
 
-        proper_noun = (WordList.query.filter_by(tag=tag.split('.')[0])
-                                     .order_by(func.random()).first())
+        proper_noun = (WordList.query.filter_by(
+                       tag=tag.split('.')[0],
+                       gender=tag.split('.')[2])
+                       .order_by(func.random()).first())
 
         proper_noun.word = proper_noun.word.capitalize()
 
@@ -525,8 +527,7 @@ class Sentence:
                 
     def get_pronoun(self, tag):
         """ Pronouns aren't stored in database. Instead they're 
-            statically stored in static assets, in nested dictionary 
-            form.
+            stored in static assets, in nested dictionary form.
 
             First get base pronoun, then figure out the correct form.
         
@@ -536,9 +537,9 @@ class Sentence:
                 # subject, object or referencing them (actually called 
                 # possessive adjective and possessive pronouns) and 
                 # reflexive.
-            2: 'S', 'P', 'IN'
-            3: '1', '2', '3', 'IN'
-            4: 'MM', 'FF', 'NN', 'IN' """
+            2: 'S', 'P', 'IN', '??'
+            3: '1', '2', '3', 'IN', '??'
+            4: 'MM', 'FF', 'NN', 'IN', '??' """
 
         tags = tag.split('.')
 
@@ -710,7 +711,7 @@ class Sentence:
         
             Sentence model rules:
             0: 'RB'
-            1: 'P', 'C', 'S'
+            1: 'P', 'C', 'S', '??'
             2: 'N', 'T', 'F', 'P' """
 
         tags = tag.split('.')

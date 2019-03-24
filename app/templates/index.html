@@ -8,7 +8,7 @@
     <div class="card">
         <h3>Instruct<span class="color-splash">i</span>ons</h3>
         <p>Compete against yourself and others to become a faster typist!</p>
-        <p>Type sentences as fast as you can for 30 seconds. You may disregard capitalization and punctuation (periods and commas). Potential apostrophes (') and hyphens (-) are required. </p>
+        <p>Type sentences as fast as you can for 30 seconds. You may disregard capitalization and punctuation (periods and commas). Potential apostrophes (<code>'</code>) and hyphens (<code>-</code>) are required. </p>
         {% if not current_user.is_authenticated %}
         <p>To track your scores and compete for the prestigious site High Score, <a href="{{ url_for('register') }}">register</a> an account and <a href="{{ url_for('login') }}">log in</a>.</p>
         {% endif %}

@@ -6,7 +6,7 @@
         <h2>Add new word</h2>
         <p>Store all words in lowercase, even proper nouns. The application handles capitalization automatically.</p>
         <p>Not all words require storage in database: Pronouns as well as common prepositions, conjunctions, modal auxiliaries (helper verbs), and cardinal &amp; ordinal numbers are stored in static assets.</p>
-        <p>Certain nouns (e.g. 'deer') are the same in plural form (not 'deers'). Some adverbs look the same as their adjective counterparts (e.g. 'late' in 'I will be late', not 'I will be lately'). A number of these exceptions are stored in sentence_gen_statics.py. If you discover more words that don't look right when chewed through the generator, see if they fit in any of the exceptions lists or add them to the word blacklist.</p>
+        <p>Certain nouns (e.g. 'deer') are the same in plural form (not 'deers'). Some adverbs look the same as their adjective counterparts (e.g. 'late' in 'I will be late', not 'I will be lately'). A number of these exceptions are stored in <code>sentence_gen_statics.py</code>. If you discover more words that don't look right when chewed through the generator, see if they fit in any of the exceptions lists or add them to the word blacklist.</p>
         <p>Unfortunately, features <span class="emphasize">Categories</span> and <span class="emphasize">Associations</span> are not yet implemented so for now those fields can be left blank unless you wish to prepare the database for their implementation.</p>
         <p><span class="words-title bold">Add new noun </span><button class="noun-link float-right"><i class="fas fa-plus"></i></button></p>
         <div class="noun-form">
@@ -73,7 +73,7 @@
         <p><span class="words-title bold">Add new verb </span><button class="verb-link float-right"><i class="fas fa-plus"></i></button></p>
         <div class="verb-form">
             <p>Store verbs in their base (infinitive) form only. The application handles conjugation automatically. For correct conjugation, the application needs to know whether the verb has one or more syllables.</p>
-            <p>The application's static assets contain a list of common irregular verbs' irregular forms. If the verb you wish to add is uncommon, it might be a good idea to check sentence_gen_statics.py's irregular verbs dictionary and update it.</p>
+            <p>The application's static assets contain a list of common irregular verbs' irregular forms. If the verb you wish to add is uncommon, it might be a good idea to check <code>sentence_gen_statics.py</code>'s irregular verbs dictionary and update it.</p>
             <form class="word-form" action="" method="post">
                 {{ verb_form.hidden_tag() }}
                 
@@ -163,7 +163,7 @@
     </div>
     <div class="card">
         <h2>Manage words</h2>
-        <p>Click a word to see or edit its details.</p>
+        <p>Click a word to see or edit its details. [Not yet implemented]</p>
         <p><span class="warning bold">Caution</span>: Delete-buttons are hot: they immediately delete words from word database.</p>
         <p><span class="words-title bold">Nouns (<span class="color-splash">{{ nouns.count() }}</span>)</span><button class="nouns-button float-right"><i class="fas fa-plus"></i></button></p>
         <div class="words nouns">

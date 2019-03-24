@@ -171,7 +171,7 @@ header {
         linear-gradient(
             to top right, 
             $accent-color, $gradient-bright
-    );
+        );
     z-index: 2;
 
     p {
@@ -604,15 +604,34 @@ nav {
         box-shadow: 0 6px 12px rgba(0,0,0,0.1), 0 6px 6px rgba(0,0,0,0.2);
     }
 
-    a {
+    a, a:visited {
+        display: inline;
+        text-decoration: none;
+        color: $accent-color;
         font-weight: bold;
+        background-image: linear-gradient(to right, $accent-color, $gradient-bright);
+        background-position: 0% 100%;
+        background-repeat: no-repeat;
+        background-size: 0% 2px;
+        -webkit-transition: color 0.2s, background-size 0.15s;
+        transition: color 0.2s, background-size 0.15s;
+
+        &:hover {
+            background-size: 100% 2px;
+            color: $primary-text;
+        }
     }
+    
 
     p {
         margin: 2% 5% 5% 5%;
         padding: 0;
         line-height: 3rem;
         @extend %p-font-size;
+    }
+
+    p.tags-expl {
+        line-height:3.6rem;
     }
 
     %card-heading-shared {
@@ -647,16 +666,6 @@ nav {
 
         @include large {
             font-size: 2rem;
-        }
-    }
-
-    a, a:visited {
-        color: $accent-color;
-        text-decoration: none;
-        transition: color 0.2s;
-
-        &:hover {
-            color: $primary-text;
         }
     }
 }
@@ -966,4 +975,17 @@ hr {
     border-top: 1px;
     margin: 0 2em;
     color: $soft-gray;
+}
+
+code {
+    background-image:
+        radial-gradient(
+            circle at top right, 
+            $container-background,
+            $body-background
+        );
+    padding: 1px;
+    margin: 0 1px;
+    border: 1px solid lighten($primary-text, 60);
+    border-radius: 2px;    
 }

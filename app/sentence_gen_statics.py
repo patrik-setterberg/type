@@ -113,10 +113,13 @@ TAG_OPTIONS = {
         3: ['1', '2', '3'],
         4: [MALE, FEMALE, NEUTRAL]
     },
+    # Proper nouns, can be random: gender - male/female
+    PROPER_NOUN:{
+        2: [MALE, FEMALE]
+    },
     # Adjectives, can be random: 
     # positive/comparative/superlative
     ADJECTIVE:{  
-
         1: [POSITIVE, COMPARATIVE, SUPERLATIVE]
     },
     # Adverbs, can be random: 

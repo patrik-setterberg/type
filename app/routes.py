@@ -122,7 +122,8 @@ def user(username):
 
     user.high_score_pos = name_list.index(username) + 1
     
-    return render_template('user.html', title='Profile: ' + user.username, user=user, admin=ADMIN_USER)
+    return render_template('user.html', title='Profile: ' + user.username,
+                           user=user, admin=ADMIN_USER)
 
 
 # Edit user
@@ -153,7 +154,8 @@ def edit_user():
 
     # Change password
     elif pass_form.submit_password.data and pass_form.validate():
-        current_user.password_hash = generate_password_hash(pass_form.password.data)
+        current_user.password_hash = (
+            generate_password_hash(pass_form.password.data))
         db.session.commit()
         app.logger.info('[EDIT_USER] User changed their password: (' + 
                         str(current_user.id) + ') //')
@@ -332,7 +334,7 @@ def update_user_score(high_score_cypher, score):
 
         db.session.commit()
         
-    return str(score)  # Do I have to return something here?
+    return str(score)  # Do I HAVE to return something here?
 
 
 @app.route('/get_sent', methods=['GET'])
