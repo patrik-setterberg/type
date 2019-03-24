@@ -19,160 +19,166 @@
         <p><span class="warning bold">Caution</span>: Currently, the application doesn't validate models. An invalid model might make the application crash. This should be addressed but in the meantime, be vigilant of errors.</p>
     </div>
     <div class="card">
+        <p class="float-right no-margin-bottom"><button class="instructions-toggle"><i class="fas fa-plus"></i></button></p>
         <h2>Instruct<span class="color-splash">i</span>ons</h2>
-        <p>Sentence models consist of <code>tags</code>, one for each word in the sentence. Tags, in turn, are made up of several <code>subtags</code>, specifying word type and properties.</p>
-        <h3>General info</h3>
-        <p><code>tags</code> are separated by forward slashes (<code>/</code>):<br><code>TAG/TAG/TAG/TAG</code><br>and <code>subtags</code> (<code>st</code>) are separated by periods (<code>.</code>):<br><code>st0.st1.st2.st3</code></p>
-        <p>All subtags are case sensitive.</p>
-        <p>For each <code>tag</code> or <span class="emphasize">word</span>, all <code>subtags</code> must be entered unless otherwise specified.</p>
-        <p>Certain <code>subtags</code> can be randomized by replacing them with <code>??</code>. See section below for more info.</p>
-        <h3>Tags and subtags</h3>
-        <p>All tags must consist of one <code>base subtag</code> and a varying number of <code>parameter subtags</code>. The <code>base subtag</code> is <span class="bold">the first subtag of any tag</span>, any subtags following the first, base subtag are <code>parameter subtags</code>.</p>
-        <p class="tags-expl">
-            <code>NN - Nouns</code><br>
-            Nouns require <span class="bold">2</span> parameter subtags:<br>
-            <span class="bold">1)</span> Noun role: <code>s, o, $, n</code> where<br>
-            <code>s</code> is sentence subject,<br>
-            <code>o</code> is sentence object,<br>
-            <code>$</code> is possessive case and<br>
-            <code>n</code> is neutral.<br>
-            <span class="bold">2)</span> Count: <code>S, P, ??</code> where<br>
-            <code>S</code> is singular,<br>
-            <code>P</code> is plural and<br>
-            <code>??</code> is random.<br>
-            <span class="bold">Example noun</span>: <code>NN.s.P</code> will get a noun (<code>NN</code>) that is the sentence's subject (<code>s</code>), in plural (<code>P</code>).
-        </p>
-        <p class="tags-expl">
-            <code>JJ - Adjectives</code><br>
-            Adjectives require <span class="bold">2</span> parameter subtags:<br>
-            <span class="bold">1)</span> Form: <code>P, C, S, ??</code> where<br>
-            <code>P</code> is positive form,<br>
-            <code>C</code> is comparative form,<br>
-            <code>S</code> is superlative form and<br>
-            <code>??</code> is random.<br>
-            <span class="bold">2)</span> Word described: <code>ref_s, ref_o, ref_n</code> where<br>
-            <code>ref_s</code> means the adjective describes the sentence's subject,<br>
-            <code>ref_o</code> that the adjective describes the sentence's object and<br>
-            <code>ref_n</code> for adjectives describing neither subject nor object.<br>
-            <span class="bold">Example adjective</span>: <code>JJ.??.ref_s</code> will get an adjective (<code>JJ</code>) in either positive, comparative or superlative form (<code>??</code>) that will reference, or describe, the sentence's subject (<code>ref_s</code>).
-        </p>
-        <p class="tags-expl">
-            <code>VB - Verbs</code><br>
-            Verbs require <span class="bold">1</span> parameter subtag but can take an optional second subtag:<br>
-            <span class="bold">1)</span> Verb form: <code>I, Z, G, D, N, C, F</code> where<br>
-            <code>I</code> is infinitive (base) form,<br>
-            <code>Z</code> is present tense,<br>
-            <code>G</code> is present participle,<br>
-            <code>D</code> is simple past tense,<br>
-            <code>N</code> is past participle,<br>
-            <code>C</code> is past continuous tense and<br>
-            <code>F</code> is future tense.<br>
-            <span class="bold">2)</span> Any verb (optional): <code>verb</code><br>
-            If you wish to specify a particular verb to use for each time model is selected it can be supplied as a parameter subtag, e.g. <code>VB.D.jump</code> will always evaluate to <code>jumped</code>. Special note: Enter verbs in infinitive or base form (e.g. "be", "do", "have", "sing"). The application conjugates verbs automatically. Additionally, make sure the verb exists in word database.
-        </p>
-        <p class="tags-expl">
-            <code>RB - Adverbs</code><br>
-            Adverbs require <span class="bold">2</span> parameter subtags:<br>
-            <span class="bold">1)</span> Form: <code>P, C, S, ??</code> where<br>
-            <code>P</code> is positive form,<br>
-            <code>C</code> is comparative form,<br>
-            <code>S</code> is superlative form and<br>
-            <code>??</code> is random.<br>
-            <span class="bold">2)</span> Adverb type: <code>N, T, F, P</code> where<br>
-            <code>N</code> is "normal", i.e. regular adjectives suffixed with <code>-ly</code> such as "bravely",<br>
-            <code>T</code> is <span class="emphasize">adverb of time</span>, a word that tells us <span class="emphasize">when</span> something happens, e.g. "today", "later",<br>
-            <code>F</code> is <span class="emphasize">adverb of frequency</span>, tells us <span class="emphasize">how often</span>, e.g. "sometimes",<br>
-            <code>P</code> is <span class="emphasize">adverb of place</span>, tells us <span class="emphasize">where</span> something happens, e.g. "everywhere", "nearby".
-        </p>
-        <p class="tags-expl">
-            <code>PN - Pronouns</code><br>
-            Pronouns require <span class="bold">4</span> parameter subtags:<br>
-            <span class="bold">1)</span> Referencing part of sentence: <code>s, o, ref_s, ref_o, reflex</code> where<br>
-            <code>s</code> means the pronoun is the sentence's subject, e.g. "she",<br>
-            <code>o</code> means it is the sentence's object, e.g. "him",<br>
-            <code>ref_s</code> means it references the sentence's subject, e.g. "my", also known as possessive adjectives,<br>
-            <code>ref_o</code> means it references the object, e.g. "ours", also known as possessive pronouns,<br>
-            <code>reflex</code> is reflexive case, e.g. "himself".<br>
-            <span class="bold">2)</span> Count: <code>S, P, IN, ??</code> where<br>
-            <code>S</code> is singular,<br>
-            <code>P</code> is plural,<br>
-            <code>IN</code> means the pronoun will <span class="emphasize">inherit</span> this property from the word it references. Can therefore only be used with <code>ref_s</code> and <code>ref_o</code>,<br>
-            <code>??</code> randomizes this property.<br>
-            <span class="bold">3)</span> Perspective: <code>1, 2, 3, IN, ??</code> where<br>
-            <code>1</code> means first person, e.g. "I", "we", "ours",<br>
-            <code>2</code> means second person, e.g. "you",<br>
-            <code>3</code> means third person, e.g. "it", "their",<br>
-            <code>IN</code> means <span class="emphasize">inherit</span>. Can only be used with <code>ref_s</code> and <code>ref_o</code>,<br>
-            <code>??</code> means randomize.<br>
-            <span class="bold">4)</span> Gender: <code>MM, FF, NN, IN, ??</code> where<br>
-            <code>MM</code> means male,<br>
-            <code>FF</code> means female,<br>
-            <code>NN</code> means neutral, e.g. "it",<br>
-            <code>IN</code> means inherit. Only use with <code>ref_s</code> or <code>ref_o</code>,<br>
-            <code>??</code> means randomize.<br>
-            <span class="bold">Example pronoun</span>: <code>PN.o.P.1.NN</code> should get a pronoun (<code>PN</code>) that is the sentence object (<code>o</code>), in plural (<code>P</code>), first person (<code>1</code>) of neutral gender (<code>NN</code>), i.e. "us".
-        </p>
-        <p class="tags-expl">
-            <code>NP - Proper nouns</code><br>
-            Proper nouns require <span class="bold">2</span> parameter subtags:<br>
-            <span class="bold">1)</span> Part of sentence: <code>s, o, $, n</code> where<br>
-            <code>s</code> means the proper noun is the sentence's subject,<br>
-            <code>o</code> means it is the sentence's object,<br>
-            <code>$</code> is possessive case,<br>
-            <code>n</code> is neutral, or, none of the above.<br>
-            <span class="bold">2)</span> Gender: <code>MM, FF, NN, ??</code> where<br>
-            <code>MM</code> means male,<br>
-            <code>FF</code> means female,<br>
-            <code>NN</code> means neutral, use for e.g. names of cities, countries,<br>
-            <code>??</code> means randomize. Will choose either male or female gender, never neutral.
-        </p>
-        <p class="tags-expl">
-            <code>IN - Prepositions</code>,<br>
-            <code>CN - Conjunctions</code>,<br>
-            <code>MD - Modal Auxiliaries</code><br>
-            Prepositions, conjunctions and modal auxiliaries (helper verbs) follow the same rules: They require <span class="bold">1</span> parameter subtag:<br>
-            <span class="bold">1)</span> Specify or not: <code>??</code> or a <code>word</code> where<br>
-            <code>??</code> selects a random word for that word type from static assets,<br>
-            <code>word</code> ensures that particular word is always used for current model, e.g. <code>CN.and</code> always returns <code>and</code>.
-        </p>
-        <p class="tags-expl">
-            <code>CD - Cardinal numbers</code><br>
-            Cardinal numbers require <span class="bold">1</span> parameter subtag:<br>
-            <span class="bold">1)</span> Number length: <code>1, 2, 3, 4, ??</code> where<br>
-            <code>1, 2, 3, 4</code> specify the <span class="emphasize">number of digits</span> in the generated cardinal number, so e.g. <code>CD.2</code> might generate <code>thirty-six</code>,<br>
-            <code>??</code> textifies a random number between 2 and 9999.
-        </p>
-        <p class="tags-expl">
-            <code>OD - Ordinal numbers</code><br>
-            Ordinal numbers require <span class="bold">0</span> parameter subtags. Selects random ordinal number from static assets.
-        </p>
-        <p class="tags-expl">
-            <code>AD - Definite article (the)</code>,<br>
-            <code>AI - Indefinite article (a/an)</code><br>
-            Articles require <span class="bold">0</span> parameter subtags.
-        </p>
-        <p class="tags-expl">
-            <code>SPEC - Special words</code><br>
-            Special words can be used if you wish to specify a word to always be selected, e.g. a neutral noun. Specials require <span class="bold">1</span> parameter subtag:<br>
-            <span class="bold">1)</span> The word: <code>word</code> where<br>
-            <code>word</code> is the word you want to use, e.g. <code>SPEC.dachshund</code>.
-        </p>
-        <h3>Example model</h3>
-        <p class="tags-expl">To make all this slightly less confusing, let's have a detailed look at an example sentence model:</p>
-        <p><code>AD/CD.2/NN.s.P/VB.Z.be/PN.ref_o.P.??.??</code></p>
-        <p>The model has 5 <code>tags</code>, separated by <code>/</code>. Let's look at them all in turn.</p>
-        <p class="tags-expl">
-            <code>AD</code> simply means <span class="emphasize">definite article</span> so we get the word <code>the</code>.<br>
-            <code>CD.2</code> tells the application that we want a <span class="emphasize">cardinal number that is 2 digits long</span> which could return e.g. <code>forty-two</code>.<br>
-            <code>NN.s.P</code> means we want a noun (<code>NN</code>), this noun is going to be the sentence's subject (<code>s</code>) and it needs to be in plural form (<code>P</code>). This might return e.g. <code>dogs</code>.<br>
-            <code>VB.Z.be</code> is the sentence's verb (<code>VB</code>), we want it to be a form of the word <code>be</code> and we want it in present tense (<code>Z</code>). The subject is in plural form so we get the word <code>are</code>.<br>
-            <code>PN.ref_o.P.??.??</code> is a little trickier. It's a pronoun (<code>PN</code>), a <span class="emphasize">possessive pronoun</span>, even, signifying ownership (<code>ref_o</code>). It needs to be in plural form (<code>P</code>). It's perspective can be whatever (<code>??</code>, will become <span class="emphasize">first, second or third person</span>) and gender (<code>??</code>) isn't going to matter much since it's in plural. This all means we will get either <code>ours</code>, <code>yours</code> or <code>theirs</code>.
-        </p>
-        <p class="tags-expl">
-            Possible sentences generated could therefore be:<br>
-            <code>The forty-two dogs are theirs.</code> or <br>
-            <code>The twelve hammers are ours.</code>
-        </p>
+        <div class="sentence-instructions">
+            <p>The sentence generator creates pseudo-random sentences using words stored in database as well as in static assets, pieced together by a script interpreting <code>sentence models</code>, skeletons of sentences which can be defined and stored in database from this page.</p>
+            <h3>General info</h3>
+            <p>Sentence models consist of <code>tags</code>, one for each word in the sentence.</p>
+            <p>Tags, in turn, are made up of several <code>subtags</code>, specifying word type and properties.</p>
+            <p><code>tags</code> are separated by forward slashes (<code>/</code>):<br><code>TAG/TAG/TAG/TAG</code><br>and <code>subtags</code> (<code>st</code>) are separated by periods (<code>.</code>):<br><code>st0.st1.st2.st3</code></p>
+            <p>All subtags are case sensitive.</p>
+            <p>All sentence models require a subject and a verb.</p>
+            <p>For each <code>tag</code> or <span class="emphasize">word</span>, all <code>subtags</code> must be entered unless otherwise specified.</p>
+            <p>Certain <code>subtags</code> can be randomized by replacing them with <code>??</code>. See section below for more info.</p>
+            <h3>Tags and subtags</h3>
+            <p>All tags must consist of one <code>base subtag</code> and a varying number of <code>parameter subtags</code>. The <code>base subtag</code> is <span class="bold">the first subtag of any tag</span>, any subtags following the first, base subtag are <code>parameter subtags</code>.</p>
+            <p class="tags-expl">
+                <code>NN - Nouns</code><br>
+                Nouns require <span class="bold">2</span> parameter subtags:<br>
+                <span class="bold">1)</span> Noun role: <code>s, o, $, n</code> where<br>
+                <code>s</code> is sentence subject,<br>
+                <code>o</code> is sentence object,<br>
+                <code>$</code> is possessive case and<br>
+                <code>n</code> is neutral.<br>
+                <span class="bold">2)</span> Count: <code>S, P, ??</code> where<br>
+                <code>S</code> is singular,<br>
+                <code>P</code> is plural and<br>
+                <code>??</code> is random.<br>
+                <span class="bold">Example noun</span>: <code>NN.s.P</code> will get a noun (<code>NN</code>) that is the sentence's subject (<code>s</code>), in plural (<code>P</code>).
+            </p>
+            <p class="tags-expl">
+                <code>JJ - Adjectives</code><br>
+                Adjectives require <span class="bold">2</span> parameter subtags:<br>
+                <span class="bold">1)</span> Form: <code>P, C, S, ??</code> where<br>
+                <code>P</code> is positive form,<br>
+                <code>C</code> is comparative form,<br>
+                <code>S</code> is superlative form and<br>
+                <code>??</code> is random.<br>
+                <span class="bold">2)</span> Word described: <code>ref_s, ref_o, ref_n</code> where<br>
+                <code>ref_s</code> means the adjective describes the sentence's subject,<br>
+                <code>ref_o</code> that the adjective describes the sentence's object and<br>
+                <code>ref_n</code> for adjectives describing neither subject nor object.<br>
+                <span class="bold">Example adjective</span>: <code>JJ.??.ref_s</code> will get an adjective (<code>JJ</code>) in either positive, comparative or superlative form (<code>??</code>) that will reference, or describe, the sentence's subject (<code>ref_s</code>).
+            </p>
+            <p class="tags-expl">
+                <code>VB - Verbs</code><br>
+                Verbs require <span class="bold">1</span> parameter subtag but can take an optional second subtag:<br>
+                <span class="bold">1)</span> Verb form: <code>I, Z, G, D, N, C, F</code> where<br>
+                <code>I</code> is infinitive (base) form,<br>
+                <code>Z</code> is present tense,<br>
+                <code>G</code> is present participle,<br>
+                <code>D</code> is simple past tense,<br>
+                <code>N</code> is past participle,<br>
+                <code>C</code> is past continuous tense and<br>
+                <code>F</code> is future tense.<br>
+                <span class="bold">2)</span> Any verb (optional): <code>verb</code><br>
+                If you wish to specify a particular verb to use for each time model is selected it can be supplied as a parameter subtag, e.g. <code>VB.D.jump</code> will always evaluate to <code>jumped</code>. Special note: Enter verbs in infinitive or base form (e.g. "be", "do", "have", "sing"). The application conjugates verbs automatically. Additionally, make sure the verb exists in word database.
+            </p>
+            <p class="tags-expl">
+                <code>RB - Adverbs</code><br>
+                Adverbs require <span class="bold">2</span> parameter subtags:<br>
+                <span class="bold">1)</span> Form: <code>P, C, S, ??</code> where<br>
+                <code>P</code> is positive form,<br>
+                <code>C</code> is comparative form,<br>
+                <code>S</code> is superlative form and<br>
+                <code>??</code> is random.<br>
+                <span class="bold">2)</span> Adverb type: <code>N, T, F, P</code> where<br>
+                <code>N</code> is "normal", i.e. regular adjectives suffixed with <code>-ly</code> such as "bravely",<br>
+                <code>T</code> is <span class="emphasize">adverb of time</span>, a word that tells us <span class="emphasize">when</span> something happens, e.g. "today", "later",<br>
+                <code>F</code> is <span class="emphasize">adverb of frequency</span>, tells us <span class="emphasize">how often</span>, e.g. "sometimes",<br>
+                <code>P</code> is <span class="emphasize">adverb of place</span>, tells us <span class="emphasize">where</span> something happens, e.g. "everywhere", "nearby".
+            </p>
+            <p class="tags-expl">
+                <code>PN - Pronouns</code><br>
+                Pronouns require <span class="bold">4</span> parameter subtags:<br>
+                <span class="bold">1)</span> Referencing part of sentence: <code>s, o, ref_s, ref_o, reflex</code> where<br>
+                <code>s</code> means the pronoun is the sentence's subject, e.g. "she",<br>
+                <code>o</code> means it is the sentence's object, e.g. "him",<br>
+                <code>ref_s</code> means it references the sentence's subject, e.g. "my", also known as possessive adjectives,<br>
+                <code>ref_o</code> means it references the object, e.g. "ours", also known as possessive pronouns,<br>
+                <code>reflex</code> is reflexive case, e.g. "himself".<br>
+                <span class="bold">2)</span> Count: <code>S, P, IN, ??</code> where<br>
+                <code>S</code> is singular,<br>
+                <code>P</code> is plural,<br>
+                <code>IN</code> means the pronoun will <span class="emphasize">inherit</span> this property from the word it references. Can therefore only be used with <code>ref_s</code> and <code>ref_o</code>,<br>
+                <code>??</code> randomizes this property.<br>
+                <span class="bold">3)</span> Perspective: <code>1, 2, 3, IN, ??</code> where<br>
+                <code>1</code> means first person, e.g. "I", "we", "ours",<br>
+                <code>2</code> means second person, e.g. "you",<br>
+                <code>3</code> means third person, e.g. "it", "their",<br>
+                <code>IN</code> means <span class="emphasize">inherit</span>. Can only be used with <code>ref_s</code> and <code>ref_o</code>,<br>
+                <code>??</code> means randomize.<br>
+                <span class="bold">4)</span> Gender: <code>MM, FF, NN, IN, ??</code> where<br>
+                <code>MM</code> means male,<br>
+                <code>FF</code> means female,<br>
+                <code>NN</code> means neutral, e.g. "it",<br>
+                <code>IN</code> means inherit. Only use with <code>ref_s</code> or <code>ref_o</code>,<br>
+                <code>??</code> means randomize.<br>
+                <span class="bold">Example pronoun</span>: <code>PN.o.P.1.NN</code> should get a pronoun (<code>PN</code>) that is the sentence object (<code>o</code>), in plural (<code>P</code>), first person (<code>1</code>) of neutral gender (<code>NN</code>), i.e. "us".
+            </p>
+            <p class="tags-expl">
+                <code>NP - Proper nouns</code><br>
+                Proper nouns require <span class="bold">2</span> parameter subtags:<br>
+                <span class="bold">1)</span> Part of sentence: <code>s, o, $, n</code> where<br>
+                <code>s</code> means the proper noun is the sentence's subject,<br>
+                <code>o</code> means it is the sentence's object,<br>
+                <code>$</code> is possessive case,<br>
+                <code>n</code> is neutral, or, none of the above.<br>
+                <span class="bold">2)</span> Gender: <code>MM, FF, NN, ??</code> where<br>
+                <code>MM</code> means male,<br>
+                <code>FF</code> means female,<br>
+                <code>NN</code> means neutral, use for e.g. names of cities, countries,<br>
+                <code>??</code> means randomize. Will choose either male or female gender, never neutral.
+            </p>
+            <p class="tags-expl">
+                <code>IN - Prepositions</code>,<br>
+                <code>CN - Conjunctions</code>,<br>
+                <code>MD - Modal Auxiliaries</code><br>
+                Prepositions, conjunctions and modal auxiliaries (helper verbs) follow the same rules: They require <span class="bold">1</span> parameter subtag:<br>
+                <span class="bold">1)</span> Specify or not: <code>??</code> or a <code>word</code> where<br>
+                <code>??</code> selects a random word for that word type from static assets,<br>
+                <code>word</code> ensures that particular word is always used for current model, e.g. <code>CN.and</code> always returns <code>and</code>.
+            </p>
+            <p class="tags-expl">
+                <code>CD - Cardinal numbers</code><br>
+                Cardinal numbers require <span class="bold">1</span> parameter subtag:<br>
+                <span class="bold">1)</span> Number length: <code>1, 2, 3, 4, ??</code> where<br>
+                <code>1, 2, 3, 4</code> specify the <span class="emphasize">number of digits</span> in the generated cardinal number, so e.g. <code>CD.2</code> might generate <code>thirty-six</code>,<br>
+                <code>??</code> textifies a random number between 2 and 9999.
+            </p>
+            <p class="tags-expl">
+                <code>OD - Ordinal numbers</code><br>
+                Ordinal numbers require <span class="bold">0</span> parameter subtags. Selects random ordinal number from static assets.
+            </p>
+            <p class="tags-expl">
+                <code>AD - Definite article (the)</code>,<br>
+                <code>AI - Indefinite article (a/an)</code><br>
+                Articles require <span class="bold">0</span> parameter subtags.
+            </p>
+            <p class="tags-expl">
+                <code>SPEC - Special words</code><br>
+                Special words can be used if you wish to specify a word to always be selected, e.g. a neutral noun. Specials require <span class="bold">1</span> parameter subtag:<br>
+                <span class="bold">1)</span> The word: <code>word</code> where<br>
+                <code>word</code> is the word you want to use, e.g. <code>SPEC.dachshund</code>.
+            </p>
+            <h3>Example model</h3>
+            <p class="tags-expl">To make all this slightly less confusing, let's have a detailed look at an example sentence model:</p>
+            <p><code>AD/CD.2/NN.s.P/VB.Z.be/PN.ref_o.P.??.??</code></p>
+            <p>The model has 5 <code>tags</code>, separated by <code>/</code>. Let's look at them all in turn.</p>
+            <p class="tags-expl">
+                <code>AD</code> simply means <span class="emphasize">definite article</span> so we get the word <code>the</code>.<br>
+                <code>CD.2</code> tells the application that we want a <span class="emphasize">cardinal number that is 2 digits long</span> which could return e.g. <code>forty-two</code>.<br>
+                <code>NN.s.P</code> means we want a noun (<code>NN</code>), this noun is going to be the sentence's subject (<code>s</code>) and it needs to be in plural form (<code>P</code>). This might return e.g. <code>dogs</code>.<br>
+                <code>VB.Z.be</code> is the sentence's verb (<code>VB</code>), we want it to be a form of the word <code>be</code> and we want it in present tense (<code>Z</code>). The subject is in plural form so we get the word <code>are</code>.<br>
+                <code>PN.ref_o.P.??.??</code> is a little trickier. It's a pronoun (<code>PN</code>), a <span class="emphasize">possessive pronoun</span>, even, signifying ownership (<code>ref_o</code>). It needs to be in plural form (<code>P</code>). It's perspective can be whatever (<code>??</code>, will become <span class="emphasize">first, second or third person</span>) and gender (<code>??</code>) isn't going to matter much since it's in plural. This all means we will get either <code>ours</code>, <code>yours</code> or <code>theirs</code>.
+            </p>
+            <p class="tags-expl">
+                Possible sentences generated could therefore be:<br>
+                <code>The forty-two dogs are theirs.</code> or <br>
+                <code>The twelve hammers are ours.</code>
+            </p>
+        </div>
     </div>    
     <div class="card">
         <h2>Manage sentences</h2>
@@ -183,6 +189,6 @@
         </div>
         {% endfor %}
     </div>
-    
+    <script src="{{ url_for('static', filename='js/toggle_instructions.js') }}"></script>
 {% endblock %}
     

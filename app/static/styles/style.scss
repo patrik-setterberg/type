@@ -583,6 +583,7 @@ nav {
     background-color: $card-background;
     width: 92%;
     max-width: 546px;
+    min-height: 5rem;
     display: block;
     margin: 1rem auto 4rem auto;
     padding-bottom: 0.1rem;   /*??? */
@@ -594,10 +595,12 @@ nav {
 
     @include medium {
         padding-top: 0.7rem;
+        min-height: 6rem;
     }
 
     @include large {
         padding-top: 1rem;
+        min-height: 6rem;
     }
  
     &:hover {
