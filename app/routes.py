@@ -507,7 +507,7 @@ def manage_words():
 @login_required
 def manage_sentences():
 
-    if current_user.username != ADMIN_USER:
+    if not current_user.username == ADMIN_USER:
         flash('Restricted area!')
         return redirect(url_for('index'))
 

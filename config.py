@@ -33,7 +33,7 @@ class Config(object):
 SECRET_HIGH_SCORE_KEY = 4738
 
 # Administrator username
-ADMIN_USER = 'admin'
+ADMIN_USER = os.environ.get('ADMIN_USER') or 'admin'
 ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL') or 'admin@typemania.net'
 
 # Max age of cookies 'cookie_consent' and 'ga_consent'
