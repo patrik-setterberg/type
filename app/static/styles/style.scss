@@ -671,6 +671,10 @@ nav {
             font-size: 2rem;
         }
     }
+
+    ul {
+        @extend %p-font-size;
+    }
 }
 
 

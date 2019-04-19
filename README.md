@@ -5,7 +5,7 @@ Speed-typing webapp built in Python (Flask) and JavaScript. Check it out at [typ
 Although modest in scope, the application offers a number of features beyond its small speed-typing game.
 
 ### Backend
-The base app is an adaptation of Miguel Grinberg's fantastic [Flask Mega-Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world). Features include:
+Features include:
 
 - Registration / login system
 - Sending email (for resetting passwords)
