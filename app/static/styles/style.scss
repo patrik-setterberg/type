@@ -674,6 +674,7 @@ nav {
 
     ul {
         @extend %p-font-size;
+        list-style-type: square;
     }
 }
 
